@@ -1,0 +1,26 @@
+{
+  "plugin": "org.smartide.plugin.git",
+  "run": "echo 'change command from .si.json file'",
+  "intelligence": {
+    ".json": {
+      "enabled": true,
+      "run": "vscode-json-language-server --stdio"
+    },
+    ".js": {
+      "enabled": true,
+      "run": "typescript-language-server --stdio"
+    },
+    ".html": {
+      "enabled": true,
+      "run": "vscode-html-language-server --stdio"
+    },
+    ".css": {
+      "enabled": false,
+      "run": "vscode-css-language-server --stdio"
+    },
+    ".svg": {
+      "enabled": false,
+      "run": "lemminx"
+    }
+  }
+}

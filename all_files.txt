@@ -1,0 +1,160 @@
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.css ###
+.app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.card {
+  padding: 2em;
+}
+
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ###
+import { useState } from 'react'
+import './App.css'
+
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <div className="app">
+      <h1>Taskora</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.jsx</code> and save to test HMR
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default App
+
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.css ###
+.navbar {
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+.navbar-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    }
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    }
+
+.nav-menu {
+    display: none;
+    }
+.hamburger {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    }
+@media (min-width: 992px) {
+    .hamburger {
+        display: none;
+    }
+    .nav-menu {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        }
+
+    .nav-menu a {
+        text-decoration: none;
+        }
+
+    }
+
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.tsx ###
+function Navbar(){
+    return(
+        <>
+        <header className="navbar">
+            <div className="navbar-container">
+                <a href="/" className="logo">
+                Taskora
+                </a>
+
+         <nav className={`nav-menu ${menuOpen ? "active" : ""}`}>
+             <a href="/">Home</a>
+             <a href="#how">How it Works</a>
+            <a href="#categories">Categories</a>
+            <a href="#faq">FAQ</a>
+            <a href="/login">Sign In</a>
+        </nav>
+
+            <button className="hamburger"  onClick={() => setMenuOpen(!menuOpen)}>
+                ☰
+            </button>
+    </div>
+    </header>
+        </>
+    );
+}
+export default Navbar;
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ###
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/main.tsx ###
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+

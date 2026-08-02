@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Taskora | Get things done. Get rewarded.</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#dae2fd",
+                    "secondary-fixed": "#e0e3e5",
+                    "on-secondary-fixed": "#191c1e",
+                    "on-tertiary-container": "#fffeff",
+                    "on-primary-fixed": "#001849",
+                    "surface-dim": "#d2d9f4",
+                    "surface-container": "#eaedff",
+                    "surface-tint": "#0054d7",
+                    "primary-container": "#1e6bff",
+                    "surface-container-low": "#f2f3ff",
+                    "primary": "#0053d4",
+                    "on-background": "#131b2e",
+                    "on-tertiary-fixed-variant": "#7f2b00",
+                    "background": "#faf8ff",
+                    "outline-variant": "#c2c6d8",
+                    "inverse-primary": "#b3c5ff",
+                    "outline": "#737687",
+                    "border-subtle": "#E2E8F0",
+                    "surface": "#faf8ff",
+                    "success-green": "#16A34A",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#fffeff",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#283044",
+                    "inverse-on-surface": "#eef0ff",
+                    "on-surface": "#131b2e",
+                    "on-secondary-fixed-variant": "#444749",
+                    "tertiary-fixed-dim": "#ffb598",
+                    "on-secondary-container": "#626567",
+                    "surface-container-highest": "#dae2fd",
+                    "brand-blue-deep": "#003EB3",
+                    "secondary-container": "#e0e3e5",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "slate-text": "#475569",
+                    "tertiary-fixed": "#ffdbce",
+                    "surface-bright": "#faf8ff",
+                    "primary-fixed": "#dbe1ff",
+                    "brand-blue-tint": "#E8F0FF",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed": "#370e00",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#003fa5",
+                    "surface-container-high": "#e2e7ff",
+                    "on-error": "#ffffff",
+                    "tertiary": "#a43a00",
+                    "tertiary-container": "#cd4b00",
+                    "on-primary": "#ffffff",
+                    "secondary": "#5c5f61",
+                    "secondary-fixed-dim": "#c4c7c9",
+                    "on-surface-variant": "#424655"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "margin-desktop": "40px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": ["Hanken Grotesk"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .btn-interaction:active { transform: scale(0.95); opacity: 0.8; transition: all 0.2s; }
+        .bento-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .bento-card:hover { transform: translateY(-4px); box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.05); }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-border-subtle">
+<nav class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex items-center gap-3">
+<img alt="Taskora Logo Icon" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-07-UY1Hb1CT7kpOnJjmZU1YYNNiSE7YDPT3QlupdJnZnG5i4i3RMnqXA17Gv2devekXmlZL0-wHSnvHeiyVxMdaNtmhrFelzBUSvRFePFAqbPrNtEwEbd-cH-5fGJ8bhMtOZfn35YOaSbtAnUHlhjSV7F1yOrHPyVc8JrdaooJD2qsP14i2-zq6G02hZa64XbK6uHlMhJZPhwFCxrQJeQU9ROWgk2LO_mTBMboA-wfPfbldz9-pQ_vbevGaQJ8oLvQ"/>
+<span class="text-headline-md font-headline-lg tracking-tight text-primary">Taskora</span>
+</div>
+<div class="hidden md:flex items-center space-gap-8 gap-stack-lg">
+<a class="text-slate-text font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="#how-it-works">How It Works</a>
+<a class="text-slate-text font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="#why-taskora">Why Taskora</a>
+<a class="text-slate-text font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="#">FAQ</a>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="hidden md:block text-slate-text font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md">Log in</button>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md font-bold transition-all btn-interaction shadow-sm">Join Waitlist</button>
+</div>
+</nav>
+</header>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative overflow-hidden pt-12 md:pt-24 pb-16 md:pb-32 bg-surface">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="z-10 text-center lg:text-left">
+<span class="inline-block bg-brand-blue-tint text-primary px-4 py-1.5 rounded-full font-label-md text-label-md mb-6">Coming Early 2026</span>
+<h1 class="text-display-lg-mobile md:text-display-lg font-display-lg text-on-surface mb-6 leading-tight">
+                        Get things done.<br/>Get <span class="text-primary">rewarded.</span>
+</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto lg:mx-0">
+                        Taskora connects people with useful tasks and opportunities to earn rewards. Join the waitlist and be among the first to experience a simpler way to get things done.
+                    </p>
+<div class="flex flex-col sm:flex-row items-center gap-stack-md justify-center lg:justify-start">
+<a class="w-full sm:w-auto bg-primary text-on-primary px-10 py-4 rounded-lg font-label-md text-label-md font-bold transition-all btn-interaction shadow-sm text-center" href="#waitlist">Join the Waitlist</a>
+<a class="w-full sm:w-auto bg-brand-blue-tint text-primary px-10 py-4 rounded-lg font-label-md text-label-md font-bold transition-all btn-interaction text-center" href="#how-it-works">How It Works</a>
+</div>
+</div>
+<div class="relative">
+<div class="rounded-xl overflow-hidden border border-border-subtle shadow-lg bg-surface-container-lowest">
+<img class="w-full h-auto object-cover" data-alt="A clean, high-resolution UI mockup of the Taskora mobile app dashboard. The interface shows a list of active tasks with clear pricing like '$15.00' and '$25.00', progress bars, and categories like 'Delivery', 'Feedback', and 'Organization'. The design is minimalist with plenty of white space, using a primary palette of vibrant blue and soft grays." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaEDNUPnWUKJ71bQ9p2Hej_hk8BdQX43d1BsiFDP5WD3mgNRyR3uX-Du-KqlXMQst27fbMuURNbuNLm34bUvX89XIOJuJWz2hpSiikeI4XNt3FAxjjZKxE-461LPSuTFaRzh9POzJ7R7m1NQuMj416menB7zyMPgQZDHI_8AUXkoVcaHcwRMc_ZcmwiOyBTW4omN2-YcvLKHu0mUu3n0x4MtZNuaeChDGaM6I7VmzvUQ11zMaO8uWi"/>
+</div>
+<!-- Accent elements -->
+<div class="absolute -top-6 -right-6 h-24 w-24 bg-surface-container rounded-full -z-10"></div>
+<div class="absolute -bottom-10 -left-10 h-40 w-40 bg-brand-blue-tint rounded-full -z-10"></div>
+</div>
+</div>
+</section>
+<!-- Waitlist Momentum -->
+<section class="py-12 bg-surface-container-low border-y border-border-subtle" id="waitlist">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="flex flex-col md:flex-row items-center justify-center gap-10">
+<div class="text-center md:text-left">
+<div class="flex items-center gap-2 justify-center md:justify-start mb-2">
+<span class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-slate-300"></div>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-slate-400"></div>
+</span>
+<p class="font-label-md text-label-md text-primary font-bold">1,284 people are already waiting</p>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">Secure your spot for early beta access and exclusive rewards.</p>
+</div>
+<form class="flex flex-col sm:flex-row gap-stack-sm w-full max-w-md">
+<input class="flex-1 px-4 py-3 rounded-lg border border-border-subtle focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md text-body-md" placeholder="Enter your email" type="email"/>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-label-md text-label-md font-bold transition-all btn-interaction shadow-sm whitespace-nowrap" type="submit">Join Waitlist</button>
+</form>
+</div>
+</div>
+</section>
+<!-- How Taskora Works -->
+<section class="py-24 bg-surface" id="how-it-works">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-16">
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-4">A simple process for real rewards</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">Getting started with Taskora is designed to be effortless. No complex onboarding, just clarity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Step 01 -->
+<div class="flex flex-col items-center text-center p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<div class="w-16 h-16 bg-brand-blue-tint rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">search</span>
+</div>
+<span class="text-primary font-bold text-label-sm mb-2">STEP 01</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-4">Discover</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Find tasks that match what you can do. From simple digital checks to local physical assistance.</p>
+</div>
+<!-- Step 02 -->
+<div class="flex flex-col items-center text-center p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<div class="w-16 h-16 bg-brand-blue-tint rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">task_alt</span>
+</div>
+<span class="text-primary font-bold text-label-sm mb-2">STEP 02</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-4">Complete</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Follow clear instructions to get the task done and submit your work directly through our intuitive interface.</p>
+</div>
+<!-- Step 03 -->
+<div class="flex flex-col items-center text-center p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<div class="w-16 h-16 bg-brand-blue-tint rounded-full flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl">payments</span>
+</div>
+<span class="text-primary font-bold text-label-sm mb-2">STEP 03</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-4">Get Rewarded</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Earn your reward instantly when your work is approved. Transfer balance easily to your preferred account.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Why Taskora -->
+<section class="py-24 bg-surface-container-low" id="why-taskora">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-16">
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-4">Why choose Taskora?</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">We're building the most reliable platform for the next generation of flexible earning.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<span class="material-symbols-outlined text-primary mb-4">rocket_launch</span>
+<h4 class="text-headline-md font-headline-md text-on-surface mb-3">Find Opportunities</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Access a curated feed of verified tasks relevant to your skills and location.</p>
+</div>
+<div class="p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<span class="material-symbols-outlined text-primary mb-4">loyalty</span>
+<h4 class="text-headline-md font-headline-md text-on-surface mb-3">Earn Rewards</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Get paid fairly and quickly. No hidden fees or complex point systems.</p>
+</div>
+<div class="p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<span class="material-symbols-outlined text-primary mb-4">accessibility_new</span>
+<h4 class="text-headline-md font-headline-md text-on-surface mb-3">Simple &amp; Accessible</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">An interface built for real people. No technical jargon, just momentum.</p>
+</div>
+<div class="p-8 bg-surface-container-lowest rounded-xl border border-border-subtle bento-card">
+<span class="material-symbols-outlined text-primary mb-4">verified_user</span>
+<h4 class="text-headline-md font-headline-md text-on-surface mb-3">Built Around Trust</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Secure payments and verified task providers ensure you're always protected.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Product Preview -->
+<section class="py-24 bg-surface overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-16 items-center">
+<div class="lg:col-span-2">
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-6">Designed for clarity and speed.</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-8">Take a look at how we've reimagined task management. The Taskora platform is designed to stay out of your way so you can focus on completion.</p>
+<ul class="space-y-6">
+<li class="flex gap-4">
+<div class="bg-brand-blue-tint p-2 rounded-lg flex-shrink-0">
+<span class="material-symbols-outlined text-primary">filter_list</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Smart Filters</h5>
+<p class="text-body-md text-on-surface-variant">Quickly sort by category, distance, or reward value.</p>
+</div>
+</li>
+<li class="flex gap-4">
+<div class="bg-brand-blue-tint p-2 rounded-lg flex-shrink-0">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+<div>
+<h5 class="font-bold text-on-surface">Reward Summary</h5>
+<p class="text-body-md text-on-surface-variant">A real-time overview of your earnings and pending approvals.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="lg:col-span-3">
+<div class="rounded-xl border border-border-subtle shadow-2xl bg-surface-container-lowest p-4 md:p-8">
+<img class="w-full h-auto rounded-lg shadow-sm border border-slate-100" data-alt="A detailed desktop dashboard view of the Taskora application. The UI features a sidebar with navigation items like 'Explore', 'My Tasks', and 'Earnings'. The main content area showcases a vibrant bento-grid style feed of tasks with high-contrast call-to-action buttons. A summary panel on the right shows a user profile with a total balance of $420.50 and a 98% approval rating. The aesthetic is ultra-modern, professional, and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzFfBX5QhZfnG_u4Ou9H_jL6r8HTJpm_K3FBauJ5HXY8qCZHr3xZYF6YXAgAXIPSSA-Zwb4-fbX2yY5Ss8HRT9Zsx_1L28H64l65njbQJ8HswBKwIhGHrKlmxpuMnXEyc44mW-knJMH9-6c6dsOoJoelNlw2f1irrzPGBYXFZZTPai4F58T3Lm2XChhlwUqZ-GAok4vu2V-1Zc3x3lQwHb4gga84YaS9FvC8EuQILxHqK3-PL1OHN7"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-24 bg-primary text-on-primary text-center">
+<div class="max-w-2xl mx-auto px-margin-mobile">
+<h2 class="text-display-lg-mobile md:text-headline-lg font-headline-lg mb-6">Ready to get things done?</h2>
+<p class="text-body-lg font-body-lg mb-10 opacity-90">Be the first in line when we launch. Join thousands of early adopters and start earning rewards for your skills.</p>
+<form class="flex flex-col sm:flex-row gap-stack-sm w-full max-w-lg mx-auto">
+<input class="flex-1 px-4 py-4 rounded-lg border-none focus:ring-2 focus:ring-white outline-none font-body-md text-body-md text-on-surface" placeholder="your@email.com" type="email"/>
+<button class="bg-surface text-primary px-8 py-4 rounded-lg font-label-md text-label-md font-bold transition-all btn-interaction shadow-lg" type="submit">Join the Waitlist</button>
+</form>
+<p class="mt-6 text-label-sm font-label-sm opacity-70">No spam, ever. Only important product updates.</p>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-border-subtle w-full py-stack-lg">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto gap-8">
+<div class="flex items-center gap-3">
+<img alt="Taskora Logo Icon" class="h-6 w-6 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCpsVRgBfY1jXULAEkGoAmbg5eCGxW4wlsV8JRMroLaCyaNKi3r-EoEfsfSzf6H-7XVd5vZcreQ5hhabo6FgAiad9mMmJyTb77tLzbtwYTuaX2U9odNgNmyNYkKCboCDf3G0jsgdYk3MN260sXus2GbB6HWxc0RA8Eqf0pmWrkSDHbUWX0yzk4L6WkFMq61k_zqmfwlNHJu880PtLVa8nEw5Tm4KqbkYIWGkT6H9-aRZID4NyBGxnBWI1U2bcegeE4Iw"/>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">Taskora</span>
+</div>
+<div class="flex flex-wrap justify-center gap-6 md:gap-stack-lg">
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Contact Us</a>
+<a class="text-on-surface-variant font-label-sm text-label-sm hover:text-primary transition-colors" href="#">Careers</a>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md text-label-sm opacity-70">© 2026 Taskora Inc. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Simple form submission micro-interaction
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button');
+                const originalText = btn.innerText;
+                btn.innerText = "Success!";
+                btn.classList.replace('bg-primary', 'bg-success-green');
+                btn.classList.add('cursor-default');
+                btn.disabled = true;
+                form.querySelector('input').value = "";
+                form.querySelector('input').disabled = true;
+                form.querySelector('input').placeholder = "You're on the list!";
+            });
+        });
+    </script>
+</body></html>
