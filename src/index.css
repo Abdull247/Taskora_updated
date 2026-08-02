@@ -1,39 +1,21 @@
-/* ===== GLOBAL RESET ===== */
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-}
-
+html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
   width: 100%;
-  background: var(--color-background);
-  color: var(--color-on-surface);
-  font-family: var(--font-display);
-  overflow-x: hidden;
-}
-
-/* VERY IMPORTANT: force root to fill viewport */
-#root {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Prevent horizontal scroll everywhere */
-body,
-#root {
   max-width: 100%;
   overflow-x: hidden;
+  background: #faf8ff;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
 }

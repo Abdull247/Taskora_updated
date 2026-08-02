@@ -43,8 +43,13 @@
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
+  background: #faf8ff;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
 }
 
@@ -80,45 +85,34 @@ a, button {
   transform: translateY(28px);
 }
 
-/* Rise up + slight scale (for cards/badges) */
+/* Rise up + slight scale */
 .reveal-up-scale {
   transform: translateY(24px) scale(0.96);
 }
 
-/* Slide in from left */
+/* Slide in from left — SAFE: clipped at section level */
 .reveal-left {
-  transform: translateX(-32px);
+  transform: translateX(-24px);
 }
 
-/* Slide in from right */
+/* Slide in from right — SAFE: clipped at section level */
 .reveal-right {
-  transform: translateX(32px);
+  transform: translateX(24px);
 }
 
-/* Soft fade with blur (for hero/section intros) */
+/* Soft fade with blur */
 .reveal-fade-blur {
   transform: translateY(12px);
   filter: blur(6px);
 }
 
-/* Scale in (for images/preview panels) */
+/* Scale in */
 .reveal-scale {
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
-/* Stagger helper delays, apply alongside reveal-* classes */
+/* Stagger delays */
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 .reveal-delay-4 { transition-delay: 0.32s; }
-
-/* Ensure full-page background consistency */
-html,
-body {
-  background: var(--color-background);
-}
-
-/* Prevent layout shift when scrollbar appears */
-html {
-  scrollbar-gutter: stable;
-}
