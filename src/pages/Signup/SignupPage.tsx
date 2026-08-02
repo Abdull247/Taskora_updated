@@ -1,5 +1,5 @@
-import { useState, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, FormEvent, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -36,14 +36,26 @@ const initialForm: FormData = {
   referredByCode: '',
 }
 
+function isValidRole(value: string | null): value is UserRole {
+  return value === 'worker' || value === 'advertiser'
+}
+
 function SignupPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [form, setForm] = useState<FormData>(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitting, setSubmitting] = useState(false)
 
   const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
   const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role')
+    if (isValidRole(roleParam)) {
+      setForm((prev) => ({ ...prev, role: roleParam }))
+    }
+  }, [searchParams])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

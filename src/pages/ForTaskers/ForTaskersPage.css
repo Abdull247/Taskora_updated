@@ -1,0 +1,9 @@
+.hero-container-single {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-container-single .hero-copy {
+  max-width: 640px;
+  text-align: center;
+}

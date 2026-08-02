@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
+import FaqAccordion from '../../components/FaqAccordion/FaqAccordion'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import {
   HiOutlineMagnifyingGlass,
@@ -12,8 +13,89 @@ import {
   HiOutlineShieldCheck,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineChartBar,
+  HiOutlineClipboardDocumentList,
+  HiOutlineMegaphone,
+  HiOutlineMapPin,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineComputerDesktop,
+  HiOutlineCamera,
+  HiOutlineClipboardDocumentCheck,
+  HiOutlineTruck,
+  HiOutlineUserCircle,
+  HiOutlineBuildingOffice2,
+  HiOutlineBuildingOffice,
+  HiOutlineDocumentText,
+  HiOutlineCurrencyDollar,
+  HiOutlineEye,
+  HiOutlineIdentification,
 } from 'react-icons/hi2'
 import './WaitlistPage.css'
+
+const taskerFaqs = [
+  {
+    question: 'What is Taskora?',
+    answer:
+      'Taskora is a platform where people can discover tasks, complete useful work and earn rewards.',
+  },
+  {
+    question: 'How do I become a Tasker?',
+    answer:
+      "Join the waitlist and create your account when Taskora becomes available. You'll be able to explore available tasks and choose opportunities that fit you.",
+  },
+  {
+    question: 'How do Taskers earn rewards?',
+    answer:
+      'Taskers earn the reward associated with eligible tasks they successfully complete and have approved.',
+  },
+  {
+    question: 'Can I choose which tasks I complete?',
+    answer:
+      'Taskora is designed to let Taskers discover opportunities and choose tasks that fit their interests, skills and availability.',
+  },
+]
+
+const advertiserFaqs = [
+  {
+    question: 'What is an Advertiser?',
+    answer: 'An Advertiser is someone who creates a task on Taskora because they need something done by another person.',
+  },
+  {
+    question: 'What can I post as an Advertiser?',
+    answer:
+      'Advertisers can create tasks for a variety of digital, local, research, feedback, assistance and other practical needs, depending on what Taskora supports at launch.',
+  },
+  {
+    question: 'How do Advertisers create a task?',
+    answer:
+      'Advertisers provide the task details, instructions, requirements and reward so Taskers know exactly what needs to be done.',
+  },
+  {
+    question: 'Do Advertisers choose who completes their task?',
+    answer:
+      'Taskora can help Advertisers reach relevant Taskers. The exact matching and selection experience will depend on the task and platform features available at launch.',
+  },
+]
+
+const generalFaqs = [
+  {
+    question: 'When is Taskora launching?',
+    answer: 'Taskora is currently preparing for launch. Join the waitlist to receive important launch updates and early-access information.',
+  },
+  {
+    question: 'Is Taskora free to join?',
+    answer:
+      'Joining the waitlist is free. Pricing and fees for using specific Taskora features will be communicated before launch.',
+  },
+  {
+    question: 'Where will Taskora be available?',
+    answer:
+      'Taskora is being built with accessibility in mind, with availability and supported regions expanding over time.',
+  },
+  {
+    question: 'Can businesses use Taskora?',
+    answer: 'Yes. Businesses and organizations can use Taskora to create tasks and connect with people who can help get them done.',
+  },
+]
 
 function WaitlistPage() {
   const heroBadgeRef = useScrollReveal<HTMLSpanElement>({ threshold: 0 })
@@ -29,6 +111,36 @@ function WaitlistPage() {
   const step2Ref = useScrollReveal<HTMLDivElement>()
   const step3Ref = useScrollReveal<HTMLDivElement>()
 
+  const twoSidedHeadingRef = useScrollReveal<HTMLDivElement>()
+  const taskerCardRef = useScrollReveal<HTMLDivElement>()
+  const advertiserCardRef = useScrollReveal<HTMLDivElement>()
+
+  const advertiserFlowHeadingRef = useScrollReveal<HTMLDivElement>()
+  const advStep1Ref = useScrollReveal<HTMLDivElement>()
+  const advStep2Ref = useScrollReveal<HTMLDivElement>()
+  const advStep3Ref = useScrollReveal<HTMLDivElement>()
+  const advStep4Ref = useScrollReveal<HTMLDivElement>()
+
+  const categoriesHeadingRef = useScrollReveal<HTMLDivElement>()
+  const cat1Ref = useScrollReveal<HTMLDivElement>()
+  const cat2Ref = useScrollReveal<HTMLDivElement>()
+  const cat3Ref = useScrollReveal<HTMLDivElement>()
+  const cat4Ref = useScrollReveal<HTMLDivElement>()
+  const cat5Ref = useScrollReveal<HTMLDivElement>()
+  const cat6Ref = useScrollReveal<HTMLDivElement>()
+
+  const whoHeadingRef = useScrollReveal<HTMLDivElement>()
+  const who1Ref = useScrollReveal<HTMLDivElement>()
+  const who2Ref = useScrollReveal<HTMLDivElement>()
+  const who3Ref = useScrollReveal<HTMLDivElement>()
+  const who4Ref = useScrollReveal<HTMLDivElement>()
+
+  const trustHeadingRef = useScrollReveal<HTMLDivElement>()
+  const trust1Ref = useScrollReveal<HTMLDivElement>()
+  const trust2Ref = useScrollReveal<HTMLDivElement>()
+  const trust3Ref = useScrollReveal<HTMLDivElement>()
+  const trust4Ref = useScrollReveal<HTMLDivElement>()
+
   const whyHeadingRef = useScrollReveal<HTMLDivElement>()
   const feature1Ref = useScrollReveal<HTMLDivElement>()
   const feature2Ref = useScrollReveal<HTMLDivElement>()
@@ -37,6 +149,9 @@ function WaitlistPage() {
 
   const previewCopyRef = useScrollReveal<HTMLDivElement>()
   const previewImageRef = useScrollReveal<HTMLDivElement>()
+
+  const faqHeadingRef = useScrollReveal<HTMLDivElement>()
+  const faqBodyRef = useScrollReveal<HTMLDivElement>()
 
   const ctaRef = useScrollReveal<HTMLDivElement>()
 
@@ -57,19 +172,12 @@ function WaitlistPage() {
                 <br />
                 Get <span className="hero-title-accent">rewarded.</span>
               </h1>
-              <p
-                ref={heroDescRef}
-                className="hero-description reveal reveal-up reveal-delay-2"
-              >
-                Taskora connects people with useful tasks and opportunities to earn rewards.
-                Join the waitlist and be among the first to experience a simpler way to get
-                things done.
+              <p ref={heroDescRef} className="hero-description reveal reveal-up reveal-delay-2">
+                Taskora is a marketplace connecting Taskers who complete tasks and earn rewards
+                with Advertisers who need real work done. Join the waitlist to be first in line.
               </p>
-              <div
-                ref={heroActionsRef}
-                className="hero-actions reveal reveal-up reveal-delay-3"
-              >
-                <Link to="/signup" className="btn btn-primary btn-block">
+              <div ref={heroActionsRef} className="hero-actions reveal reveal-up reveal-delay-3">
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
                   Join the Waitlist
                 </Link>
                 <a href="#how-it-works" className="btn btn-tint btn-block">
@@ -162,6 +270,263 @@ function WaitlistPage() {
           </div>
         </section>
 
+        {/* Two-Sided Marketplace */}
+        <section className="two-sided" id="for-taskers">
+          <div className="section-container">
+            <div ref={twoSidedHeadingRef} className="section-heading reveal reveal-up">
+              <h2>One platform. Two ways to get things done.</h2>
+              <p>
+                Whether you're looking for opportunities or need something done, Taskora
+                connects the right people to the right tasks.
+              </p>
+            </div>
+
+            <div className="two-sided-grid">
+              <div ref={taskerCardRef} className="side-card reveal reveal-left">
+                <span className="side-label">For Taskers</span>
+                <div className="side-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <h3>Find tasks. Do the work. Get rewarded.</h3>
+                <p>
+                  Discover tasks that match your skills, interests and location. Complete them,
+                  submit your work and earn rewards when your work is approved.
+                </p>
+                <ul className="side-benefits">
+                  <li>Discover relevant tasks</li>
+                  <li>Choose opportunities that fit you</li>
+                  <li>Complete tasks on your terms</li>
+                  <li>Earn rewards for approved work</li>
+                </ul>
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                  Join as a Tasker
+                </Link>
+              </div>
+
+              <div
+                id="for-advertisers"
+                ref={advertiserCardRef}
+                className="side-card reveal reveal-right"
+              >
+                <span className="side-label">For Advertisers</span>
+                <div className="side-icon">
+                  <HiOutlineMegaphone />
+                </div>
+                <h3>Need something done? Put it in front of the right people.</h3>
+                <p>
+                  Create a task, define what you need, set your reward and let Taskora connect
+                  you with people ready to get it done.
+                </p>
+                <ul className="side-benefits">
+                  <li>Create and publish tasks</li>
+                  <li>Set your requirements and reward</li>
+                  <li>Reach relevant Taskers</li>
+                  <li>Review submissions and approve completed work</li>
+                </ul>
+                <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                  Join as an Advertiser
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* For Advertisers process */}
+        <section className="advertiser-flow">
+          <div className="section-container">
+            <div ref={advertiserFlowHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Turn things you need done into simple tasks.</h2>
+              <p>
+                From getting local help to collecting information or completing digital work,
+                Taskora helps you turn real-world needs into clear, actionable tasks.
+              </p>
+            </div>
+
+            <div className="steps-stack steps-stack-4">
+              <div ref={advStep1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentList />
+                </div>
+                <span className="step-label">01</span>
+                <h3>Create a Task</h3>
+                <p>Describe what needs to be done, add instructions and define who you're looking for.</p>
+              </div>
+
+              <div ref={advStep2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCurrencyDollar />
+                </div>
+                <span className="step-label">02</span>
+                <h3>Set the Reward</h3>
+                <p>Choose a reward and provide the details Taskers need before they get started.</p>
+              </div>
+
+              <div ref={advStep3Ref} className="step-card reveal reveal-up reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineDocumentText />
+                </div>
+                <span className="step-label">03</span>
+                <h3>Get Submissions</h3>
+                <p>People interested in your task complete the work and submit their results.</p>
+              </div>
+
+              <div ref={advStep4Ref} className="step-card reveal reveal-right reveal-delay-3">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </div>
+                <span className="step-label">04</span>
+                <h3>Review &amp; Approve</h3>
+                <p>Review submissions and approve completed work that meets your requirements.</p>
+              </div>
+            </div>
+
+            <div className="advertiser-flow-actions">
+              <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                Become an Advertiser
+              </Link>
+              <a href="#how-it-works" className="btn btn-tint btn-block">
+                See How It Works
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* What can you get done */}
+        <section className="categories">
+          <div className="section-container">
+            <div ref={categoriesHeadingRef} className="section-heading reveal reveal-up">
+              <h2>What can you get done with Taskora?</h2>
+              <p>A few examples of the kinds of tasks Advertisers can create.</p>
+            </div>
+
+            <div className="categories-grid">
+              <div ref={cat1Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon">
+                  <HiOutlineMapPin />
+                </span>
+                <h4>Local Tasks</h4>
+                <p>Need someone nearby to help with a simple physical task?</p>
+              </div>
+              <div ref={cat2Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon">
+                  <HiOutlineChatBubbleLeftRight />
+                </span>
+                <h4>Research &amp; Feedback</h4>
+                <p>Get opinions, responses or real-world information from people.</p>
+              </div>
+              <div ref={cat3Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon">
+                  <HiOutlineComputerDesktop />
+                </span>
+                <h4>Digital Tasks</h4>
+                <p>Delegate simple online work that can be completed remotely.</p>
+              </div>
+              <div ref={cat4Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon">
+                  <HiOutlineCamera />
+                </span>
+                <h4>Content &amp; Media</h4>
+                <p>Get help with simple content, photography, video or media-related tasks.</p>
+              </div>
+              <div ref={cat5Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon">
+                  <HiOutlineEye />
+                </span>
+                <h4>Testing &amp; Feedback</h4>
+                <p>Have people test an experience, product or process and share their feedback.</p>
+              </div>
+              <div ref={cat6Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon">
+                  <HiOutlineTruck />
+                </span>
+                <h4>Errands &amp; Assistance</h4>
+                <p>Get help with everyday tasks that require a real person.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who is Taskora for */}
+        <section className="who-for">
+          <div className="section-container">
+            <div ref={whoHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built for people who need things done — and people ready to do them.</h2>
+            </div>
+
+            <div className="who-grid">
+              <div ref={who1Ref} className="who-card reveal reveal-up-scale">
+                <span className="who-icon">
+                  <HiOutlineUserCircle />
+                </span>
+                <h4>Individuals</h4>
+                <p>Get help with everyday tasks and small projects.</p>
+              </div>
+              <div ref={who2Ref} className="who-card reveal reveal-up-scale reveal-delay-1">
+                <span className="who-icon">
+                  <HiOutlineBuildingOffice2 />
+                </span>
+                <h4>Businesses</h4>
+                <p>Delegate useful work and reach people who can help.</p>
+              </div>
+              <div ref={who3Ref} className="who-card reveal reveal-up-scale reveal-delay-2">
+                <span className="who-icon">
+                  <HiOutlineBuildingOffice />
+                </span>
+                <h4>Organizations</h4>
+                <p>Create structured tasks and gather responses, feedback or assistance.</p>
+              </div>
+              <div ref={who4Ref} className="who-card reveal reveal-up-scale reveal-delay-3">
+                <span className="who-icon">
+                  <HiOutlineIdentification />
+                </span>
+                <h4>Taskers</h4>
+                <p>Find opportunities and earn rewards by completing tasks.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust */}
+        <section className="trust">
+          <div className="section-container">
+            <div ref={trustHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built around clear expectations.</h2>
+              <p>Taskora is designed to make interactions between Taskers and Advertisers straightforward.</p>
+            </div>
+
+            <div className="trust-grid">
+              <div ref={trust1Ref} className="trust-card reveal reveal-up-scale">
+                <span className="trust-icon">
+                  <HiOutlineClipboardDocumentList />
+                </span>
+                <h4>Clear Task Details</h4>
+                <p>Taskers should know what is expected before accepting a task.</p>
+              </div>
+              <div ref={trust2Ref} className="trust-card reveal reveal-up-scale reveal-delay-1">
+                <span className="trust-icon">
+                  <HiOutlineCurrencyDollar />
+                </span>
+                <h4>Transparent Rewards</h4>
+                <p>Advertisers define the reward associated with a task.</p>
+              </div>
+              <div ref={trust3Ref} className="trust-card reveal reveal-up-scale reveal-delay-2">
+                <span className="trust-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </span>
+                <h4>Submission Review</h4>
+                <p>Advertisers can review submitted work before approving completion.</p>
+              </div>
+              <div ref={trust4Ref} className="trust-card reveal reveal-up-scale reveal-delay-3">
+                <span className="trust-icon">
+                  <HiOutlineShieldCheck />
+                </span>
+                <h4>Useful Profiles &amp; Information</h4>
+                <p>Give both sides enough context to make better decisions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Why Taskora */}
         <section className="why-taskora" id="why-taskora">
           <div className="section-container">
@@ -181,30 +546,21 @@ function WaitlistPage() {
                 <h4>Find Opportunities</h4>
                 <p>Access a curated feed of verified tasks relevant to your skills and location.</p>
               </div>
-              <div
-                ref={feature2Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-1"
-              >
+              <div ref={feature2Ref} className="feature-card reveal reveal-up-scale reveal-delay-1">
                 <span className="feature-icon">
                   <HiOutlineTag />
                 </span>
                 <h4>Earn Rewards</h4>
                 <p>Get paid fairly and quickly. No hidden fees or complex point systems.</p>
               </div>
-              <div
-                ref={feature3Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-2"
-              >
+              <div ref={feature3Ref} className="feature-card reveal reveal-up-scale reveal-delay-2">
                 <span className="feature-icon">
                   <HiOutlineUsers />
                 </span>
                 <h4>Simple &amp; Accessible</h4>
                 <p>An interface built for real people. No technical jargon, just momentum.</p>
               </div>
-              <div
-                ref={feature4Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-3"
-              >
+              <div ref={feature4Ref} className="feature-card reveal reveal-up-scale reveal-delay-3">
                 <span className="feature-icon">
                   <HiOutlineShieldCheck />
                 </span>
@@ -246,10 +602,7 @@ function WaitlistPage() {
               </ul>
             </div>
 
-            <div
-              ref={previewImageRef}
-              className="preview-image-wrap reveal reveal-scale reveal-delay-1"
-            >
+            <div ref={previewImageRef} className="preview-image-wrap reveal reveal-scale reveal-delay-1">
               <img
                 className="preview-image"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzFfBX5QhZfnG_u4Ou9H_jL6r8HTJpm_K3FBauJ5HXY8qCZHr3xZYF6YXAgAXIPSSA-Zwb4-fbX2yY5Ss8HRT9Zsx_1L28H64l65njbQJ8HswBKwIhGHrKlmxpuMnXEyc44mW-knJMH9-6c6dsOoJoelNlw2f1irrzPGBYXFZZTPai4F58T3Lm2XChhlwUqZ-GAok4vu2V-1Zc3x3lQwHb4gga84YaS9FvC8EuQILxHqK3-PL1OHN7"
@@ -259,18 +612,38 @@ function WaitlistPage() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section className="faq-section" id="faq">
+          <div className="section-container">
+            <div ref={faqHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Frequently asked questions</h2>
+            </div>
+
+            <div ref={faqBodyRef} className="faq-body reveal reveal-up reveal-delay-1">
+              <FaqAccordion groupLabel="For Taskers" items={taskerFaqs} />
+              <FaqAccordion groupLabel="For Advertisers" items={advertiserFaqs} />
+              <FaqAccordion groupLabel="General" items={generalFaqs} />
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="final-cta">
           <div ref={ctaRef} className="final-cta-container reveal reveal-up-scale">
             <h2>Ready to get things done?</h2>
             <p>
-              Be the first in line when we launch. Join thousands of early adopters and start
-              earning rewards for your skills.
+              Whether you're ready to earn by completing tasks or you have something that needs
+              to get done, Taskora is coming soon.
             </p>
 
-            <Link to="/signup" className="btn btn-light btn-block">
-              Join the Waitlist
-            </Link>
+            <div className="final-cta-actions">
+              <Link to="/signup?role=worker" className="btn btn-light btn-block">
+                Join as a Tasker
+              </Link>
+              <Link to="/signup?role=advertiser" className="btn btn-outline-light btn-block">
+                Join as an Advertiser
+              </Link>
+            </div>
 
             <p className="final-cta-note">No spam, ever. Only important product updates.</p>
           </div>

@@ -21,6 +21,14 @@
     ".svg": {
       "enabled": false,
       "run": "lemminx"
+    },
+    ".ts": {
+      "enabled": false,
+      "run": "typescript-language-server --stdio"
+    },
+    ".tsx": {
+      "enabled": false,
+      "run": "typescript-language-server --stdio"
     }
   }
 }

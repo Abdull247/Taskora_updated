@@ -2,6 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import SignupPage from './pages/Signup/SignupPage'
+import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
+import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 import './App.css'
@@ -24,31 +26,22 @@ function App() {
             maxWidth: 'min(420px, calc(100vw - 32px))',
           },
           success: {
-            iconTheme: {
-              primary: '#16A34A',
-              secondary: '#ffffff',
-            },
-            style: {
-              border: '1px solid #bbf7d0',
-            },
+            iconTheme: { primary: '#16A34A', secondary: '#ffffff' },
+            style: { border: '1px solid #bbf7d0' },
           },
           error: {
-            iconTheme: {
-              primary: '#ba1a1a',
-              secondary: '#ffffff',
-            },
-            style: {
-              border: '1px solid #fecaca',
-            },
+            iconTheme: { primary: '#ba1a1a', secondary: '#ffffff' },
+            style: { border: '1px solid #fecaca' },
           },
         }}
       />
       <Routes>
         <Route path="/" element={<WaitlistPage />} />
         <Route path="/waitlist" element={<WaitlistPage />} />
+        <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
+        <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* Known but not-yet-public routes */}
         <Route
           path="/login"
           element={
@@ -68,7 +61,6 @@ function App() {
           }
         />
 
-        {/* Catch-all: genuinely unknown routes */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
