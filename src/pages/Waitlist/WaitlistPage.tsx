@@ -110,6 +110,8 @@ function WaitlistPage() {
   const step1Ref = useScrollReveal<HTMLDivElement>()
   const step2Ref = useScrollReveal<HTMLDivElement>()
   const step3Ref = useScrollReveal<HTMLDivElement>()
+  const step4Ref= useScrollReveal<HTMLDivElement>()
+  const step5Ref= useScrollReveal<HTMLDivElement>()
 
   const twoSidedHeadingRef = useScrollReveal<HTMLDivElement>()
   const taskerCardRef = useScrollReveal<HTMLDivElement>()
@@ -233,37 +235,58 @@ function WaitlistPage() {
             <div className="steps-stack">
               <div ref={step1Ref} className="step-card reveal reveal-left">
                 <div className="step-icon">
-                  <HiOutlineMagnifyingGlass />
+                  <HiOutlineClipboardDocumentList />
                 </div>
                 <span className="step-label">STEP 01</span>
-                <h3>Discover</h3>
+                <h3>post a Task</h3>
                 <p>
-                  Find tasks that match what you can do. From simple digital checks to local
-                  physical assistance.
+                  Advertisers create a task in minutes by describing what they need done,adding clear,
+                  instructions and defining the requirements for successful completion  
                 </p>
               </div>
 
               <div ref={step2Ref} className="step-card reveal reveal-up reveal-delay-1">
                 <div className="step-icon">
-                  <HiOutlineCheckCircle />
+                  <HiOutlineBanknotes />
                 </div>
                 <span className="step-label">STEP 02</span>
+                <h3>Set Your budget</h3>
+                <p>
+                  Advertisers choose how much to pay per completed task,set the number of participants
+                  they need,fund their their campaigns to make it live
+                </p>
+              </div>
+
+              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <span className="step-label">STEP 03</span>
+                <h3>Discover</h3>
+                <p>
+                  Find tasks that match what you can do From simple digital checks to local physical assistance
+                  . 
+                </p>
+              </div>
+              <div ref={step4Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineCheckCircle />
+                </div>
+                <span className="step-label">STEP 04</span>
                 <h3>Complete</h3>
                 <p>
                   Follow clear instructions to get the task done and submit your work directly
                   through our intuitive interface.
                 </p>
               </div>
-
-              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+              <div ref={step5Ref} className="step-card reveal reveal-right reveal-delay-2">
                 <div className="step-icon">
                   <HiOutlineBanknotes />
                 </div>
-                <span className="step-label">STEP 03</span>
-                <h3>Get Rewarded</h3>
+                <span className="step-label">STEP 05</span>
+                <h3>Get rewarded</h3>
                 <p>
-                  Earn your reward instantly when your work is approved. Transfer balance
-                  easily to your preferred account.
+                  Earn your reward instantly when your work is approved. Transfer balance easily to your preferred account.
                 </p>
               </div>
             </div>
