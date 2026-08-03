@@ -1,15 +1,8 @@
-const isDev = import.meta.env.DEV
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
-// In dev, hit the backend directly (needs CORS_ORIGINS to include localhost).
-// In production on Vercel, use the same-origin /api proxy defined in vercel.json,
-// which forwards to the Render backend server-side (no CORS needed).
-const API_BASE_URL = isDev
-  ? (import.meta.env.VITE_API_BASE_URL as string)
-  : '/api'
-
-if (isDev && !API_BASE_URL) {
+if (!API_BASE_URL) {
   console.warn(
-    'VITE_API_BASE_URL is not set. Add it to your .env file, e.g. VITE_API_BASE_URL=http://127.0.0.1:3000'
+    'VITE_API_BASE_URL is not set. Add it to your .env file, e.g. VITE_API_BASE_URL=https://your-backend.onrender.com'
   )
 }
 

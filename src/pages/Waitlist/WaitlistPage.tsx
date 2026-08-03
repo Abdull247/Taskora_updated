@@ -165,7 +165,7 @@ function WaitlistPage() {
           <div className="hero-container">
             <div className="hero-copy">
               <span ref={heroBadgeRef} className="hero-badge reveal reveal-up-scale">
-                Coming Early 2026
+                Launching Soon
               </span>
               <h1 ref={heroTitleRef} className="hero-title reveal reveal-fade-blur reveal-delay-1">
                 Get things done.
@@ -190,7 +190,7 @@ function WaitlistPage() {
               <div className="hero-image-frame">
                 <img
                   className="hero-image"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaEDNUPnWUKJ71bQ9p2Hej_hk8BdQX43d1BsiFDP5WD3mgNRyR3uX-Du-KqlXMQst27fbMuURNbuNLm34bUvX89XIOJuJWz2hpSiikeI4XNt3FAxjjZKxE-461LPSuTFaRzh9POzJ7R7m1NQuMj416menB7zyMPgQZDHI_8AUXkoVcaHcwRMc_ZcmwiOyBTW4omN2-YcvLKHu0mUu3n0x4MtZNuaeChDGaM6I7VmzvUQ11zMaO8uWi"
+                  src="/dashboard_mockup.png"
                   alt="Taskora app dashboard mockup"
                 />
               </div>
@@ -203,9 +203,9 @@ function WaitlistPage() {
           <div ref={momentumRef} className="momentum-container reveal reveal-up">
             <div className="momentum-avatars-row">
               <span className="momentum-avatars">
-                <div className="avatar avatar-1"></div>
-                <div className="avatar avatar-2"></div>
-                <div className="avatar avatar-3"></div>
+                <img src="/momentum_1.png" alt="User 1" className="avatar avatar-1" />
+                <img src="/momentum_2.png" alt="User 2" className="avatar avatar-2" />
+                <img src="/momentum_3.png" alt="User 3" className="avatar avatar-3" />
               </span>
               <p className="momentum-count">1,284 people are already waiting</p>
             </div>

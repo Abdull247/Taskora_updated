@@ -14,7 +14,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 64px;
+  height: 55px;
   padding: 0 var(--margin-mobile);
 }
 
@@ -31,8 +31,8 @@
 }
 
 .logo-icon {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
   flex-shrink: 0;
 }
