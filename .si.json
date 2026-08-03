@@ -29,6 +29,10 @@
     ".tsx": {
       "enabled": false,
       "run": "typescript-language-server --stdio"
+    },
+    ".xml": {
+      "enabled": false,
+      "run": "lemminx"
     }
   }
 }
