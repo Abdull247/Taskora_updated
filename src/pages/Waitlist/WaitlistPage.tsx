@@ -33,14 +33,14 @@ import './WaitlistPage.css'
 
 const taskerFaqs = [
   {
-    question: 'What is Taskora?',
+    question: 'What is TaskBridge?',
     answer:
-      'Taskora is a platform where people can discover tasks, complete useful work and earn rewards.',
+      'TaskBridge is a platform where people can discover tasks, complete useful work and earn rewards.',
   },
   {
     question: 'How do I become a Tasker?',
     answer:
-      "Join the waitlist and create your account when Taskora becomes available. You'll be able to explore available tasks and choose opportunities that fit you.",
+      "Join the waitlist and create your account when TaskBridge becomes available. You'll be able to explore available tasks and choose opportunities that fit you.",
   },
   {
     question: 'How do Taskers earn rewards?',
@@ -50,19 +50,19 @@ const taskerFaqs = [
   {
     question: 'Can I choose which tasks I complete?',
     answer:
-      'Taskora is designed to let Taskers discover opportunities and choose tasks that fit their interests, skills and availability.',
+      'TaskBridge is designed to let Taskers discover opportunities and choose tasks that fit their interests, skills and availability.',
   },
 ]
 
 const advertiserFaqs = [
   {
     question: 'What is an Advertiser?',
-    answer: 'An Advertiser is someone who creates a task on Taskora because they need something done by another person.',
+    answer: 'An Advertiser is someone who creates a task on TaskBridge because they need something done by another person.',
   },
   {
     question: 'What can I post as an Advertiser?',
     answer:
-      'Advertisers can create tasks for a variety of digital, local, research, feedback, assistance and other practical needs, depending on what Taskora supports at launch.',
+      'Advertisers can create tasks for a variety of digital, local, research, feedback, assistance and other practical needs, depending on what TaskBridge supports at launch.',
   },
   {
     question: 'How do Advertisers create a task?',
@@ -72,28 +72,28 @@ const advertiserFaqs = [
   {
     question: 'Do Advertisers choose who completes their task?',
     answer:
-      'Taskora can help Advertisers reach relevant Taskers. The exact matching and selection experience will depend on the task and platform features available at launch.',
+      'TaskBridge can help Advertisers reach relevant Taskers. The exact matching and selection experience will depend on the task and platform features available at launch.',
   },
 ]
 
 const generalFaqs = [
   {
-    question: 'When is Taskora launching?',
-    answer: 'Taskora is currently preparing for launch. Join the waitlist to receive important launch updates and early-access information.',
+    question: 'When is TaskBridge launching?',
+    answer: 'TaskBridge is currently preparing for launch. Join the waitlist to receive important launch updates and early-access information.',
   },
   {
-    question: 'Is Taskora free to join?',
+    question: 'Is TaskBridge free to join?',
     answer:
-      'Joining the waitlist is free. Pricing and fees for using specific Taskora features will be communicated before launch.',
+      'Joining the waitlist is free. Pricing and fees for using specific TaskBridge features will be communicated before launch.',
   },
   {
     question: 'Where will Taskora be available?',
     answer:
-      'Taskora is being built with accessibility in mind, with availability and supported regions expanding over time.',
+      'TaskBridge is being built with accessibility in mind, with availability and supported regions expanding over time.',
   },
   {
-    question: 'Can businesses use Taskora?',
-    answer: 'Yes. Businesses and organizations can use Taskora to create tasks and connect with people who can help get them done.',
+    question: 'Can businesses use TaskBridge?',
+    answer: 'Yes. Businesses and organizations can use TaskBridge to create tasks and connect with people who can help get them done.',
   },
 ]
 
@@ -175,7 +175,7 @@ function WaitlistPage() {
                 Get <span className="hero-title-accent">rewarded.</span>
               </h1>
               <p ref={heroDescRef} className="hero-description reveal reveal-up reveal-delay-2">
-                Taskora is a marketplace connecting Taskers who complete tasks and earn rewards
+                TaskBridge is a marketplace connecting Taskers who complete tasks and earn rewards
                 with Advertisers who need real work done. Join the waitlist to be first in line.
               </p>
               <div ref={heroActionsRef} className="hero-actions reveal reveal-up reveal-delay-3">
@@ -193,7 +193,7 @@ function WaitlistPage() {
                 <img
                   className="hero-image"
                   src="/dashboard_mockup.png"
-                  alt="Taskora app dashboard mockup"
+                  alt="TaskBridge app dashboard mockup"
                 />
               </div>
             </div>
@@ -227,7 +227,7 @@ function WaitlistPage() {
             <div ref={howHeadingRef} className="section-heading reveal reveal-up">
               <h2>A simple process for real rewards</h2>
               <p>
-                Getting started with Taskora is designed to be effortless. No complex
+                Getting started with TaskBridge is designed to be effortless. No complex
                 onboarding, just clarity.
               </p>
             </div>
@@ -299,7 +299,7 @@ function WaitlistPage() {
             <div ref={twoSidedHeadingRef} className="section-heading reveal reveal-up">
               <h2>One platform. Two ways to get things done.</h2>
               <p>
-                Whether you're looking for opportunities or need something done, Taskora
+                Whether you're looking for opportunities or need something done, TaskBridge
                 connects the right people to the right tasks.
               </p>
             </div>
@@ -361,7 +361,7 @@ function WaitlistPage() {
               <h2>Turn things you need done into simple tasks.</h2>
               <p>
                 From getting local help to collecting information or completing digital work,
-                Taskora helps you turn real-world needs into clear, actionable tasks.
+                TaskBridge helps you turn real-world needs into clear, actionable tasks.
               </p>
             </div>
 
@@ -418,7 +418,7 @@ function WaitlistPage() {
         <section className="categories">
           <div className="section-container">
             <div ref={categoriesHeadingRef} className="section-heading reveal reveal-up">
-              <h2>What can you get done with Taskora?</h2>
+              <h2>What can you get done with TaskBridge?</h2>
               <p>A few examples of the kinds of tasks Advertisers can create.</p>
             </div>
 
@@ -514,7 +514,7 @@ function WaitlistPage() {
           <div className="section-container">
             <div ref={trustHeadingRef} className="section-heading reveal reveal-up">
               <h2>Built around clear expectations.</h2>
-              <p>Taskora is designed to make interactions between Taskers and Advertisers straightforward.</p>
+              <p>TaskBridge is designed to make interactions between Taskers and Advertisers straightforward.</p>
             </div>
 
             <div className="trust-grid">
@@ -554,7 +554,7 @@ function WaitlistPage() {
         <section className="why-taskora" id="why-taskora">
           <div className="section-container">
             <div ref={whyHeadingRef} className="section-heading reveal reveal-up">
-              <h2>Why choose Taskora?</h2>
+              <h2>Why choose TaskBridge?</h2>
               <p>
                 We're building the most reliable platform for the next generation of flexible
                 earning.
@@ -600,7 +600,7 @@ function WaitlistPage() {
             <div ref={previewCopyRef} className="preview-copy reveal reveal-left">
               <h2>Designed for clarity and speed.</h2>
               <p>
-                Take a look at how we've reimagined task management. The Taskora platform is
+                Take a look at how we've reimagined task management. The TaskorBridge platform is
                 designed to stay out of your way so you can focus on completion.
               </p>
               <ul className="preview-list">
@@ -656,7 +656,7 @@ function WaitlistPage() {
             <h2>Ready to get things done?</h2>
             <p>
               Whether you're ready to earn by completing tasks or you have something that needs
-              to get done, Taskora is coming soon.
+              to get done, TaskBridge is coming soon.
             </p>
 
             <div className="final-cta-actions">

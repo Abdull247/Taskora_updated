@@ -33,7 +33,7 @@ function Navbar() {
         <nav className="navbar-container">
           <Link to="/" className="logo">
             <img src="/logo.png" alt="Taskora logo" className="logo-icon" />
-            <span>Taskora</span>
+            <span>TaskBridge</span>
           </Link>
 
           <div className="nav-menu-desktop">
