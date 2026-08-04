@@ -153,7 +153,7 @@ function SignupPage() {
         <div className="signup-container">
           <div ref={headingRef} className="signup-heading reveal reveal-up">
             <h1>Join the Waitlist</h1>
-            <p>Create your account to get early access to Taskora.</p>
+            <p>Create your account to get early access to TaskBridge.</p>
           </div>
 
           <form

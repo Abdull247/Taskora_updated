@@ -5,7 +5,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-brand">
-          <span className="footer-logo">Taskora</span>
+          <span className="footer-logo">TaskBridge</span>
         </div>
 
         <div className="footer-links">
@@ -15,7 +15,7 @@ function Footer() {
           <a href="#">Careers</a>
         </div>
 
-        <p className="footer-copy">© 2026 Taskora Inc. All rights reserved.</p>
+        <p className="footer-copy">© 2026 TaskBridge Inc. All rights reserved.</p>
       </div>
     </footer>
   )
