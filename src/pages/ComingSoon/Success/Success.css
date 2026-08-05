@@ -1,0 +1,285 @@
+.success-page {
+      min-height: 100vh;
+        background: #ffffff;
+        }
+
+        .success-container {
+          max-width: 720px;
+            margin: 0 auto;
+              padding: 120px 24px 80px;
+                display: flex;
+                  flex-direction: column;
+                    align-items: center;
+                    }
+
+                    /* ---------------------- */
+                    /* Success Animation */
+                    /* ---------------------- */
+
+                    .success-animation {
+                      position: relative;
+                        margin-bottom: 36px;
+                        }
+
+                        .success-circle {
+                          width: 120px;
+                            height: 120px;
+                              border-radius: 50%;
+                                background: #EEF4FF;
+                                  border: 12px solid #D9E8FF;
+
+                                    display: flex;
+                                      justify-content: center;
+                                        align-items: center;
+
+                                          animation: pop .45s ease;
+                                          }
+
+                                          .check-icon {
+                                            font-size: 54px;
+                                              color: #2563EB;
+                                              }
+
+                                              .spark {
+                                                position: absolute;
+                                                  width: 10px;
+                                                    height: 10px;
+                                                      border-radius: 50%;
+                                                        background: #2563EB;
+
+                                                          animation: sparkle 2s infinite ease-in-out;
+                                                          }
+
+                                                          .spark-1 {
+                                                            top: 0;
+                                                              left: 50%;
+                                                              }
+
+                                                              .spark-2 {
+                                                                right: -5px;
+                                                                  top: 45%;
+                                                                  }
+
+                                                                  .spark-3 {
+                                                                    bottom: 10px;
+                                                                      left: 18%;
+                                                                      }
+
+                                                                      .spark-4 {
+                                                                        top: 28%;
+                                                                          left: -8px;
+                                                                          }
+
+                                                                          /* ---------------------- */
+                                                                          /* Headings */
+                                                                          /* ---------------------- */
+
+                                                                          .headings {
+                                                                            text-align: center;
+                                                                              margin-bottom: 42px;
+                                                                              }
+
+                                                                              .headings h1 {
+                                                                                font-size: 3rem;
+                                                                                  font-weight: 800;
+                                                                                    color: #111827;
+                                                                                      margin-bottom: 16px;
+                                                                                      }
+
+                                                                                      .blue-txt {
+                                                                                        color: #2563EB;
+                                                                                        }
+
+                                                                                        .success-description {
+                                                                                          font-size: 1.1rem;
+                                                                                            color: #6B7280;
+                                                                                              line-height: 1.8;
+                                                                                              }
+
+                                                                                              /* ---------------------- */
+                                                                                              /* Telegram Card */
+                                                                                              /* ---------------------- */
+
+                                                                                              .telegram-card {
+                                                                                                width: 100%;
+                                                                                                  background: #F8FAFF;
+                                                                                                    border: 1px solid #E5E7EB;
+                                                                                                      border-radius: 20px;
+                                                                                                        padding: 30px;
+                                                                                                          margin-bottom: 48px;
+                                                                                                          }
+
+                                                                                                          .telegram-header {
+                                                                                                            display: flex;
+                                                                                                              gap: 18px;
+                                                                                                                align-items: center;
+                                                                                                                  margin-bottom: 26px;
+                                                                                                                  }
+
+                                                                                                                  .icon-circle {
+                                                                                                                    width: 64px;
+                                                                                                                      height: 64px;
+                                                                                                                        border-radius: 50%;
+                                                                                                                          background: #EEF4FF;
+
+                                                                                                                            display: flex;
+                                                                                                                              justify-content: center;
+                                                                                                                                align-items: center;
+                                                                                                                                }
+
+                                                                                                                                .icon-circle svg {
+                                                                                                                                  font-size: 30px;
+                                                                                                                                    color: #2563EB;
+                                                                                                                                    }
+
+                                                                                                                                    .telegram-content h3 {
+                                                                                                                                      font-size: 1.5rem;
+                                                                                                                                        margin-bottom: 8px;
+                                                                                                                                          color: #111827;
+                                                                                                                                          }
+
+                                                                                                                                          .telegram-content p {
+                                                                                                                                            color: #6B7280;
+                                                                                                                                              line-height: 1.7;
+                                                                                                                                              }
+
+                                                                                                                                              .telegram-button {
+                                                                                                                                                width: 100%;
+                                                                                                                                                  border: none;
+                                                                                                                                                    background: #2563EB;
+                                                                                                                                                      color: white;
+
+                                                                                                                                                        padding: 18px;
+                                                                                                                                                          border-radius: 14px;
+
+                                                                                                                                                            display: flex;
+                                                                                                                                                              justify-content: center;
+                                                                                                                                                                align-items: center;
+                                                                                                                                                                  gap: 12px;
+
+                                                                                                                                                                    font-size: 1rem;
+                                                                                                                                                                      font-weight: 600;
+
+                                                                                                                                                                        cursor: pointer;
+
+                                                                                                                                                                          transition: .25s;
+                                                                                                                                                                          }
+
+                                                                                                                                                                          .telegram-button:hover {
+                                                                                                                                                                            background: #1D4ED8;
+                                                                                                                                                                            }
+
+                                                                                                                                                                            .telegram-icon {
+                                                                                                                                                                              font-size: 22px;
+                                                                                                                                                                              }
+
+                                                                                                                                                                              /* ---------------------- */
+                                                                                                                                                                              /* Steps */
+                                                                                                                                                                              /* ---------------------- */
+
+                                                                                                                                                                              .steps {
+                                                                                                                                                                                width: 100%;
+                                                                                                                                                                                  margin-bottom: 42px;
+                                                                                                                                                                                  }
+
+                                                                                                                                                                                  .steps h1 {
+                                                                                                                                                                                    margin-bottom: 28px;
+                                                                                                                                                                                      font-size: 2rem;
+                                                                                                                                                                                        color: #111827;
+                                                                                                                                                                                        }
+
+                                                                                                                                                                                        .step {
+                                                                                                                                                                                          display: flex;
+                                                                                                                                                                                            gap: 18px;
+                                                                                                                                                                                              margin-bottom: 30px;
+                                                                                                                                                                                              }
+
+                                                                                                                                                                                              .step-icon {
+                                                                                                                                                                                                width: 54px;
+                                                                                                                                                                                                  height: 54px;
+                                                                                                                                                                                                    background: #EEF4FF;
+                                                                                                                                                                                                      border-radius: 14px;
+
+                                                                                                                                                                                                        display: flex;
+                                                                                                                                                                                                          justify-content: center;
+                                                                                                                                                                                                            align-items: center;
+
+                                                                                                                                                                                                              flex-shrink: 0;
+                                                                                                                                                                                                              }
+
+                                                                                                                                                                                                              .step-icon svg {
+                                                                                                                                                                                                                font-size: 24px;
+                                                                                                                                                                                                                  color: #2563EB;
+                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                  .step-content h4 {
+                                                                                                                                                                                                                    font-size: 1.1rem;
+                                                                                                                                                                                                                      margin-bottom: 8px;
+                                                                                                                                                                                                                        color: #111827;
+                                                                                                                                                                                                                        }
+
+                                                                                                                                                                                                                        .step-content p {
+                                                                                                                                                                                                                          color: #6B7280;
+                                                                                                                                                                                                                            line-height: 1.7;
+                                                                                                                                                                                                                            }
+
+                                                                                                                                                                                                                            /* ---------------------- */
+                                                                                                                                                                                                                            /* Back Home */
+                                                                                                                                                                                                                            /* ---------------------- */
+
+                                                                                                                                                                                                                            .back-home {
+                                                                                                                                                                                                                              width: 100%;
+                                                                                                                                                                                                                                border: none;
+                                                                                                                                                                                                                                  background: #EEF4FF;
+                                                                                                                                                                                                                                    color: #2563EB;
+
+                                                                                                                                                                                                                                      padding: 18px;
+                                                                                                                                                                                                                                        border-radius: 14px;
+
+                                                                                                                                                                                                                                          font-size: 1rem;
+                                                                                                                                                                                                                                            font-weight: 700;
+
+                                                                                                                                                                                                                                              cursor: pointer;
+
+                                                                                                                                                                                                                                                transition: .25s;
+                                                                                                                                                                                                                                                }
+
+                                                                                                                                                                                                                                                .back-home:hover {
+                                                                                                                                                                                                                                                  background: #DCEAFF;
+                                                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                                                  /* ---------------------- */
+                                                                                                                                                                                                                                                  /* Animations */
+                                                                                                                                                                                                                                                  /* ---------------------- */
+
+                                                                                                                                                                                                                                                  @keyframes pop {
+
+                                                                                                                                                                                                                                                    0% {
+                                                                                                                                                                                                                                                        transform: scale(.3);
+                                                                                                                                                                                                                                                            opacity: 0;
+                                                                                                                                                                                                                                                              }
+
+                                                                                                                                                                                                                                                                80% {
+                                                                                                                                                                                                                                                                    transform: scale(1.08);
+                                                                                                                                                                                                                                                                      }
+
+                                                                                                                                                                                                                                                                        100% {
+                                                                                                                                                                                                                                                                            transform: scale(1);
+                                                                                                                                                                                                                                                                                opacity: 1;
+                                                                                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                                                                                  @keyframes sparkle {
+
+                                                                                                                                                                                                                                                                                    0%,100%{
+                                                                                                                                                                                                                                                                                        transform: scale(1);
+                                                                                                                                                                                                                                                                                            opacity: .4;
+                                                                                                                                                                                                                                                                                              }
+
+                                                                                                                                                                                                                                                                                                50%{
+                                                                                                                                                                                                                                                                                                    transform: scale(1.6);
+                                                                                                                                                                                                                                                                                                        opacity: 1;
+                                                                                                                                                                                                                                                                                                          }
+
+                                                                                                                                                                                                                                                                                                          }
