@@ -17,8 +17,8 @@ function Success(){
 
         const telegramLink =
             role === "advertiser"
-                  ? "https://t.me/YourAdvertiserGroup"
-                        : "https://t.me/YourTaskerGroup";
+                  ? "https://t.me/+0DGVvSE34I8yMjY0"
+                        : "https://t.me/+w8nLzFV5n5JhZjc0";
     const steps = [
           {
             icon: HiOutlineEnvelope,
