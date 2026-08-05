@@ -6,6 +6,7 @@ import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
+import Success from './pages/ComingSoon/Success/Success';
 import './App.css'
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
         <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/ComingSoon/Success" element={<Success />} />
 
         <Route
           path="/login"

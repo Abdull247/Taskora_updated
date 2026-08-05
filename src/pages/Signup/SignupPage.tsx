@@ -127,9 +127,12 @@ function SignupPage() {
       toast.success(`You're on the waitlist, ${user.first_name}! Check your email for confirmation.`)
 
       setTimeout(() => {
-        navigate('/', { state: { waitlistJoined: true } })
-      }, 1800)
-    } catch (err) {
+        navigate('/success', { state: { 
+          role: form.role,
+        }
+      })
+      }, 1800);
+    }catch (err) {
       if (err instanceof ApiRequestError) {
         if (err.status === 409) {
           toast.error('That email, username, or phone number is already registered.')
