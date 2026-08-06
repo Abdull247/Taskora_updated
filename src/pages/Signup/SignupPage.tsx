@@ -127,7 +127,9 @@ function SignupPage() {
       toast.success(`You're on the waitlist, ${user.first_name}! Check your email for confirmation.`)
 
       setTimeout(() => {
-        navigate('/', { state: { waitlistJoined: true } })
+        navigate('/waitlist/success', {
+          state: { waitlistJoined: true, firstName: user.first_name },
+        })
       }, 1800)
     } catch (err) {
       if (err instanceof ApiRequestError) {

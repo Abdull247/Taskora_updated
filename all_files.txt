@@ -1,11 +1,12 @@
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.css ===
 /* App-level shell styles */
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ===
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import SignupPage from './pages/Signup/SignupPage'
+import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
+import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 import './App.css'
@@ -28,31 +29,22 @@ function App() {
             maxWidth: 'min(420px, calc(100vw - 32px))',
           },
           success: {
-            iconTheme: {
-              primary: '#16A34A',
-              secondary: '#ffffff',
-            },
-            style: {
-              border: '1px solid #bbf7d0',
-            },
+            iconTheme: { primary: '#16A34A', secondary: '#ffffff' },
+            style: { border: '1px solid #bbf7d0' },
           },
           error: {
-            iconTheme: {
-              primary: '#ba1a1a',
-              secondary: '#ffffff',
-            },
-            style: {
-              border: '1px solid #fecaca',
-            },
+            iconTheme: { primary: '#ba1a1a', secondary: '#ffffff' },
+            style: { border: '1px solid #fecaca' },
           },
         }}
       />
       <Routes>
         <Route path="/" element={<WaitlistPage />} />
         <Route path="/waitlist" element={<WaitlistPage />} />
+        <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
+        <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* Known but not-yet-public routes */}
         <Route
           path="/login"
           element={
@@ -72,7 +64,6 @@ function App() {
           }
         />
 
-        {/* Catch-all: genuinely unknown routes */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
@@ -80,8 +71,7 @@ function App() {
 }
 
 export default App
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.css ===
 .navbar {
   position: sticky;
   top: 0;
@@ -96,8 +86,9 @@ export default App
   max-width: var(--container-max);
   margin: 0 auto;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  height: 64px;
+  height: 55px;
   padding: 0 var(--margin-mobile);
 }
 
@@ -110,16 +101,167 @@ export default App
   font-weight: 700;
   color: var(--color-primary);
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logo-icon {
-  width: 24px;
-  height: 24px;
+  width: 35px;
+  height: 35px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-@media (min-width: 768px) {
+.nav-menu-desktop {
+  display: none;
+}
+
+.nav-menu-desktop a {
+  color: var(--color-slate-text);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-menu-desktop a:hover {
+  color: var(--color-primary);
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: var(--color-on-surface);
+  line-height: 1;
+  display: flex;
+  padding: 4px;
+}
+
+/* ============ Overlay ============ */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 90;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+}
+
+.nav-overlay-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============ Drawer ============ */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 78vw;
+  max-width: 340px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -8px 0 32px rgba(15, 23, 42, 0.12);
+}
+
+.nav-drawer-open {
+  transform: translateX(0);
+}
+
+.nav-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px var(--margin-mobile);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.nav-drawer-close {
+  background: var(--color-surface-container-low);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--color-on-surface);
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-drawer-close:hover {
+  background: var(--color-border-subtle);
+}
+
+.nav-drawer-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.nav-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 12px;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.nav-drawer-link:hover {
+  background: var(--color-brand-blue-tint);
+}
+
+.nav-drawer-link:active {
+  transform: scale(0.98);
+}
+
+.nav-drawer-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.nav-drawer-link-text {
+  flex: 1;
+}
+
+.nav-drawer-link-arrow {
+  font-size: 16px;
+  color: #cbd5e1;
+  flex-shrink: 0;
+}
+
+@media (min-width: 992px) {
   .navbar-container {
     padding: 0 var(--margin-desktop);
     height: 72px;
@@ -128,28 +270,140 @@ export default App
   .logo {
     font-size: 22px;
   }
-}
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.tsx ###
+  .hamburger {
+    display: none;
+  }
+
+  .nav-menu-desktop {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .nav-overlay,
+  .nav-drawer {
+    display: none;
+  }
+}
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.tsx ===
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import {
+  HiBars3,
+  HiXMark,
+  HiOutlineHome,
+  HiOutlineQuestionMarkCircle,
+  HiOutlineMagnifyingGlass,
+  HiOutlineMegaphone,
+  HiChevronRight,
+} from 'react-icons/hi2'
 import './Navbar.css'
 
 function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
+
+  const closeMenu = () => setMenuOpen(false)
+
   return (
-    <header className="navbar">
-      <nav className="navbar-container">
-        <Link to="/" className="logo">
-          <img src="/logo.png" alt="Taskora logo" className="logo-icon" />
-          <span>Taskora</span>
-        </Link>
-      </nav>
-    </header>
+    <>
+      <header className="navbar">
+        <nav className="navbar-container">
+          <Link to="/" className="logo">
+            <img src="/logo.png" alt="Taskora logo" className="logo-icon" />
+            <span>TaskBridge</span>
+          </Link>
+
+          <div className="nav-menu-desktop">
+            <a href="/waitlist#how-it-works">How It Works</a>
+            <Link to="/waitlist/for-taskers">For Taskers</Link>
+            <Link to="/waitlist/for-advertisers">For Advertisers</Link>
+            <a href="/waitlist#faq">FAQ</a>
+          </div>
+
+          <button
+            className="hamburger"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <HiBars3 />
+          </button>
+        </nav>
+      </header>
+
+      {/* Overlay */}
+      <div
+        className={`nav-overlay ${menuOpen ? 'nav-overlay-open' : ''}`}
+        onClick={closeMenu}
+      />
+
+      {/* Slide-in drawer */}
+      <aside className={`nav-drawer ${menuOpen ? 'nav-drawer-open' : ''}`}>
+        <div className="nav-drawer-header">
+          <Link to="/" className="logo" onClick={closeMenu}>
+            <img src="/logo.png" alt="Taskora logo" className="logo-icon" />
+            <span>Taskora</span>
+          </Link>
+          <button
+            className="nav-drawer-close"
+            onClick={closeMenu}
+            aria-label="Close menu"
+          >
+            <HiXMark />
+          </button>
+        </div>
+
+        <nav className="nav-drawer-links">
+          <a href="/waitlist#how-it-works" onClick={closeMenu} className="nav-drawer-link">
+            <span className="nav-drawer-link-icon">
+              <HiOutlineHome />
+            </span>
+            <span className="nav-drawer-link-text">How It Works</span>
+            <HiChevronRight className="nav-drawer-link-arrow" />
+          </a>
+
+          <Link to="/waitlist/for-taskers" onClick={closeMenu} className="nav-drawer-link">
+            <span className="nav-drawer-link-icon">
+              <HiOutlineMagnifyingGlass />
+            </span>
+            <span className="nav-drawer-link-text">For Taskers</span>
+            <HiChevronRight className="nav-drawer-link-arrow" />
+          </Link>
+
+          <Link to="/waitlist/for-advertisers" onClick={closeMenu} className="nav-drawer-link">
+            <span className="nav-drawer-link-icon">
+              <HiOutlineMegaphone />
+            </span>
+            <span className="nav-drawer-link-text">For Advertisers</span>
+            <HiChevronRight className="nav-drawer-link-arrow" />
+          </Link>
+
+          <a href="/waitlist#faq" onClick={closeMenu} className="nav-drawer-link">
+            <span className="nav-drawer-link-icon">
+              <HiOutlineQuestionMarkCircle />
+            </span>
+            <span className="nav-drawer-link-text">FAQ</span>
+            <HiChevronRight className="nav-drawer-link-arrow" />
+          </a>
+        </nav>
+      </aside>
+    </>
   )
 }
 
 export default Navbar
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.tsx ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.tsx ===
 import './Footer.css'
 
 function Footer() {
@@ -157,7 +411,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-brand">
-          <span className="footer-logo">Taskora</span>
+          <span className="footer-logo">TaskBridge</span>
         </div>
 
         <div className="footer-links">
@@ -167,15 +421,14 @@ function Footer() {
           <a href="#">Careers</a>
         </div>
 
-        <p className="footer-copy">© 2026 Taskora Inc. All rights reserved.</p>
+        <p className="footer-copy">© 2026 TaskBridge Inc. All rights reserved.</p>
       </div>
     </footer>
   )
 }
 
 export default Footer
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.css ===
 .footer {
   background: var(--color-surface-container-low);
   border-top: 1px solid var(--color-border-subtle);
@@ -236,49 +489,159 @@ export default Footer
     text-align: left;
   }
 }
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.tsx ===
+import { useState } from 'react'
+import { HiChevronDown } from 'react-icons/hi2'
+import './FaqAccordion.css'
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ###
-/* ===== GLOBAL RESET ===== */
+export interface FaqItem {
+  question: string
+  answer: string
+}
 
+interface FaqAccordionProps {
+  items: FaqItem[]
+  groupLabel?: string
+}
+
+function FaqAccordion({ items, groupLabel }: FaqAccordionProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  return (
+    <div className="faq-group">
+      {groupLabel && <h3 className="faq-group-label">{groupLabel}</h3>}
+      <div className="faq-list">
+        {items.map((item, index) => {
+          const isOpen = openIndex === index
+          return (
+            <div key={item.question} className={`faq-item ${isOpen ? 'faq-item-open' : ''}`}>
+              <button
+                className="faq-question"
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                aria-expanded={isOpen}
+              >
+                <span>{item.question}</span>
+                <HiChevronDown className="faq-icon" />
+              </button>
+              <div className="faq-answer-wrap">
+                <p className="faq-answer">{item.answer}</p>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export default FaqAccordion
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.css ===
+.faq-group {
+  margin-bottom: 32px;
+}
+
+.faq-group:last-child {
+  margin-bottom: 0;
+}
+
+.faq-group-label {
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.faq-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--color-on-surface-variant);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item-open .faq-icon {
+  transform: rotate(180deg);
+  color: var(--color-primary);
+}
+
+.faq-answer-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item-open .faq-answer-wrap {
+  grid-template-rows: 1fr;
+}
+
+.faq-answer {
+  overflow: hidden;
+  min-height: 0;
+  margin: 0;
+  padding: 0 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-on-surface-variant);
+}
+
+.faq-item-open .faq-answer {
+  padding: 0 18px 18px;
+}
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ===
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-}
-
+html,
 body {
   margin: 0;
   padding: 0;
-  min-height: 100%;
   width: 100%;
-  background: var(--color-background);
-  color: var(--color-on-surface);
-  font-family: var(--font-display);
-  overflow-x: hidden;
-}
-
-/* VERY IMPORTANT: force root to fill viewport */
-#root {
-  min-height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Prevent horizontal scroll everywhere */
-body,
-#root {
   max-width: 100%;
   overflow-x: hidden;
+  background: #faf8ff;
 }
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/main.tsx ###
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+}
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/main.tsx ===
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -295,8 +658,7 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/styles/tokens.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/styles/tokens.css ===
 :root {
   /* Colors */
   --color-primary: #0053d4;
@@ -342,8 +704,13 @@ createRoot(document.getElementById('root')!).render(
   box-sizing: border-box;
 }
 
+html,
 body {
   margin: 0;
+  padding: 0;
+  background: #faf8ff;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
 }
 
@@ -379,53 +746,42 @@ a, button {
   transform: translateY(28px);
 }
 
-/* Rise up + slight scale (for cards/badges) */
+/* Rise up + slight scale */
 .reveal-up-scale {
   transform: translateY(24px) scale(0.96);
 }
 
-/* Slide in from left */
+/* Slide in from left — SAFE: clipped at section level */
 .reveal-left {
-  transform: translateX(-32px);
+  transform: translateX(-24px);
 }
 
-/* Slide in from right */
+/* Slide in from right — SAFE: clipped at section level */
 .reveal-right {
-  transform: translateX(32px);
+  transform: translateX(24px);
 }
 
-/* Soft fade with blur (for hero/section intros) */
+/* Soft fade with blur */
 .reveal-fade-blur {
   transform: translateY(12px);
   filter: blur(6px);
 }
 
-/* Scale in (for images/preview panels) */
+/* Scale in */
 .reveal-scale {
-  transform: scale(0.92);
+  transform: scale(0.94);
 }
 
-/* Stagger helper delays, apply alongside reveal-* classes */
+/* Stagger delays */
 .reveal-delay-1 { transition-delay: 0.08s; }
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 .reveal-delay-4 { transition-delay: 0.32s; }
-
-/* Ensure full-page background consistency */
-html,
-body {
-  background: var(--color-background);
-}
-
-/* Prevent layout shift when scrollbar appears */
-html {
-  scrollbar-gutter: stable;
-}
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.tsx ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.tsx ===
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
+import FaqAccordion from '../../components/FaqAccordion/FaqAccordion'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import {
   HiOutlineMagnifyingGlass,
@@ -437,8 +793,89 @@ import {
   HiOutlineShieldCheck,
   HiOutlineAdjustmentsHorizontal,
   HiOutlineChartBar,
+  HiOutlineClipboardDocumentList,
+  HiOutlineMegaphone,
+  HiOutlineMapPin,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineComputerDesktop,
+  HiOutlineCamera,
+  HiOutlineClipboardDocumentCheck,
+  HiOutlineTruck,
+  HiOutlineUserCircle,
+  HiOutlineBuildingOffice2,
+  HiOutlineBuildingOffice,
+  HiOutlineDocumentText,
+  HiOutlineCurrencyDollar,
+  HiOutlineEye,
+  HiOutlineIdentification,
 } from 'react-icons/hi2'
 import './WaitlistPage.css'
+
+const taskerFaqs = [
+  {
+    question: 'What is TaskBridge?',
+    answer:
+      'TaskBridge is a platform where people can discover tasks, complete useful work and earn rewards.',
+  },
+  {
+    question: 'How do I become a Tasker?',
+    answer:
+      "Join the waitlist and create your account when TaskBridge becomes available. You'll be able to explore available tasks and choose opportunities that fit you.",
+  },
+  {
+    question: 'How do Taskers earn rewards?',
+    answer:
+      'Taskers earn the reward associated with eligible tasks they successfully complete and have approved.',
+  },
+  {
+    question: 'Can I choose which tasks I complete?',
+    answer:
+      'TaskBridge is designed to let Taskers discover opportunities and choose tasks that fit their interests, skills and availability.',
+  },
+]
+
+const advertiserFaqs = [
+  {
+    question: 'What is an Advertiser?',
+    answer: 'An Advertiser is someone who creates a task on TaskBridge because they need something done by another person.',
+  },
+  {
+    question: 'What can I post as an Advertiser?',
+    answer:
+      'Advertisers can create tasks for a variety of digital, local, research, feedback, assistance and other practical needs, depending on what TaskBridge supports at launch.',
+  },
+  {
+    question: 'How do Advertisers create a task?',
+    answer:
+      'Advertisers provide the task details, instructions, requirements and reward so Taskers know exactly what needs to be done.',
+  },
+  {
+    question: 'Do Advertisers choose who completes their task?',
+    answer:
+      'TaskBridge can help Advertisers reach relevant Taskers. The exact matching and selection experience will depend on the task and platform features available at launch.',
+  },
+]
+
+const generalFaqs = [
+  {
+    question: 'When is TaskBridge launching?',
+    answer: 'TaskBridge is currently preparing for launch. Join the waitlist to receive important launch updates and early-access information.',
+  },
+  {
+    question: 'Is TaskBridge free to join?',
+    answer:
+      'Joining the waitlist is free. Pricing and fees for using specific TaskBridge features will be communicated before launch.',
+  },
+  {
+    question: 'Where will Taskora be available?',
+    answer:
+      'TaskBridge is being built with accessibility in mind, with availability and supported regions expanding over time.',
+  },
+  {
+    question: 'Can businesses use TaskBridge?',
+    answer: 'Yes. Businesses and organizations can use TaskBridge to create tasks and connect with people who can help get them done.',
+  },
+]
 
 function WaitlistPage() {
   const heroBadgeRef = useScrollReveal<HTMLSpanElement>({ threshold: 0 })
@@ -453,6 +890,38 @@ function WaitlistPage() {
   const step1Ref = useScrollReveal<HTMLDivElement>()
   const step2Ref = useScrollReveal<HTMLDivElement>()
   const step3Ref = useScrollReveal<HTMLDivElement>()
+  const step4Ref= useScrollReveal<HTMLDivElement>()
+  const step5Ref= useScrollReveal<HTMLDivElement>()
+
+  const twoSidedHeadingRef = useScrollReveal<HTMLDivElement>()
+  const taskerCardRef = useScrollReveal<HTMLDivElement>()
+  const advertiserCardRef = useScrollReveal<HTMLDivElement>()
+
+  const advertiserFlowHeadingRef = useScrollReveal<HTMLDivElement>()
+  const advStep1Ref = useScrollReveal<HTMLDivElement>()
+  const advStep2Ref = useScrollReveal<HTMLDivElement>()
+  const advStep3Ref = useScrollReveal<HTMLDivElement>()
+  const advStep4Ref = useScrollReveal<HTMLDivElement>()
+
+  const categoriesHeadingRef = useScrollReveal<HTMLDivElement>()
+  const cat1Ref = useScrollReveal<HTMLDivElement>()
+  const cat2Ref = useScrollReveal<HTMLDivElement>()
+  const cat3Ref = useScrollReveal<HTMLDivElement>()
+  const cat4Ref = useScrollReveal<HTMLDivElement>()
+  const cat5Ref = useScrollReveal<HTMLDivElement>()
+  const cat6Ref = useScrollReveal<HTMLDivElement>()
+
+  const whoHeadingRef = useScrollReveal<HTMLDivElement>()
+  const who1Ref = useScrollReveal<HTMLDivElement>()
+  const who2Ref = useScrollReveal<HTMLDivElement>()
+  const who3Ref = useScrollReveal<HTMLDivElement>()
+  const who4Ref = useScrollReveal<HTMLDivElement>()
+
+  const trustHeadingRef = useScrollReveal<HTMLDivElement>()
+  const trust1Ref = useScrollReveal<HTMLDivElement>()
+  const trust2Ref = useScrollReveal<HTMLDivElement>()
+  const trust3Ref = useScrollReveal<HTMLDivElement>()
+  const trust4Ref = useScrollReveal<HTMLDivElement>()
 
   const whyHeadingRef = useScrollReveal<HTMLDivElement>()
   const feature1Ref = useScrollReveal<HTMLDivElement>()
@@ -462,6 +931,9 @@ function WaitlistPage() {
 
   const previewCopyRef = useScrollReveal<HTMLDivElement>()
   const previewImageRef = useScrollReveal<HTMLDivElement>()
+
+  const faqHeadingRef = useScrollReveal<HTMLDivElement>()
+  const faqBodyRef = useScrollReveal<HTMLDivElement>()
 
   const ctaRef = useScrollReveal<HTMLDivElement>()
 
@@ -475,26 +947,19 @@ function WaitlistPage() {
           <div className="hero-container">
             <div className="hero-copy">
               <span ref={heroBadgeRef} className="hero-badge reveal reveal-up-scale">
-                Coming Early 2026
+                Launching Soon
               </span>
               <h1 ref={heroTitleRef} className="hero-title reveal reveal-fade-blur reveal-delay-1">
                 Get things done.
                 <br />
                 Get <span className="hero-title-accent">rewarded.</span>
               </h1>
-              <p
-                ref={heroDescRef}
-                className="hero-description reveal reveal-up reveal-delay-2"
-              >
-                Taskora connects people with useful tasks and opportunities to earn rewards.
-                Join the waitlist and be among the first to experience a simpler way to get
-                things done.
+              <p ref={heroDescRef} className="hero-description reveal reveal-up reveal-delay-2">
+                TaskBridge is a marketplace connecting Taskers who complete tasks and earn rewards
+                with Advertisers who need real work done. Join the waitlist to be first in line.
               </p>
-              <div
-                ref={heroActionsRef}
-                className="hero-actions reveal reveal-up reveal-delay-3"
-              >
-                <Link to="/signup" className="btn btn-primary btn-block">
+              <div ref={heroActionsRef} className="hero-actions reveal reveal-up reveal-delay-3">
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
                   Join the Waitlist
                 </Link>
                 <a href="#how-it-works" className="btn btn-tint btn-block">
@@ -507,8 +972,8 @@ function WaitlistPage() {
               <div className="hero-image-frame">
                 <img
                   className="hero-image"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaEDNUPnWUKJ71bQ9p2Hej_hk8BdQX43d1BsiFDP5WD3mgNRyR3uX-Du-KqlXMQst27fbMuURNbuNLm34bUvX89XIOJuJWz2hpSiikeI4XNt3FAxjjZKxE-461LPSuTFaRzh9POzJ7R7m1NQuMj416menB7zyMPgQZDHI_8AUXkoVcaHcwRMc_ZcmwiOyBTW4omN2-YcvLKHu0mUu3n0x4MtZNuaeChDGaM6I7VmzvUQ11zMaO8uWi"
-                  alt="Taskora app dashboard mockup"
+                  src="/dashboard_mockup.png"
+                  alt="TaskBridge app dashboard mockup"
                 />
               </div>
             </div>
@@ -520,9 +985,9 @@ function WaitlistPage() {
           <div ref={momentumRef} className="momentum-container reveal reveal-up">
             <div className="momentum-avatars-row">
               <span className="momentum-avatars">
-                <div className="avatar avatar-1"></div>
-                <div className="avatar avatar-2"></div>
-                <div className="avatar avatar-3"></div>
+                <img src="/momentum_1.png" alt="User 1" className="avatar avatar-1" />
+                <img src="/momentum_2.png" alt="User 2" className="avatar avatar-2" />
+                <img src="/momentum_3.png" alt="User 3" className="avatar avatar-3" />
               </span>
               <p className="momentum-count">1,284 people are already waiting</p>
             </div>
@@ -542,7 +1007,7 @@ function WaitlistPage() {
             <div ref={howHeadingRef} className="section-heading reveal reveal-up">
               <h2>A simple process for real rewards</h2>
               <p>
-                Getting started with Taskora is designed to be effortless. No complex
+                Getting started with TaskBridge is designed to be effortless. No complex
                 onboarding, just clarity.
               </p>
             </div>
@@ -550,38 +1015,316 @@ function WaitlistPage() {
             <div className="steps-stack">
               <div ref={step1Ref} className="step-card reveal reveal-left">
                 <div className="step-icon">
-                  <HiOutlineMagnifyingGlass />
+                  <HiOutlineClipboardDocumentList />
                 </div>
                 <span className="step-label">STEP 01</span>
-                <h3>Discover</h3>
+                <h3>post a Task</h3>
                 <p>
-                  Find tasks that match what you can do. From simple digital checks to local
-                  physical assistance.
+                  Advertisers create a task in minutes by describing what they need done,adding clear,
+                  instructions and defining the requirements for successful completion  
                 </p>
               </div>
 
               <div ref={step2Ref} className="step-card reveal reveal-up reveal-delay-1">
                 <div className="step-icon">
-                  <HiOutlineCheckCircle />
+                  <HiOutlineBanknotes />
                 </div>
                 <span className="step-label">STEP 02</span>
+                <h3>Set Your budget</h3>
+                <p>
+                  Advertisers choose how much to pay per completed task,set the number of participants
+                  they need,fund their their campaigns to make it live
+                </p>
+              </div>
+
+              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <span className="step-label">STEP 03</span>
+                <h3>Discover</h3>
+                <p>
+                  Find tasks that match what you can do From simple digital checks to local physical assistance
+                  . 
+                </p>
+              </div>
+              <div ref={step4Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineCheckCircle />
+                </div>
+                <span className="step-label">STEP 04</span>
                 <h3>Complete</h3>
                 <p>
                   Follow clear instructions to get the task done and submit your work directly
                   through our intuitive interface.
                 </p>
               </div>
-
-              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+              <div ref={step5Ref} className="step-card reveal reveal-right reveal-delay-2">
                 <div className="step-icon">
                   <HiOutlineBanknotes />
                 </div>
-                <span className="step-label">STEP 03</span>
-                <h3>Get Rewarded</h3>
+                <span className="step-label">STEP 05</span>
+                <h3>Get rewarded</h3>
                 <p>
-                  Earn your reward instantly when your work is approved. Transfer balance
-                  easily to your preferred account.
+                  Earn your reward instantly when your work is approved. Transfer balance easily to your preferred account.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Two-Sided Marketplace */}
+        <section className="two-sided" id="for-taskers">
+          <div className="section-container">
+            <div ref={twoSidedHeadingRef} className="section-heading reveal reveal-up">
+              <h2>One platform. Two ways to get things done.</h2>
+              <p>
+                Whether you're looking for opportunities or need something done, TaskBridge
+                connects the right people to the right tasks.
+              </p>
+            </div>
+
+            <div className="two-sided-grid">
+              <div ref={taskerCardRef} className="side-card reveal reveal-left">
+                <span className="side-label">For Taskers</span>
+                <div className="side-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <h3>Find tasks. Do the work. Get rewarded.</h3>
+                <p>
+                  Discover tasks that match your skills, interests and location. Complete them,
+                  submit your work and earn rewards when your work is approved.
+                </p>
+                <ul className="side-benefits">
+                  <li>Discover relevant tasks</li>
+                  <li>Choose opportunities that fit you</li>
+                  <li>Complete tasks on your terms</li>
+                  <li>Earn rewards for approved work</li>
+                </ul>
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                  Join as a Tasker
+                </Link>
+              </div>
+
+              <div
+                id="for-advertisers"
+                ref={advertiserCardRef}
+                className="side-card reveal reveal-right"
+              >
+                <span className="side-label">For Advertisers</span>
+                <div className="side-icon">
+                  <HiOutlineMegaphone />
+                </div>
+                <h3>Need something done? Put it in front of the right people.</h3>
+                <p>
+                  Create a task, define what you need, set your reward and let Taskora connect
+                  you with people ready to get it done.
+                </p>
+                <ul className="side-benefits">
+                  <li>Create and publish tasks</li>
+                  <li>Set your requirements and reward</li>
+                  <li>Reach relevant Taskers</li>
+                  <li>Review submissions and approve completed work</li>
+                </ul>
+                <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                  Join as an Advertiser
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* For Advertisers process */}
+        <section className="advertiser-flow">
+          <div className="section-container">
+            <div ref={advertiserFlowHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Turn things you need done into simple tasks.</h2>
+              <p>
+                From getting local help to collecting information or completing digital work,
+                TaskBridge helps you turn real-world needs into clear, actionable tasks.
+              </p>
+            </div>
+
+            <div className="steps-stack steps-stack-4">
+              <div ref={advStep1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentList />
+                </div>
+                <span className="step-label">01</span>
+                <h3>Create a Task</h3>
+                <p>Describe what needs to be done, add instructions and define who you're looking for.</p>
+              </div>
+
+              <div ref={advStep2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCurrencyDollar />
+                </div>
+                <span className="step-label">02</span>
+                <h3>Set the Reward</h3>
+                <p>Choose a reward and provide the details Taskers need before they get started.</p>
+              </div>
+
+              <div ref={advStep3Ref} className="step-card reveal reveal-up reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineDocumentText />
+                </div>
+                <span className="step-label">03</span>
+                <h3>Get Submissions</h3>
+                <p>People interested in your task complete the work and submit their results.</p>
+              </div>
+
+              <div ref={advStep4Ref} className="step-card reveal reveal-right reveal-delay-3">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </div>
+                <span className="step-label">04</span>
+                <h3>Review &amp; Approve</h3>
+                <p>Review submissions and approve completed work that meets your requirements.</p>
+              </div>
+            </div>
+
+            <div className="advertiser-flow-actions">
+              <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                Become an Advertiser
+              </Link>
+              <a href="#how-it-works" className="btn btn-tint btn-block">
+                See How It Works
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* What can you get done */}
+        <section className="categories">
+          <div className="section-container">
+            <div ref={categoriesHeadingRef} className="section-heading reveal reveal-up">
+              <h2>What can you get done with TaskBridge?</h2>
+              <p>A few examples of the kinds of tasks Advertisers can create.</p>
+            </div>
+
+            <div className="categories-grid">
+              <div ref={cat1Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon">
+                  <HiOutlineMapPin />
+                </span>
+                <h4>Local Tasks</h4>
+                <p>Need someone nearby to help with a simple physical task?</p>
+              </div>
+              <div ref={cat2Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon">
+                  <HiOutlineChatBubbleLeftRight />
+                </span>
+                <h4>Research &amp; Feedback</h4>
+                <p>Get opinions, responses or real-world information from people.</p>
+              </div>
+              <div ref={cat3Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon">
+                  <HiOutlineComputerDesktop />
+                </span>
+                <h4>Digital Tasks</h4>
+                <p>Delegate simple online work that can be completed remotely.</p>
+              </div>
+              <div ref={cat4Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon">
+                  <HiOutlineCamera />
+                </span>
+                <h4>Content &amp; Media</h4>
+                <p>Get help with simple content, photography, video or media-related tasks.</p>
+              </div>
+              <div ref={cat5Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon">
+                  <HiOutlineEye />
+                </span>
+                <h4>Testing &amp; Feedback</h4>
+                <p>Have people test an experience, product or process and share their feedback.</p>
+              </div>
+              <div ref={cat6Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon">
+                  <HiOutlineTruck />
+                </span>
+                <h4>Errands &amp; Assistance</h4>
+                <p>Get help with everyday tasks that require a real person.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who is Taskora for */}
+        <section className="who-for">
+          <div className="section-container">
+            <div ref={whoHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built for people who need things done — and people ready to do them.</h2>
+            </div>
+
+            <div className="who-grid">
+              <div ref={who1Ref} className="who-card reveal reveal-up-scale">
+                <span className="who-icon">
+                  <HiOutlineUserCircle />
+                </span>
+                <h4>Individuals</h4>
+                <p>Get help with everyday tasks and small projects.</p>
+              </div>
+              <div ref={who2Ref} className="who-card reveal reveal-up-scale reveal-delay-1">
+                <span className="who-icon">
+                  <HiOutlineBuildingOffice2 />
+                </span>
+                <h4>Businesses</h4>
+                <p>Delegate useful work and reach people who can help.</p>
+              </div>
+              <div ref={who3Ref} className="who-card reveal reveal-up-scale reveal-delay-2">
+                <span className="who-icon">
+                  <HiOutlineBuildingOffice />
+                </span>
+                <h4>Organizations</h4>
+                <p>Create structured tasks and gather responses, feedback or assistance.</p>
+              </div>
+              <div ref={who4Ref} className="who-card reveal reveal-up-scale reveal-delay-3">
+                <span className="who-icon">
+                  <HiOutlineIdentification />
+                </span>
+                <h4>Taskers</h4>
+                <p>Find opportunities and earn rewards by completing tasks.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust */}
+        <section className="trust">
+          <div className="section-container">
+            <div ref={trustHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built around clear expectations.</h2>
+              <p>TaskBridge is designed to make interactions between Taskers and Advertisers straightforward.</p>
+            </div>
+
+            <div className="trust-grid">
+              <div ref={trust1Ref} className="trust-card reveal reveal-up-scale">
+                <span className="trust-icon">
+                  <HiOutlineClipboardDocumentList />
+                </span>
+                <h4>Clear Task Details</h4>
+                <p>Taskers should know what is expected before accepting a task.</p>
+              </div>
+              <div ref={trust2Ref} className="trust-card reveal reveal-up-scale reveal-delay-1">
+                <span className="trust-icon">
+                  <HiOutlineCurrencyDollar />
+                </span>
+                <h4>Transparent Rewards</h4>
+                <p>Advertisers define the reward associated with a task.</p>
+              </div>
+              <div ref={trust3Ref} className="trust-card reveal reveal-up-scale reveal-delay-2">
+                <span className="trust-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </span>
+                <h4>Submission Review</h4>
+                <p>Advertisers can review submitted work before approving completion.</p>
+              </div>
+              <div ref={trust4Ref} className="trust-card reveal reveal-up-scale reveal-delay-3">
+                <span className="trust-icon">
+                  <HiOutlineShieldCheck />
+                </span>
+                <h4>Useful Profiles &amp; Information</h4>
+                <p>Give both sides enough context to make better decisions.</p>
               </div>
             </div>
           </div>
@@ -591,7 +1334,7 @@ function WaitlistPage() {
         <section className="why-taskora" id="why-taskora">
           <div className="section-container">
             <div ref={whyHeadingRef} className="section-heading reveal reveal-up">
-              <h2>Why choose Taskora?</h2>
+              <h2>Why choose TaskBridge?</h2>
               <p>
                 We're building the most reliable platform for the next generation of flexible
                 earning.
@@ -606,30 +1349,21 @@ function WaitlistPage() {
                 <h4>Find Opportunities</h4>
                 <p>Access a curated feed of verified tasks relevant to your skills and location.</p>
               </div>
-              <div
-                ref={feature2Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-1"
-              >
+              <div ref={feature2Ref} className="feature-card reveal reveal-up-scale reveal-delay-1">
                 <span className="feature-icon">
                   <HiOutlineTag />
                 </span>
                 <h4>Earn Rewards</h4>
                 <p>Get paid fairly and quickly. No hidden fees or complex point systems.</p>
               </div>
-              <div
-                ref={feature3Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-2"
-              >
+              <div ref={feature3Ref} className="feature-card reveal reveal-up-scale reveal-delay-2">
                 <span className="feature-icon">
                   <HiOutlineUsers />
                 </span>
                 <h4>Simple &amp; Accessible</h4>
                 <p>An interface built for real people. No technical jargon, just momentum.</p>
               </div>
-              <div
-                ref={feature4Ref}
-                className="feature-card reveal reveal-up-scale reveal-delay-3"
-              >
+              <div ref={feature4Ref} className="feature-card reveal reveal-up-scale reveal-delay-3">
                 <span className="feature-icon">
                   <HiOutlineShieldCheck />
                 </span>
@@ -646,7 +1380,7 @@ function WaitlistPage() {
             <div ref={previewCopyRef} className="preview-copy reveal reveal-left">
               <h2>Designed for clarity and speed.</h2>
               <p>
-                Take a look at how we've reimagined task management. The Taskora platform is
+                Take a look at how we've reimagined task management. The TaskorBridge platform is
                 designed to stay out of your way so you can focus on completion.
               </p>
               <ul className="preview-list">
@@ -671,10 +1405,7 @@ function WaitlistPage() {
               </ul>
             </div>
 
-            <div
-              ref={previewImageRef}
-              className="preview-image-wrap reveal reveal-scale reveal-delay-1"
-            >
+            <div ref={previewImageRef} className="preview-image-wrap reveal reveal-scale reveal-delay-1">
               <img
                 className="preview-image"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzFfBX5QhZfnG_u4Ou9H_jL6r8HTJpm_K3FBauJ5HXY8qCZHr3xZYF6YXAgAXIPSSA-Zwb4-fbX2yY5Ss8HRT9Zsx_1L28H64l65njbQJ8HswBKwIhGHrKlmxpuMnXEyc44mW-knJMH9-6c6dsOoJoelNlw2f1irrzPGBYXFZZTPai4F58T3Lm2XChhlwUqZ-GAok4vu2V-1Zc3x3lQwHb4gga84YaS9FvC8EuQILxHqK3-PL1OHN7"
@@ -684,18 +1415,38 @@ function WaitlistPage() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section className="faq-section" id="faq">
+          <div className="section-container">
+            <div ref={faqHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Frequently asked questions</h2>
+            </div>
+
+            <div ref={faqBodyRef} className="faq-body reveal reveal-up reveal-delay-1">
+              <FaqAccordion groupLabel="For Taskers" items={taskerFaqs} />
+              <FaqAccordion groupLabel="For Advertisers" items={advertiserFaqs} />
+              <FaqAccordion groupLabel="General" items={generalFaqs} />
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="final-cta">
           <div ref={ctaRef} className="final-cta-container reveal reveal-up-scale">
             <h2>Ready to get things done?</h2>
             <p>
-              Be the first in line when we launch. Join thousands of early adopters and start
-              earning rewards for your skills.
+              Whether you're ready to earn by completing tasks or you have something that needs
+              to get done, TaskBridge is coming soon.
             </p>
 
-            <Link to="/signup" className="btn btn-light btn-block">
-              Join the Waitlist
-            </Link>
+            <div className="final-cta-actions">
+              <Link to="/signup?role=worker" className="btn btn-light btn-block">
+                Join as a Tasker
+              </Link>
+              <Link to="/signup?role=advertiser" className="btn btn-outline-light btn-block">
+                Join as an Advertiser
+              </Link>
+            </div>
 
             <p className="final-cta-note">No spam, ever. Only important product updates.</p>
           </div>
@@ -708,18 +1459,20 @@ function WaitlistPage() {
 }
 
 export default WaitlistPage
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.css ===
 .waitlist-page {
   background: var(--color-surface);
   color: var(--color-on-surface);
   font-family: var(--font-display);
+  width: 100%;
+  max-width: 100%;
 }
 
 .section-container {
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--margin-mobile);
+  width: 100%;
 }
 
 .btn {
@@ -764,10 +1517,11 @@ export default WaitlistPage
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Hero */
+/* ===== HERO ===== */
 .hero {
   padding: 32px 0 40px;
   overflow: hidden;
+  width: 100%;
 }
 
 .hero-container {
@@ -782,6 +1536,7 @@ export default WaitlistPage
 
 .hero-copy {
   text-align: center;
+  width: 100%;
 }
 
 .hero-badge {
@@ -828,6 +1583,7 @@ export default WaitlistPage
 
 .hero-image-wrap {
   width: 100%;
+  min-width: 0;
 }
 
 .hero-image-frame {
@@ -845,18 +1601,20 @@ export default WaitlistPage
   object-fit: cover;
 }
 
-/* Momentum */
+/* ===== MOMENTUM ===== */
 .momentum {
   padding: 40px var(--margin-mobile);
   background: var(--color-surface-container-low);
   border-top: 1px solid var(--color-border-subtle);
   border-bottom: 1px solid var(--color-border-subtle);
   text-align: center;
+  width: 100%;
 }
 
 .momentum-container {
   max-width: 480px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .momentum-avatars-row {
@@ -880,16 +1638,9 @@ export default WaitlistPage
   margin-left: -10px;
 }
 
-.avatar-1 {
-  background: #d6dcf0;
-  margin-left: 0;
-}
-.avatar-2 {
-  background: #b7c0dd;
-}
-.avatar-3 {
-  background: #8a94b8;
-}
+.avatar-1 { background: #d6dcf0; margin-left: 0; }
+.avatar-2 { background: #b7c0dd; }
+.avatar-3 { background: #8a94b8; }
 
 .momentum-count {
   font-family: var(--font-display);
@@ -904,50 +1655,12 @@ export default WaitlistPage
   margin-bottom: 24px;
 }
 
-.waitlist-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.waitlist-form input {
-  width: 100%;
-  padding: 16px 18px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-subtle);
-  outline: none;
-  font-family: var(--font-display);
-  font-size: 16px;
-  background: #ffffff;
-  color: var(--color-on-surface);
-  box-sizing: border-box;
-}
-
-.waitlist-form input::placeholder {
-  color: #94a3b8;
-}
-
-.waitlist-form input:focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 2px var(--color-primary);
-}
-
-.form-success {
-  font-family: var(--font-label);
-  font-weight: 700;
-  color: var(--color-success-green);
-  padding: 16px 0;
-}
-
-.form-success-light {
-  color: #ffffff;
-}
-
-/* How it works / Why Taskora */
+/* ===== HOW IT WORKS / WHY TASKORA ===== */
 .how-it-works,
 .why-taskora {
   padding: 56px 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .why-taskora {
@@ -992,6 +1705,7 @@ export default WaitlistPage
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 0;
 }
 
 .step-card:hover {
@@ -1010,6 +1724,7 @@ export default WaitlistPage
   font-size: 28px;
   color: var(--color-primary);
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .step-label {
@@ -1033,6 +1748,7 @@ export default WaitlistPage
   color: var(--color-on-surface-variant);
   font-size: 15px;
   line-height: 1.6;
+  margin: 0;
 }
 
 .feature-card {
@@ -1041,6 +1757,7 @@ export default WaitlistPage
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-width: 0;
 }
 
 .feature-card:hover {
@@ -1067,18 +1784,24 @@ export default WaitlistPage
   color: var(--color-on-surface-variant);
   font-size: 15px;
   line-height: 1.6;
+  margin: 0;
 }
 
-/* Product preview */
+/* ===== PRODUCT PREVIEW ===== */
 .product-preview {
   padding: 56px 0;
   overflow: hidden;
+  width: 100%;
 }
 
 .preview-container {
   display: flex;
   flex-direction: column;
   gap: 40px;
+}
+
+.preview-copy {
+  min-width: 0;
 }
 
 .preview-copy h2 {
@@ -1135,14 +1858,17 @@ export default WaitlistPage
   color: var(--color-on-surface-variant);
   font-size: 14px;
   line-height: 1.5;
+  margin: 0;
 }
 
 .preview-image-wrap {
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
   background: #ffffff;
   padding: 12px;
+  min-width: 0;
+  width: 100%;
 }
 
 .preview-image {
@@ -1152,17 +1878,19 @@ export default WaitlistPage
   display: block;
 }
 
-/* Final CTA */
+/* ===== FINAL CTA ===== */
 .final-cta {
   padding: 56px var(--margin-mobile);
   background: var(--color-primary);
   color: #ffffff;
   text-align: center;
+  width: 100%;
 }
 
 .final-cta-container {
   max-width: 480px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .final-cta h2 {
@@ -1180,22 +1908,13 @@ export default WaitlistPage
   margin-bottom: 32px;
 }
 
-.waitlist-form-cta input {
-  border: none;
-  color: var(--color-on-surface);
-}
-
-.waitlist-form-cta input:focus {
-  box-shadow: 0 0 0 2px #ffffff;
-}
-
 .final-cta-note {
   margin-top: 20px;
   font-size: 13px;
   opacity: 0.75;
 }
 
-/* Tablet / Desktop */
+/* ===== TABLET ===== */
 @media (min-width: 768px) {
   .hero-actions {
     flex-direction: row;
@@ -1212,14 +1931,20 @@ export default WaitlistPage
 
   .step-card {
     flex: 1;
+    min-width: 0;
   }
 
   .features-stack {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .section-container {
+    padding: 0 var(--margin-desktop);
+  }
 }
 
+/* ===== DESKTOP ===== */
 @media (min-width: 1024px) {
   .hero-container {
     flex-direction: row;
@@ -1230,10 +1955,12 @@ export default WaitlistPage
   .hero-copy {
     text-align: left;
     flex: 1;
+    min-width: 0;
   }
 
   .hero-image-wrap {
     flex: 1;
+    min-width: 0;
   }
 
   .hero-actions {
@@ -1255,20 +1982,12 @@ export default WaitlistPage
 
   .preview-copy {
     flex: 2;
+    min-width: 0;
   }
 
   .preview-image-wrap {
     flex: 3;
-  }
-
-  .waitlist-form,
-  .waitlist-form-cta {
-    flex-direction: row;
-  }
-
-  .waitlist-form input,
-  .waitlist-form-cta input {
-    flex: 1;
+    min-width: 0;
   }
 
   .btn-block {
@@ -1277,9 +1996,334 @@ export default WaitlistPage
   }
 }
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.tsx ###
-import { useState, FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+/* ============ Two-Sided Marketplace ============ */
+.two-sided {
+  padding: 56px 0;
+  background: var(--color-surface-container-low);
+}
+
+.two-sided-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-label {
+  display: inline-block;
+  align-self: flex-start;
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.side-icon {
+  width: 52px;
+  height: 52px;
+  background: var(--color-brand-blue-tint);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--color-primary);
+  margin-bottom: 18px;
+}
+
+.side-card h3 {
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.side-card > p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 20px;
+}
+
+.side-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.side-benefits li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.side-benefits li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+/* ============ Advertiser flow ============ */
+.advertiser-flow {
+  padding: 56px 0;
+}
+
+.steps-stack-4 {
+  gap: 16px;
+}
+
+.advertiser-flow-actions {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============ Categories ============ */
+.categories {
+  padding: 56px 0;
+  background: var(--color-surface-container-low);
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.category-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.category-icon {
+  display: flex;
+  font-size: 22px;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+}
+
+.category-card h4 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.category-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+/* ============ Who is Taskora for ============ */
+.who-for {
+  padding: 56px 0;
+}
+
+.who-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.who-card {
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px 16px;
+}
+
+.who-icon {
+  display: flex;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.who-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.who-card p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+/* ============ Trust ============ */
+.trust {
+  padding: 56px 0;
+  background: var(--color-surface-container-low);
+}
+
+.trust-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.trust-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.trust-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--color-brand-blue-tint);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.trust-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.trust-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+/* ============ FAQ ============ */
+.faq-section {
+  padding: 56px 0;
+}
+
+.faq-body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============ Final CTA dual buttons ============ */
+.final-cta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.btn-outline-light {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============ Responsive ============ */
+@media (min-width: 768px) {
+  .two-sided-grid {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .side-card {
+    flex: 1;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .advertiser-flow-actions {
+    flex-direction: row;
+  }
+
+  .advertiser-flow-actions .btn {
+    width: auto;
+    flex: 1;
+  }
+
+  .final-cta-actions {
+    flex-direction: row;
+  }
+
+  .final-cta-actions .btn {
+    width: auto;
+    flex: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .steps-stack-4 {
+    flex-direction: row;
+  }
+
+  .steps-stack-4 .step-card {
+    flex: 1;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .who-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .trust-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.tsx ===
+import { useState, FormEvent, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -1316,14 +2360,26 @@ const initialForm: FormData = {
   referredByCode: '',
 }
 
+function isValidRole(value: string | null): value is UserRole {
+  return value === 'worker' || value === 'advertiser'
+}
+
 function SignupPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [form, setForm] = useState<FormData>(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitting, setSubmitting] = useState(false)
 
   const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
   const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role')
+    if (isValidRole(roleParam)) {
+      setForm((prev) => ({ ...prev, role: roleParam }))
+    }
+  }, [searchParams])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -1421,7 +2477,7 @@ function SignupPage() {
         <div className="signup-container">
           <div ref={headingRef} className="signup-heading reveal reveal-up">
             <h1>Join the Waitlist</h1>
-            <p>Create your account to get early access to Taskora.</p>
+            <p>Create your account to get early access to TaskBridge.</p>
           </div>
 
           <form
@@ -1580,8 +2636,7 @@ function SignupPage() {
 }
 
 export default SignupPage
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.css ===
 .signup-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -1808,8 +2863,7 @@ export default SignupPage
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.tsx ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.tsx ===
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -1857,8 +2911,7 @@ function ComingSoonPage({
 }
 
 export default ComingSoonPage
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.css ===
 .coming-soon-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -1947,8 +3000,7 @@ export default ComingSoonPage
     padding: 48px 40px;
   }
 }
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.tsx ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.tsx ===
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -1983,8 +3035,7 @@ function NotFoundPage() {
 }
 
 export default NotFoundPage
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.css ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.css ===
 .not-found-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -2052,8 +3103,230 @@ export default NotFoundPage
     padding: 48px 40px;
   }
 }
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.tsx ===
+import { Link } from 'react-router-dom'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import {
+  HiOutlineMagnifyingGlass,
+  HiOutlineCheckCircle,
+  HiOutlineBanknotes,
+} from 'react-icons/hi2'
+import '../Waitlist/WaitlistPage.css'
+import './ForTaskersPage.css'
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ###
+function ForTaskersPage() {
+  const heroRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
+  const step1Ref = useScrollReveal<HTMLDivElement>()
+  const step2Ref = useScrollReveal<HTMLDivElement>()
+  const step3Ref = useScrollReveal<HTMLDivElement>()
+  const ctaRef = useScrollReveal<HTMLDivElement>()
+
+  return (
+    <div className="waitlist-page">
+      <Navbar />
+
+      <main>
+        <section className="hero">
+          <div className="hero-container hero-container-single">
+            <div ref={heroRef} className="hero-copy reveal reveal-up">
+              <span className="hero-badge">For Taskers</span>
+              <h1 className="hero-title">
+                Find tasks. Do the work. <span className="hero-title-accent">Get rewarded.</span>
+              </h1>
+              <p className="hero-description">
+                Discover tasks that match your skills, interests and location. Complete them,
+                submit your work and earn rewards when your work is approved.
+              </p>
+              <div className="hero-actions">
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                  Join as a Tasker
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="how-it-works">
+          <div className="section-container">
+            <div className="section-heading">
+              <h2>How it works for Taskers</h2>
+            </div>
+
+            <div className="steps-stack">
+              <div ref={step1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <span className="step-label">STEP 01</span>
+                <h3>Discover</h3>
+                <p>Find tasks that match what you can do, from digital checks to local physical assistance.</p>
+              </div>
+
+              <div ref={step2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCheckCircle />
+                </div>
+                <span className="step-label">STEP 02</span>
+                <h3>Complete</h3>
+                <p>Follow clear instructions and submit your work directly through the app.</p>
+              </div>
+
+              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineBanknotes />
+                </div>
+                <span className="step-label">STEP 03</span>
+                <h3>Get Rewarded</h3>
+                <p>Earn your reward once your work is approved by the Advertiser.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="final-cta">
+          <div ref={ctaRef} className="final-cta-container reveal reveal-up-scale">
+            <h2>Ready to start earning?</h2>
+            <p>Join the waitlist and be first in line when Taskora opens up to Taskers.</p>
+            <Link to="/signup?role=worker" className="btn btn-light btn-block">
+              Join as a Tasker
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
+export default ForTaskersPage
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.css ===
+.hero-container-single {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-container-single .hero-copy {
+  max-width: 640px;
+  text-align: center;
+}
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForAdvertisers/ForAdvertisersPage.tsx ===
+import { Link } from 'react-router-dom'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import {
+  HiOutlineClipboardDocumentList,
+  HiOutlineCurrencyDollar,
+  HiOutlineDocumentText,
+  HiOutlineClipboardDocumentCheck,
+} from 'react-icons/hi2'
+import '../Waitlist/WaitlistPage.css'
+import '../ForTaskers/ForTaskersPage.css'
+
+function ForAdvertisersPage() {
+  const heroRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
+  const step1Ref = useScrollReveal<HTMLDivElement>()
+  const step2Ref = useScrollReveal<HTMLDivElement>()
+  const step3Ref = useScrollReveal<HTMLDivElement>()
+  const step4Ref = useScrollReveal<HTMLDivElement>()
+  const ctaRef = useScrollReveal<HTMLDivElement>()
+
+  return (
+    <div className="waitlist-page">
+      <Navbar />
+
+      <main>
+        <section className="hero">
+          <div className="hero-container hero-container-single">
+            <div ref={heroRef} className="hero-copy reveal reveal-up">
+              <span className="hero-badge">For Advertisers</span>
+              <h1 className="hero-title">
+                Need something done? <span className="hero-title-accent">Put it in front of the right people.</span>
+              </h1>
+              <p className="hero-description">
+                Create a task, define what you need, set your reward and let Taskora connect
+                you with people ready to get it done.
+              </p>
+              <div className="hero-actions">
+                <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                  Join as an Advertiser
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="advertiser-flow">
+          <div className="section-container">
+            <div className="section-heading">
+              <h2>Turn things you need done into simple tasks.</h2>
+              <p>
+                From getting local help to collecting information or completing digital work,
+                Taskora helps you turn real-world needs into clear, actionable tasks.
+              </p>
+            </div>
+
+            <div className="steps-stack steps-stack-4">
+              <div ref={step1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentList />
+                </div>
+                <span className="step-label">01</span>
+                <h3>Create a Task</h3>
+                <p>Describe what needs to be done, add instructions and define who you're looking for.</p>
+              </div>
+
+              <div ref={step2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCurrencyDollar />
+                </div>
+                <span className="step-label">02</span>
+                <h3>Set the Reward</h3>
+                <p>Choose a reward and provide the details Taskers need before they get started.</p>
+              </div>
+
+              <div ref={step3Ref} className="step-card reveal reveal-up reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineDocumentText />
+                </div>
+                <span className="step-label">03</span>
+                <h3>Get Submissions</h3>
+                <p>People interested in your task complete the work and submit their results.</p>
+              </div>
+
+              <div ref={step4Ref} className="step-card reveal reveal-right reveal-delay-3">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </div>
+                <span className="step-label">04</span>
+                <h3>Review &amp; Approve</h3>
+                <p>Review submissions and approve completed work that meets your requirements.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="final-cta">
+          <div ref={ctaRef} className="final-cta-container reveal reveal-up-scale">
+            <h2>Ready to get things done?</h2>
+            <p>Join the waitlist and be first in line when Taskora opens up to Advertisers.</p>
+            <Link to="/signup?role=advertiser" className="btn btn-light btn-block">
+              Join as an Advertiser
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
+export default ForAdvertisersPage
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ===
 import { useEffect, useRef } from 'react'
 
 interface ScrollRevealOptions {
@@ -2102,20 +3375,12 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
 
   return ref
 }
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/api.ts ===
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/api.ts ###
-const isDev = import.meta.env.DEV
-
-// In dev, hit the backend directly (needs CORS_ORIGINS to include localhost).
-// In production on Vercel, use the same-origin /api proxy defined in vercel.json,
-// which forwards to the Render backend server-side (no CORS needed).
-const API_BASE_URL = isDev
-  ? (import.meta.env.VITE_API_BASE_URL as string)
-  : '/api'
-
-if (isDev && !API_BASE_URL) {
+if (!API_BASE_URL) {
   console.warn(
-    'VITE_API_BASE_URL is not set. Add it to your .env file, e.g. VITE_API_BASE_URL=http://127.0.0.1:3000'
+    'VITE_API_BASE_URL is not set. Add it to your .env file, e.g. VITE_API_BASE_URL=https://your-backend.onrender.com'
   )
 }
 
@@ -2162,8 +3427,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   return data as T
 }
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/waitlist.ts ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/waitlist.ts ===
 import { apiRequest } from './api'
 import type { WaitlistPayload, WaitlistResponse } from '../types/api'
 
@@ -2178,8 +3442,7 @@ export function joinWaitlist(payload: WaitlistPayload) {
     body,
   })
 }
-
-### /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ###
+=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ===
 export type UserRole = 'worker' | 'advertiser'
 
 export interface WaitlistPayload {
@@ -2217,4 +3480,3 @@ export interface ApiError {
   requiredNaira?: number
   currentBalanceNaira?: number
 }
-
