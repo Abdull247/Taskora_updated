@@ -1,10 +1,13 @@
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.css ---
 /* App-level shell styles */
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ---
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import SignupPage from './pages/Signup/SignupPage'
+import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
@@ -44,6 +47,8 @@ function App() {
         <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
         <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
+        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
         <Route
           path="/login"
@@ -71,7 +76,8 @@ function App() {
 }
 
 export default App
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.css ---
 .navbar {
   position: sticky;
   top: 0;
@@ -286,7 +292,8 @@ export default App
     display: none;
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Navbar/Navbar.tsx ---
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
@@ -403,7 +410,8 @@ function Navbar() {
 }
 
 export default Navbar
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.tsx ---
 import './Footer.css'
 
 function Footer() {
@@ -428,7 +436,8 @@ function Footer() {
 }
 
 export default Footer
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.css ---
 .footer {
   background: var(--color-surface-container-low);
   border-top: 1px solid var(--color-border-subtle);
@@ -489,7 +498,8 @@ export default Footer
     text-align: left;
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.tsx ---
 import { useState } from 'react'
 import { HiChevronDown } from 'react-icons/hi2'
 import './FaqAccordion.css'
@@ -535,7 +545,8 @@ function FaqAccordion({ items, groupLabel }: FaqAccordionProps) {
 }
 
 export default FaqAccordion
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FaqAccordion/FaqAccordion.css ---
 .faq-group {
   margin-bottom: 32px;
 }
@@ -619,7 +630,8 @@ export default FaqAccordion
 .faq-item-open .faq-answer {
   padding: 0 18px 18px;
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ---
 *,
 *::before,
 *::after {
@@ -641,7 +653,8 @@ body {
   max-width: 100%;
   min-height: 100vh;
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/main.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/main.tsx ---
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -658,7 +671,8 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 )
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/styles/tokens.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/styles/tokens.css ---
 :root {
   /* Colors */
   --color-primary: #0053d4;
@@ -777,7 +791,8 @@ a, button {
 .reveal-delay-2 { transition-delay: 0.16s; }
 .reveal-delay-3 { transition-delay: 0.24s; }
 .reveal-delay-4 { transition-delay: 0.32s; }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.tsx ---
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -1459,7 +1474,8 @@ function WaitlistPage() {
 }
 
 export default WaitlistPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Waitlist/WaitlistPage.css ---
 .waitlist-page {
   background: var(--color-surface);
   color: var(--color-on-surface);
@@ -2321,7 +2337,8 @@ export default WaitlistPage
     grid-template-columns: repeat(2, 1fr);
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.tsx ---
 import { useState, FormEvent, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -2451,7 +2468,9 @@ function SignupPage() {
       toast.success(`You're on the waitlist, ${user.first_name}! Check your email for confirmation.`)
 
       setTimeout(() => {
-        navigate('/', { state: { waitlistJoined: true } })
+        navigate('/waitlist/success', {
+          state: { waitlistJoined: true, firstName: user.first_name },
+        })
       }, 1800)
     } catch (err) {
       if (err instanceof ApiRequestError) {
@@ -2636,7 +2655,8 @@ function SignupPage() {
 }
 
 export default SignupPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Signup/SignupPage.css ---
 .signup-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -2863,7 +2883,8 @@ export default SignupPage
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.tsx ---
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -2911,7 +2932,8 @@ function ComingSoonPage({
 }
 
 export default ComingSoonPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ComingSoon/ComingSoonPage.css ---
 .coming-soon-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -3000,7 +3022,8 @@ export default ComingSoonPage
     padding: 48px 40px;
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.tsx ---
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -3035,7 +3058,8 @@ function NotFoundPage() {
 }
 
 export default NotFoundPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/NotFound/NotFoundPage.css ---
 .not-found-page {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
@@ -3103,7 +3127,8 @@ export default NotFoundPage
     padding: 48px 40px;
   }
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.tsx ---
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -3202,7 +3227,8 @@ function ForTaskersPage() {
 }
 
 export default ForTaskersPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.css ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForTaskers/ForTaskersPage.css ---
 .hero-container-single {
   display: flex;
   justify-content: center;
@@ -3212,7 +3238,8 @@ export default ForTaskersPage
   max-width: 640px;
   text-align: center;
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForAdvertisers/ForAdvertisersPage.tsx ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/ForAdvertisers/ForAdvertisersPage.tsx ---
 import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
@@ -3326,7 +3353,422 @@ function ForAdvertisersPage() {
 }
 
 export default ForAdvertisersPage
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/WaitlistSuccess/WaitlistSuccessPage.tsx ---
+import { Link, Navigate, useLocation } from 'react-router-dom'
+import { HiCheck, HiOutlineBell, HiOutlineEnvelope, HiOutlineRocketLaunch, HiOutlineUsers } from 'react-icons/hi2'
+import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import './WaitlistSuccessPage.css'
+
+const TELEGRAM_URL = 'https://t.me/+Oyl3Hlt2wXdkOTFk'
+const WHATSAPP_URL = 'https://chat.whatsapp.com/CZMTBeQmnG51DHuNTsLzTV'
+
+interface LocationState {
+  waitlistJoined?: boolean
+  firstName?: string
+}
+
+const steps = [
+  {
+    icon: HiOutlineEnvelope,
+    title: "We'll keep you updated",
+    description: 'Important updates and launch news will be sent straight to your inbox.',
+  },
+  {
+    icon: HiOutlineRocketLaunch,
+    title: 'Be the first to access',
+    description: 'Get early access to TaskBridge before anyone else.',
+  },
+  {
+    icon: HiOutlineUsers,
+    title: 'Help shape TaskBridge',
+    description: 'Share feedback and help us build the best platform for you.',
+  },
+]
+
+function WaitlistSuccessPage() {
+  const location = useLocation()
+  const state = (location.state as LocationState) || {}
+
+  // Guard against direct/refresh navigation without having actually joined
+  if (!state.waitlistJoined) {
+    return <Navigate to="/signup" replace />
+  }
+
+  return (
+    <section className="success-page">
+      <Navbar />
+
+      <main className="success-container">
+        {/* Success animation */}
+        <div className="success-animation">
+          <span className="spark spark-1" />
+          <span className="spark spark-2" />
+          <span className="spark spark-3" />
+          <span className="spark spark-4" />
+
+          <div className="success-circle">
+            <HiCheck className="check-icon" />
+          </div>
+        </div>
+
+        {/* Headings */}
+        <div className="headings">
+          <h1>
+            You're on the <span className="blue-txt">waitlist</span>!
+          </h1>
+          <p className="success-description">
+            {state.firstName ? `Thanks, ${state.firstName}! ` : 'Thanks for joining TaskBridge. '}
+            You'll be the first to know when we launch.
+          </p>
+        </div>
+
+        {/* Community card */}
+        <div className="telegram-card">
+          <div className="telegram-header">
+            <div className="icon-circle">
+              <HiOutlineBell />
+            </div>
+
+            <div className="telegram-content">
+              <h3>Stay updated</h3>
+              <p>Join our community channels to get updates, sneak peeks and launch news.</p>
+            </div>
+          </div>
+
+          <div className="channel-buttons">
+            <button
+              type="button"
+              className="telegram-button"
+              onClick={() => window.open(TELEGRAM_URL, '_blank', 'noopener,noreferrer')}
+            >
+              <FaTelegramPlane className="telegram-icon" />
+              <span>Join our Telegram</span>
+            </button>
+
+            <button
+              type="button"
+              className="whatsapp-button"
+              onClick={() => window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer')}
+            >
+              <FaWhatsapp className="telegram-icon" />
+              <span>Join our WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+        {/* What happens next */}
+        <div className="steps">
+          <h1>What happens next?</h1>
+
+          {steps.map((step) => (
+            <div className="step" key={step.title}>
+              <div className="step-icon">
+                <step.icon />
+              </div>
+
+              <div className="step-content">
+                <h4>{step.title}</h4>
+                <p>{step.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Link to="/" className="back-home">
+          Back to Home
+        </Link>
+      </main>
+
+      <Footer />
+    </section>
+  )
+}
+
+export default WaitlistSuccessPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/WaitlistSuccess/WaitlistSuccessPage.css ---
+.success-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.success-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-animation {
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.success-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #EEF4FF;
+  border: 12px solid #D9E8FF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: pop .45s ease;
+}
+
+.check-icon {
+  font-size: 54px;
+  color: #2563EB;
+}
+
+.spark {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2563EB;
+  animation: sparkle 2s infinite ease-in-out;
+}
+
+.spark-1 {
+  top: 0;
+  left: 50%;
+}
+
+.spark-2 {
+  right: -5px;
+  top: 45%;
+}
+
+.spark-3 {
+  bottom: 10px;
+  left: 18%;
+}
+
+.spark-4 {
+  top: 28%;
+  left: -8px;
+}
+
+.headings {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.headings h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.blue-txt {
+  color: #2563EB;
+}
+
+.success-description {
+  font-size: 1.05rem;
+  color: #6B7280;
+  line-height: 1.8;
+}
+
+.telegram-card {
+  width: 100%;
+  background: #F8FAFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 48px;
+}
+
+.telegram-header {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #EEF4FF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.icon-circle svg {
+  font-size: 30px;
+  color: #2563EB;
+}
+
+.telegram-content h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.telegram-content p {
+  color: #6B7280;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.channel-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.telegram-button,
+.whatsapp-button {
+  width: 100%;
+  border: none;
+  color: white;
+  padding: 16px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.telegram-button {
+  background: #2563EB;
+}
+
+.telegram-button:hover {
+  background: #1D4ED8;
+}
+
+.whatsapp-button {
+  background: #25D366;
+}
+
+.whatsapp-button:hover {
+  background: #1EBE5A;
+}
+
+.telegram-icon {
+  font-size: 22px;
+}
+
+.steps {
+  width: 100%;
+  margin-bottom: 42px;
+}
+
+.steps h1 {
+  margin-bottom: 28px;
+  font-size: 1.6rem;
+  color: #111827;
+}
+
+.step {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.step-icon {
+  width: 54px;
+  height: 54px;
+  background: #EEF4FF;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-icon svg {
+  font-size: 24px;
+  color: #2563EB;
+}
+
+.step-content h4 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.step-content p {
+  color: #6B7280;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.back-home {
+  width: 100%;
+  border: none;
+  background: #EEF4FF;
+  color: #2563EB;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .25s;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.back-home:hover {
+  background: #DCEAFF;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(.3);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: .4;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 1;
+  }
+}
+
+@media (min-width: 768px) {
+  .success-container {
+    padding: 72px 24px 100px;
+  }
+
+  .headings h1 {
+    font-size: 2.5rem;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ---
 import { useEffect, useRef } from 'react'
 
 interface ScrollRevealOptions {
@@ -3375,7 +3817,8 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
 
   return ref
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/api.ts ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/api.ts ---
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 if (!API_BASE_URL) {
@@ -3427,7 +3870,8 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   return data as T
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/waitlist.ts ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/waitlist.ts ---
 import { apiRequest } from './api'
 import type { WaitlistPayload, WaitlistResponse } from '../types/api'
 
@@ -3442,7 +3886,8 @@ export function joinWaitlist(payload: WaitlistPayload) {
     body,
   })
 }
-=== /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ===
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ---
 export type UserRole = 'worker' | 'advertiser'
 
 export interface WaitlistPayload {

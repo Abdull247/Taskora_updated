@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import LandingPage from './pages/Landing/LandingPage'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import SignupPage from './pages/Signup/SignupPage'
 import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
@@ -37,12 +38,12 @@ function App() {
         }}
       />
       <Routes>
-        <Route path="/" element={<WaitlistPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/waitlist" element={<WaitlistPage />} />
         <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
         <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
         <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
         <Route
