@@ -19,6 +19,25 @@
   margin-bottom: 28px;
 }
 
+.signup-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.signup-eyebrow svg {
+  font-size: 14px;
+}
+
 .signup-heading h1 {
   font-size: 28px;
   font-weight: 800;
@@ -32,26 +51,26 @@
   color: var(--color-on-surface-variant);
 }
 
+/* Flat, no card background — sits directly on the page */
 .signup-form {
-  background: #ffffff;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
-  padding: 24px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .form-field label {
@@ -66,27 +85,30 @@
   color: #94a3b8;
 }
 
-.form-field input,
-.select-wrap select {
+.form-field input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 13px 15px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-subtle);
+  border: 1.5px solid var(--color-border-subtle);
   outline: none;
   font-family: var(--font-display);
   font-size: 15px;
   background: #ffffff;
   color: var(--color-on-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-field input::placeholder {
   color: #94a3b8;
 }
 
-.form-field input:focus,
-.select-wrap select:focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 2px var(--color-primary);
+.form-field input:hover {
+  border-color: #cbd5e1;
+}
+
+.form-field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
 }
 
 .form-field input.input-error {
@@ -94,7 +116,7 @@
 }
 
 .form-field input.input-error:focus {
-  box-shadow: 0 0 0 2px #ba1a1a;
+  box-shadow: 0 0 0 2px rgba(186, 26, 26, 0.12);
 }
 
 .field-error {
@@ -103,30 +125,123 @@
   font-family: var(--font-label);
 }
 
-.select-wrap {
+/* Password visibility toggle */
+.password-input-wrap {
   position: relative;
 }
 
-.select-wrap select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 40px;
+.password-input-wrap input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.password-toggle:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+}
+
+/* Custom terms checkbox */
+.terms-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   cursor: pointer;
 }
 
-.select-icon {
+.terms-checkbox-input {
   position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.terms-checkbox-box {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.terms-checkbox-box-error {
+  border-color: #ba1a1a;
+}
+
+.terms-checkbox-tick {
+  width: 13px;
+  height: 13px;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-box .terms-checkbox-tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.terms-checkbox-input:focus-visible + .terms-checkbox-box {
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.25);
+}
+
+.terms-checkbox-text {
+  font-size: 13.5px;
+  line-height: 1.5;
   color: var(--color-on-surface-variant);
-  font-size: 18px;
+}
+
+.terms-checkbox-text a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms-checkbox-text a:hover {
+  text-decoration: underline;
+}
+
+.field-error-terms {
+  padding-left: 30px;
 }
 
 .btn-submit {
-  margin-top: 6px;
+  margin-top: 4px;
   padding: 16px 32px;
 }
 
@@ -152,8 +267,7 @@
 .signup-success-card {
   max-width: 420px;
   text-align: center;
-  background: #ffffff;
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-container-lowest);
   border-radius: var(--radius-xl);
   padding: 40px 28px;
 }
@@ -185,10 +299,6 @@
 @media (min-width: 768px) {
   .signup-main {
     padding: 56px var(--margin-desktop) 80px;
-  }
-
-  .signup-form {
-    padding: 32px;
   }
 }
 

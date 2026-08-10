@@ -1,0 +1,96 @@
+@import '../Signup/SignupPage.css';
+
+/* ============ Full-screen step body (FlowShell steps) ============ */
+.flow-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.flow-step-body .form-field {
+  width: 100%;
+  text-align: left;
+}
+
+.flow-step-body-center {
+  align-items: center;
+  text-align: center;
+}
+
+.flow-heading {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.flow-subheading {
+  font-size: 14.5px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.flow-subheading strong {
+  color: var(--color-on-surface);
+  font-weight: 600;
+}
+
+.flow-email-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 12px 0;
+}
+
+.flow-resend-line {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.flow-resend-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.flow-resend-link:hover {
+  text-decoration: underline;
+}
+
+.flow-expiry-line {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.flow-expiry-line strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.flow-otp-error {
+  margin-top: -8px;
+}
+
+.flow-otp-submit {
+  margin-top: 4px;
+}

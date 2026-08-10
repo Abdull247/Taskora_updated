@@ -1,11 +1,18 @@
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { SignupFlowProvider } from './context/SignupFlowContext'
 import LandingPage from './pages/Landing/LandingPage'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
-import SignupPage from './pages/Signup/SignupPage'
-import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
+import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
+import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
+import OtpStep from './pages/SignupFlow/OtpStep'
+import CreatePasswordStep from './pages/SignupFlow/CreatePasswordStep'
+import RoleStep from './pages/SignupFlow/RoleStep'
+import BusinessInfoStep from './pages/SignupFlow/BusinessInfoStep'
+import SignupDoneStep from './pages/SignupFlow/SignupDoneStep'
+import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 import './App.css'
@@ -37,36 +44,46 @@ function App() {
           },
         }}
       />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/waitlist" element={<WaitlistPage />} />
-        <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
-        <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
+      <SignupFlowProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/waitlist" element={<WaitlistPage />} />
+          <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
+          <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
 
-        <Route
-          path="/login"
-          element={
-            <ComingSoonPage
-              title="Sign In Coming Soon"
-              description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
-            />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ComingSoonPage
-              title="Dashboard Coming Soon"
-              description="Your Taskora dashboard is still in the works. Join the waitlist to get early access when it launches."
-            />
-          }
-        />
+          <Route path="/signup" element={<CreateAccountStep />} />
+          <Route path="/signup/verify-email" element={<CheckEmailStep />} />
+          <Route path="/signup/otp" element={<OtpStep />} />
+          <Route path="/signup/password" element={<CreatePasswordStep />} />
+          <Route path="/signup/role" element={<RoleStep />} />
+          <Route path="/signup/business" element={<BusinessInfoStep />} />
+          <Route path="/signup/done" element={<SignupDoneStep />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
+
+          <Route
+            path="/login"
+            element={
+              <ComingSoonPage
+                title="Sign In Coming Soon"
+                description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
+              />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ComingSoonPage
+                title="Dashboard Coming Soon"
+                description="Your TaskBridge dashboard is still in the works. Join the waitlist to get early access when it launches."
+              />
+            }
+          />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </SignupFlowProvider>
     </>
   )
 }

@@ -1,0 +1,62 @@
+.center-shell {
+  min-height: 100vh;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px var(--margin-mobile);
+}
+
+.center-shell-inner {
+  width: 100%;
+  max-width: 440px;
+}
+
+.center-shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.center-shell-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.center-shell-brand-text {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.center-shell-heading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+
+.center-shell-subheading {
+  font-size: 14.5px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.center-shell-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .center-shell-heading {
+    font-size: 30px;
+  }
+}
