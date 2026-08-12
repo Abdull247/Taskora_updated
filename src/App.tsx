@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { SignupFlowProvider } from './context/SignupFlowContext'
 import LandingPage from './pages/Landing/LandingPage'
@@ -6,6 +6,8 @@ import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import LoginPage from './pages/Login/LoginPage'
+import DashboardPage from './pages/Dashboard/DashboardPage'
+import { isAuthenticated } from './lib/authStatus'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
 import OtpStep from './pages/SignupFlow/OtpStep'
@@ -47,7 +49,7 @@ function App() {
       />
       <SignupFlowProvider>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
@@ -64,15 +66,7 @@ function App() {
           <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
           <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ComingSoonPage
-                title="Dashboard Coming Soon"
-                description="Your TaskBridge dashboard is still in the works. Join the waitlist to get early access when it launches."
-              />
-            }
-          />
+          <Route path="/dashboard" element={<DashboardPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
