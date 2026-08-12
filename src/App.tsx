@@ -8,6 +8,9 @@ import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import LoginPage from './pages/Login/LoginPage'
 import DashboardPage from './pages/Dashboard/DashboardPage'
 import BrowseTasksPage from './pages/BrowseTasks/BrowseTasksPage'
+import WalletPage from './pages/Wallet/WalletPage'
+import NotificationsPage from './pages/Notifications/NotificationsPage'
+import ReferralPage from './pages/Referral/ReferralPage'
 import { isAuthenticated } from './lib/authStatus'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
@@ -69,6 +72,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/dashboard/tasks" element={<BrowseTasksPage />} />
+          <Route path="/dashboard/wallet" element={<WalletPage />} />
+          <Route path="/dashboard/notifications" element={<NotificationsPage />} />
+          <Route path="/dashboard/referral" element={<ReferralPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
