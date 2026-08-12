@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
 import { useSignupFlow } from '../../context/SignupFlowContext'
+import { sendVerificationCode } from '../../lib/emailVerification'
+import { ApiRequestError } from '../../lib/api'
+import { withMinDelay } from '../../lib/useMinDelay'
 import './SignupFlow.css'
 
 interface FormErrors {
@@ -12,6 +16,7 @@ function BusinessInfoStep() {
   const navigate = useNavigate()
   const { data, updateData } = useSignupFlow()
   const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
 
   const validate = (): FormErrors => {
     const next: FormErrors = {}
@@ -20,12 +25,24 @@ function BusinessInfoStep() {
     return next
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = validate()
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
-    navigate('/signup/done')
+    setSubmitting(true)
+    try {
+      const { taskId } = await withMinDelay(() => sendVerificationCode({ email: data.email.trim() }))
+      updateData({ verificationTaskId: taskId, emailVerified: false })
+      navigate('/signup/verify-email')
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Could not send a verification code. Please try again.')
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -45,6 +62,7 @@ function BusinessInfoStep() {
             if (errors.businessName) setErrors((p) => ({ ...p, businessName: '' }))
           }}
           className={errors.businessName ? 'input-error' : ''}
+          disabled={submitting}
         />
         {errors.businessName && <span className="field-error">{errors.businessName}</span>}
       </div>
@@ -61,6 +79,7 @@ function BusinessInfoStep() {
             if (errors.industry) setErrors((p) => ({ ...p, industry: '' }))
           }}
           className={errors.industry ? 'input-error' : ''}
+          disabled={submitting}
         />
         {errors.industry && <span className="field-error">{errors.industry}</span>}
       </div>
@@ -75,11 +94,20 @@ function BusinessInfoStep() {
           placeholder="https://yourbusiness.com"
           value={data.website}
           onChange={(e) => updateData({ website: e.target.value })}
+          disabled={submitting}
         />
       </div>
 
-      <button type="button" className="btn btn-primary btn-block" onClick={handleSubmit}>
-        Go to Dashboard
+      <button
+        type="button"
+        className="btn btn-primary btn-block btn-submit"
+        onClick={handleSubmit}
+        disabled={submitting}
+      >
+        <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+          Continue
+        </span>
+        {submitting && <span className="btn-spinner" aria-label="Loading" />}
       </button>
     </FlowCenterShell>
   )

@@ -94,3 +94,21 @@
 .flow-otp-submit {
   margin-top: 4px;
 }
+
+/* ============ Two-column name row (Create Account step) ============ */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

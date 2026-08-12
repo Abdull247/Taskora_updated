@@ -5,6 +5,7 @@ import LandingPage from './pages/Landing/LandingPage'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
+import LoginPage from './pages/Login/LoginPage'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
 import OtpStep from './pages/SignupFlow/OtpStep'
@@ -62,15 +63,7 @@ function App() {
 
           <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
-          <Route
-            path="/login"
-            element={
-              <ComingSoonPage
-                title="Sign In Coming Soon"
-                description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
-              />
-            }
-          />
+          <Route path="/login" element={<LoginPage />} />
           <Route
             path="/dashboard"
             element={

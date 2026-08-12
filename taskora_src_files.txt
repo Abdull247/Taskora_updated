@@ -5,11 +5,19 @@
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ---
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { SignupFlowProvider } from './context/SignupFlowContext'
+import LandingPage from './pages/Landing/LandingPage'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
-import SignupPage from './pages/Signup/SignupPage'
-import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
+import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
+import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
+import OtpStep from './pages/SignupFlow/OtpStep'
+import CreatePasswordStep from './pages/SignupFlow/CreatePasswordStep'
+import RoleStep from './pages/SignupFlow/RoleStep'
+import BusinessInfoStep from './pages/SignupFlow/BusinessInfoStep'
+import SignupDoneStep from './pages/SignupFlow/SignupDoneStep'
+import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
 import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 import './App.css'
@@ -41,36 +49,46 @@ function App() {
           },
         }}
       />
-      <Routes>
-        <Route path="/" element={<WaitlistPage />} />
-        <Route path="/waitlist" element={<WaitlistPage />} />
-        <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
-        <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
-        <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
+      <SignupFlowProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/waitlist" element={<WaitlistPage />} />
+          <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
+          <Route path="/waitlist/for-advertisers" element={<ForAdvertisersPage />} />
 
-        <Route
-          path="/login"
-          element={
-            <ComingSoonPage
-              title="Sign In Coming Soon"
-              description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
-            />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ComingSoonPage
-              title="Dashboard Coming Soon"
-              description="Your Taskora dashboard is still in the works. Join the waitlist to get early access when it launches."
-            />
-          }
-        />
+          <Route path="/signup" element={<CreateAccountStep />} />
+          <Route path="/signup/verify-email" element={<CheckEmailStep />} />
+          <Route path="/signup/otp" element={<OtpStep />} />
+          <Route path="/signup/password" element={<CreatePasswordStep />} />
+          <Route path="/signup/role" element={<RoleStep />} />
+          <Route path="/signup/business" element={<BusinessInfoStep />} />
+          <Route path="/signup/done" element={<SignupDoneStep />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
+
+          <Route
+            path="/login"
+            element={
+              <ComingSoonPage
+                title="Sign In Coming Soon"
+                description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
+              />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ComingSoonPage
+                title="Dashboard Coming Soon"
+                description="Your TaskBridge dashboard is still in the works. Join the waitlist to get early access when it launches."
+              />
+            }
+          />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </SignupFlowProvider>
     </>
   )
 }
@@ -412,24 +430,45 @@ function Navbar() {
 export default Navbar
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/Footer/Footer.tsx ---
+import { Link } from 'react-router-dom'
+import { HiOutlineEnvelope } from 'react-icons/hi2'
 import './Footer.css'
 
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-brand">
-          <span className="footer-logo">TaskBridge</span>
+        <div className="footer-top">
+          <div className="footer-brand-block">
+            <div className="footer-logo-row">
+              <img src="/logo.png" alt="TaskBridge logo" className="footer-logo-icon" />
+              <span className="footer-logo">TaskBridge</span>
+            </div>
+            <p className="footer-tagline">Get things done. Get rewarded.</p>
+          </div>
+
+          <div className="footer-links-grid">
+            <div className="footer-links-col">
+              <span className="footer-links-heading">Platform</span>
+              <a href="/waitlist#how-it-works">How It Works</a>
+              <Link to="/waitlist/for-taskers">For Taskers</Link>
+              <Link to="/waitlist/for-advertisers">For Advertisers</Link>
+            </div>
+            <div className="footer-links-col">
+              <span className="footer-links-heading">Company</span>
+              <a href="/terms">Terms of Service</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="mailto:hello@taskbridge.dev">Contact Us</a>
+            </div>
+          </div>
         </div>
 
-        <div className="footer-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Contact Us</a>
-          <a href="#">Careers</a>
+        <div className="footer-bottom">
+          <p className="footer-copy">© 2026 TaskBridge Inc. All rights reserved.</p>
+          <a href="mailto:hello@taskbridge.dev" className="footer-email">
+            <HiOutlineEnvelope /> hello@taskbridge.dev
+          </a>
         </div>
-
-        <p className="footer-copy">© 2026 TaskBridge Inc. All rights reserved.</p>
       </div>
     </footer>
   )
@@ -442,60 +481,165 @@ export default Footer
   background: var(--color-surface-container-low);
   border-top: 1px solid var(--color-border-subtle);
   width: 100%;
-  padding: var(--space-lg) 0;
+  padding: 48px 0 28px;
 }
 
 .footer-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--margin-mobile);
-  gap: 32px;
+}
+
+.footer-top {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.footer-brand-block {
   text-align: center;
+}
+
+.footer-logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.footer-logo-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
 }
 
 .footer-logo {
   font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-on-surface);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
 }
 
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-}
-
-.footer-links a {
-  color: var(--color-on-surface-variant);
+.footer-tagline {
   font-family: var(--font-label);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.footer-links-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.footer-links-heading {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.footer-links-col a {
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.footer-links a:hover {
+.footer-links-col a:hover {
   color: var(--color-primary);
+}
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 24px;
+  text-align: center;
 }
 
 .footer-copy {
   color: var(--color-on-surface-variant);
-  font-family: var(--font-display);
+  font-family: var(--font-label);
   font-size: 12px;
-  opacity: 0.7;
+}
+
+.footer-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-primary);
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-email svg {
+  font-size: 15px;
+}
+
+.footer-email:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 640px) {
+  .footer-links-grid {
+    grid-template-columns: repeat(2, auto);
+    justify-content: center;
+    gap: 64px;
+  }
 }
 
 @media (min-width: 768px) {
   .footer-container {
-    flex-direction: row;
     padding: 0 var(--margin-desktop);
+  }
+
+  .footer-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand-block {
     text-align: left;
+  }
+
+  .footer-logo-row {
+    justify-content: flex-start;
+  }
+
+  .footer-links-grid {
+    text-align: left;
+    grid-template-columns: repeat(2, auto);
+  }
+
+  .footer-links-col {
+    align-items: flex-start;
+  }
+
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
   }
 }
 
@@ -631,6 +775,604 @@ export default FaqAccordion
   padding: 0 18px 18px;
 }
 
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/AnimatedCounter/AnimatedCounter.tsx ---
+import { useEffect, useRef, useState } from 'react'
+
+interface AnimatedCounterProps {
+  end: number
+  duration?: number
+  prefix?: string
+  suffix?: string
+  className?: string
+}
+
+// TODO: once a public endpoint exists (e.g. GET /waitlist/count), fetch the
+// real total and pass it in as `end` from the parent instead of a static number.
+function AnimatedCounter({ end, duration = 1800, prefix = '', suffix = '', className }: AnimatedCounterProps) {
+  const [value, setValue] = useState(0)
+  const ref = useRef<HTMLSpanElement>(null)
+  const hasAnimated = useRef(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) {
+      setValue(end)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated.current) {
+            hasAnimated.current = true
+            const startTime = performance.now()
+
+            const step = (now: number) => {
+              const elapsed = now - startTime
+              const progress = Math.min(elapsed / duration, 1)
+              // ease-out cubic
+              const eased = 1 - Math.pow(1 - progress, 3)
+              setValue(Math.round(eased * end))
+
+              if (progress < 1) {
+                requestAnimationFrame(step)
+              }
+            }
+
+            requestAnimationFrame(step)
+            observer.unobserve(el)
+          }
+        })
+      },
+      { threshold: 0.4 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [end, duration])
+
+  return (
+    <span ref={ref} className={className}>
+      {prefix}
+      {value.toLocaleString()}
+      {suffix}
+    </span>
+  )
+}
+
+export default AnimatedCounter
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/RoleSelect/RoleSelect.tsx ---
+import { useState, useRef, useEffect } from 'react'
+import { HiChevronDown, HiOutlineIdentification, HiOutlineMegaphone, HiCheck } from 'react-icons/hi2'
+import type { UserRole } from '../../types/api'
+import './RoleSelect.css'
+
+interface RoleSelectProps {
+  value: UserRole
+  onChange: (role: UserRole) => void
+  disabled?: boolean
+  id?: string
+}
+
+const options: { value: UserRole; label: string; description: string; icon: JSX.Element }[] = [
+  {
+    value: 'worker',
+    label: 'Tasker',
+    description: 'Find tasks and earn rewards',
+    icon: <HiOutlineIdentification />,
+  },
+  {
+    value: 'advertiser',
+    label: 'Advertiser',
+    description: 'Post tasks and get things done',
+    icon: <HiOutlineMegaphone />,
+  },
+]
+
+function RoleSelect({ value, onChange, disabled, id }: RoleSelectProps) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const selected = options.find((o) => o.value === value) ?? options[0]
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <div className="role-select" ref={wrapRef}>
+      <button
+        id={id}
+        type="button"
+        className={`role-select-trigger ${open ? 'role-select-trigger-open' : ''}`}
+        onClick={() => !disabled && setOpen((o) => !o)}
+        disabled={disabled}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span className="role-select-icon">{selected.icon}</span>
+        <span className="role-select-text">
+          <span className="role-select-label">{selected.label}</span>
+          <span className="role-select-description">{selected.description}</span>
+        </span>
+        <HiChevronDown className="role-select-chevron" />
+      </button>
+
+      <div className={`role-select-panel ${open ? 'role-select-panel-open' : ''}`} role="listbox">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            role="option"
+            aria-selected={option.value === value}
+            className={`role-select-option ${option.value === value ? 'role-select-option-active' : ''}`}
+            onClick={() => {
+              onChange(option.value)
+              setOpen(false)
+            }}
+          >
+            <span className="role-select-option-icon">{option.icon}</span>
+            <span className="role-select-text">
+              <span className="role-select-label">{option.label}</span>
+              <span className="role-select-description">{option.description}</span>
+            </span>
+            {option.value === value && <HiCheck className="role-select-check" />}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default RoleSelect
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/RoleSelect/RoleSelect.css ---
+.role-select {
+  position: relative;
+}
+
+.role-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.role-select-trigger:hover {
+  border-color: #cbd5e1;
+}
+
+.role-select-trigger-open {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
+}
+
+.role-select-trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.role-select-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.role-select-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.role-select-label {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.role-select-description {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.role-select-chevron {
+  font-size: 18px;
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.role-select-trigger-open .role-select-chevron {
+  transform: rotate(180deg);
+}
+
+.role-select-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+  padding: 6px;
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+}
+
+.role-select-panel-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.role-select-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.role-select-option:hover {
+  background: var(--color-surface-container-low);
+}
+
+.role-select-option-active {
+  background: var(--color-brand-blue-tint);
+}
+
+.role-select-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.role-select-option-active .role-select-option-icon {
+  background: #ffffff;
+}
+
+.role-select-check {
+  font-size: 18px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FlowShell/FlowShell.tsx ---
+import { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { HiArrowLeft } from 'react-icons/hi2'
+import './FlowShell.css'
+
+interface FlowShellProps {
+  children: ReactNode
+  onBack?: () => void
+  hideBack?: boolean
+}
+
+function FlowShell({ children, onBack, hideBack }: FlowShellProps) {
+  const navigate = useNavigate()
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack()
+    } else {
+      navigate(-1)
+    }
+  }
+
+  return (
+    <div className="flow-shell">
+      {!hideBack && (
+        <button className="flow-back" onClick={handleBack}>
+          <HiArrowLeft />
+          <span>Back</span>
+        </button>
+      )}
+      <div className="flow-shell-content">{children}</div>
+    </div>
+  )
+}
+
+export default FlowShell
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FlowShell/FlowShell.css ---
+.flow-shell {
+  min-height: 100vh;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  padding: 20px var(--margin-mobile) 40px;
+}
+
+.flow-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 4px;
+  margin-bottom: 12px;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.flow-back:hover {
+  color: var(--color-primary);
+}
+
+.flow-back svg {
+  font-size: 18px;
+}
+
+.flow-shell-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .flow-shell {
+    padding: 32px var(--margin-desktop) 60px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FlowCenterShell/FlowCenterShell.tsx ---
+import { ReactNode } from 'react'
+import './FlowCenterShell.css'
+
+interface FlowCenterShellProps {
+  heading: string
+  subheading: string
+  children: ReactNode
+}
+
+function FlowCenterShell({ heading, subheading, children }: FlowCenterShellProps) {
+  return (
+    <div className="center-shell">
+      <div className="center-shell-inner">
+        <div className="center-shell-brand">
+          <img src="/logo.png" alt="TaskBridge logo" className="center-shell-logo" />
+          <span className="center-shell-brand-text">TaskBridge</span>
+        </div>
+
+        <h1 className="center-shell-heading">{heading}</h1>
+        <p className="center-shell-subheading">{subheading}</p>
+
+        <div className="center-shell-body">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+export default FlowCenterShell
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/FlowCenterShell/FlowCenterShell.css ---
+.center-shell {
+  min-height: 100vh;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px var(--margin-mobile);
+}
+
+.center-shell-inner {
+  width: 100%;
+  max-width: 440px;
+}
+
+.center-shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.center-shell-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.center-shell-brand-text {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.center-shell-heading {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+
+.center-shell-subheading {
+  font-size: 14.5px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.center-shell-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .center-shell-heading {
+    font-size: 30px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/OtpInput/OtpInput.tsx ---
+import { useRef, KeyboardEvent, ClipboardEvent, ChangeEvent } from 'react'
+import './OtpInput.css'
+
+interface OtpInputProps {
+  length?: number
+  value: string[]
+  onChange: (value: string[]) => void
+  disabled?: boolean
+  error?: boolean
+}
+
+function OtpInput({ length = 6, value, onChange, disabled, error }: OtpInputProps) {
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+    const digit = e.target.value.replace(/\D/g, '').slice(-1)
+    const next = [...value]
+    next[index] = digit
+    onChange(next)
+
+    if (digit && index < length - 1) {
+      inputRefs.current[index + 1]?.focus()
+    }
+  }
+
+  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !value[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus()
+    }
+  }
+
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
+    if (!pasted) return
+    const next = Array(length).fill('')
+    pasted.split('').forEach((char, i) => {
+      next[i] = char
+    })
+    onChange(next)
+    const lastFilled = Math.min(pasted.length, length) - 1
+    inputRefs.current[lastFilled]?.focus()
+  }
+
+  return (
+    <div className={`otp-input-row ${error ? 'otp-input-row-error' : ''}`}>
+      {Array.from({ length }).map((_, index) => (
+        <input
+          key={index}
+          ref={(el) => (inputRefs.current[index] = el)}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={value[index] || ''}
+          onChange={(e) => handleChange(index, e)}
+          onKeyDown={(e) => handleKeyDown(index, e)}
+          onPaste={handlePaste}
+          disabled={disabled}
+          className="otp-box"
+          autoFocus={index === 0}
+        />
+      ))}
+    </div>
+  )
+}
+
+export default OtpInput
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/OtpInput/OtpInput.css ---
+.otp-input-row {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.otp-box {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 56px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.otp-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 83, 212, 0.12);
+}
+
+.otp-input-row-error .otp-box {
+  border-color: #ba1a1a;
+}
+
+.otp-box:disabled {
+  opacity: 0.6;
+}
+
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ---
 *,
 *::before,
@@ -638,13 +1380,21 @@ export default FaqAccordion
   box-sizing: border-box;
 }
 
-html,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: #faf8ff;
+}
+
 body {
   margin: 0;
   padding: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: #faf8ff;
 }
 
@@ -718,14 +1468,22 @@ createRoot(document.getElementById('root')!).render(
   box-sizing: border-box;
 }
 
-html,
+html {
+  margin: 0;
+  padding: 0;
+  background: #faf8ff;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   margin: 0;
   padding: 0;
   background: #faf8ff;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 * {
@@ -2344,11 +3102,12 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
+import RoleSelect from '../../components/RoleSelect/RoleSelect'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { joinWaitlist } from '../../lib/waitlist'
 import { ApiRequestError } from '../../lib/api'
 import type { UserRole } from '../../types/api'
-import { HiChevronDown } from 'react-icons/hi2'
+import { HiOutlineEye, HiOutlineEyeSlash, HiOutlineShieldCheck } from 'react-icons/hi2'
 import './SignupPage.css'
 
 interface FormData {
@@ -2358,8 +3117,10 @@ interface FormData {
   email: string
   phoneNumber: string
   password: string
+  confirmPassword: string
   role: UserRole
   referredByCode: string
+  agreedToTerms: boolean
 }
 
 interface FormErrors {
@@ -2373,8 +3134,10 @@ const initialForm: FormData = {
   email: '',
   phoneNumber: '',
   password: '',
+  confirmPassword: '',
   role: 'worker',
   referredByCode: '',
+  agreedToTerms: false,
 }
 
 function isValidRole(value: string | null): value is UserRole {
@@ -2387,6 +3150,8 @@ function SignupPage() {
   const [form, setForm] = useState<FormData>(initialForm)
   const [errors, setErrors] = useState<FormErrors>({})
   const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
   const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
@@ -2399,10 +3164,10 @@ function SignupPage() {
   }, [searchParams])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value, type, checked } = e.target
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
     if (errors[name]) {
       setErrors((prev) => {
         const next = { ...prev }
@@ -2410,6 +3175,10 @@ function SignupPage() {
         return next
       })
     }
+  }
+
+  const handleRoleChange = (role: UserRole) => {
+    setForm((prev) => ({ ...prev, role }))
   }
 
   const validate = (): FormErrors => {
@@ -2442,6 +3211,16 @@ function SignupPage() {
       next.password = 'Password must be at least 8 characters'
     }
 
+    if (!form.confirmPassword) {
+      next.confirmPassword = 'Please confirm your password'
+    } else if (form.confirmPassword !== form.password) {
+      next.confirmPassword = 'Passwords do not match'
+    }
+
+    if (!form.agreedToTerms) {
+      next.agreedToTerms = 'You must agree to the Terms and Privacy Policy to continue'
+    }
+
     return next
   }
 
@@ -2468,9 +3247,7 @@ function SignupPage() {
       toast.success(`You're on the waitlist, ${user.first_name}! Check your email for confirmation.`)
 
       setTimeout(() => {
-        navigate('/waitlist/success', {
-          state: { waitlistJoined: true, firstName: user.first_name },
-        })
+        navigate('/', { state: { waitlistJoined: true } })
       }, 1800)
     } catch (err) {
       if (err instanceof ApiRequestError) {
@@ -2495,6 +3272,9 @@ function SignupPage() {
       <main className="signup-main">
         <div className="signup-container">
           <div ref={headingRef} className="signup-heading reveal reveal-up">
+            <span className="signup-eyebrow">
+              <HiOutlineShieldCheck /> Early access
+            </span>
             <h1>Join the Waitlist</h1>
             <p>Create your account to get early access to TaskBridge.</p>
           </div>
@@ -2558,7 +3338,7 @@ function SignupPage() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="ada@taskora.dev"
+                placeholder="ada@taskbridge.dev"
                 value={form.email}
                 onChange={handleChange}
                 disabled={submitting}
@@ -2586,34 +3366,66 @@ function SignupPage() {
 
             <div className="form-field">
               <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="At least 8 characters"
-                value={form.password}
-                onChange={handleChange}
-                disabled={submitting}
-                className={errors.password ? 'input-error' : ''}
-              />
+              <div className="password-input-wrap">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="At least 8 characters"
+                  value={form.password}
+                  onChange={handleChange}
+                  disabled={submitting}
+                  className={errors.password ? 'input-error' : ''}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((s) => !s)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
+                </button>
+              </div>
               {errors.password && <span className="field-error">{errors.password}</span>}
             </div>
 
             <div className="form-field">
-              <label htmlFor="role">I want to join as</label>
-              <div className="select-wrap">
-                <select
-                  id="role"
-                  name="role"
-                  value={form.role}
+              <label htmlFor="confirmPassword">Confirm password</label>
+              <div className="password-input-wrap">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                  value={form.confirmPassword}
                   onChange={handleChange}
                   disabled={submitting}
+                  className={errors.confirmPassword ? 'input-error' : ''}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirmPassword((s) => !s)}
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                 >
-                  <option value="worker">Tasker</option>
-                  <option value="advertiser">Advertiser</option>
-                </select>
-                <HiChevronDown className="select-icon" />
+                  {showConfirmPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
+                </button>
               </div>
+              {errors.confirmPassword && (
+                <span className="field-error">{errors.confirmPassword}</span>
+              )}
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="role">I want to join as</label>
+              <RoleSelect
+                id="role"
+                value={form.role}
+                onChange={handleRoleChange}
+                disabled={submitting}
+              />
             </div>
 
             <div className="form-field">
@@ -2629,6 +3441,33 @@ function SignupPage() {
                 onChange={handleChange}
                 disabled={submitting}
               />
+            </div>
+
+            <div className="terms-field">
+              <label className="terms-checkbox-label">
+                <input
+                  type="checkbox"
+                  name="agreedToTerms"
+                  checked={form.agreedToTerms}
+                  onChange={handleChange}
+                  disabled={submitting}
+                  className="terms-checkbox-input"
+                />
+                <span className={`terms-checkbox-box ${errors.agreedToTerms ? 'terms-checkbox-box-error' : ''}`}>
+                  <svg viewBox="0 0 16 16" className="terms-checkbox-tick">
+                    <path d="M3 8.5L6.5 12L13 4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="terms-checkbox-text">
+                  I agree to TaskBridge's{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a>{' '}
+                  and{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                </span>
+              </label>
+              {errors.agreedToTerms && (
+                <span className="field-error field-error-terms">{errors.agreedToTerms}</span>
+              )}
             </div>
 
             <button
@@ -2678,6 +3517,25 @@ export default SignupPage
   margin-bottom: 28px;
 }
 
+.signup-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.signup-eyebrow svg {
+  font-size: 14px;
+}
+
 .signup-heading h1 {
   font-size: 28px;
   font-weight: 800;
@@ -2691,26 +3549,26 @@ export default SignupPage
   color: var(--color-on-surface-variant);
 }
 
+/* Flat, no card background — sits directly on the page */
 .signup-form {
-  background: #ffffff;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-xl);
-  padding: 24px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .form-field label {
@@ -2725,27 +3583,30 @@ export default SignupPage
   color: #94a3b8;
 }
 
-.form-field input,
-.select-wrap select {
+.form-field input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 13px 15px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-subtle);
+  border: 1.5px solid var(--color-border-subtle);
   outline: none;
   font-family: var(--font-display);
   font-size: 15px;
   background: #ffffff;
   color: var(--color-on-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-field input::placeholder {
   color: #94a3b8;
 }
 
-.form-field input:focus,
-.select-wrap select:focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 2px var(--color-primary);
+.form-field input:hover {
+  border-color: #cbd5e1;
+}
+
+.form-field input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
 }
 
 .form-field input.input-error {
@@ -2753,7 +3614,7 @@ export default SignupPage
 }
 
 .form-field input.input-error:focus {
-  box-shadow: 0 0 0 2px #ba1a1a;
+  box-shadow: 0 0 0 2px rgba(186, 26, 26, 0.12);
 }
 
 .field-error {
@@ -2762,30 +3623,123 @@ export default SignupPage
   font-family: var(--font-label);
 }
 
-.select-wrap {
+/* Password visibility toggle */
+.password-input-wrap {
   position: relative;
 }
 
-.select-wrap select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 40px;
+.password-input-wrap input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  font-size: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.password-toggle:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+}
+
+/* Custom terms checkbox */
+.terms-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   cursor: pointer;
 }
 
-.select-icon {
+.terms-checkbox-input {
   position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.terms-checkbox-box {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.terms-checkbox-box-error {
+  border-color: #ba1a1a;
+}
+
+.terms-checkbox-tick {
+  width: 13px;
+  height: 13px;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.terms-checkbox-input:checked + .terms-checkbox-box .terms-checkbox-tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.terms-checkbox-input:focus-visible + .terms-checkbox-box {
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.25);
+}
+
+.terms-checkbox-text {
+  font-size: 13.5px;
+  line-height: 1.5;
   color: var(--color-on-surface-variant);
-  font-size: 18px;
+}
+
+.terms-checkbox-text a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.terms-checkbox-text a:hover {
+  text-decoration: underline;
+}
+
+.field-error-terms {
+  padding-left: 30px;
 }
 
 .btn-submit {
-  margin-top: 6px;
+  margin-top: 4px;
   padding: 16px 32px;
 }
 
@@ -2811,8 +3765,7 @@ export default SignupPage
 .signup-success-card {
   max-width: 420px;
   text-align: center;
-  background: #ffffff;
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-container-lowest);
   border-radius: var(--radius-xl);
   padding: 40px 28px;
 }
@@ -2844,10 +3797,6 @@ export default SignupPage
 @media (min-width: 768px) {
   .signup-main {
     padding: 56px var(--margin-desktop) 80px;
-  }
-
-  .signup-form {
-    padding: 32px;
   }
 }
 
@@ -3768,6 +4717,1860 @@ export default WaitlistSuccessPage
   }
 }
 
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Landing/LandingPage.tsx ---
+import { Link } from 'react-router-dom'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import FaqAccordion from '../../components/FaqAccordion/FaqAccordion'
+import AnimatedCounter from '../../components/AnimatedCounter/AnimatedCounter'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import {
+  HiOutlineMagnifyingGlass,
+  HiOutlineCheckCircle,
+  HiOutlineBanknotes,
+  HiOutlineRocketLaunch,
+  HiOutlineTag,
+  HiOutlineUsers,
+  HiOutlineShieldCheck,
+  HiOutlineAdjustmentsHorizontal,
+  HiOutlineChartBar,
+  HiOutlineClipboardDocumentList,
+  HiOutlineMegaphone,
+  HiOutlineMapPin,
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineComputerDesktop,
+  HiOutlineCamera,
+  HiOutlineClipboardDocumentCheck,
+  HiOutlineTruck,
+  HiOutlineUserCircle,
+  HiOutlineBuildingOffice2,
+  HiOutlineBuildingOffice,
+  HiOutlineDocumentText,
+  HiOutlineCurrencyDollar,
+  HiOutlineEye,
+  HiOutlineIdentification,
+  HiOutlineBolt,
+  HiOutlineGlobeAlt,
+  HiOutlineSparkles,
+  HiStar,
+} from 'react-icons/hi2'
+import './LandingPage.css'
+
+const taskerFaqs = [
+  {
+    question: 'What is TaskBridge?',
+    answer: 'TaskBridge is a platform where people can discover tasks, complete useful work and earn rewards.',
+  },
+  {
+    question: 'How do I become a Tasker?',
+    answer:
+      "Join the waitlist and create your account when TaskBridge becomes available. You'll be able to explore available tasks and choose opportunities that fit you.",
+  },
+  {
+    question: 'How do Taskers earn rewards?',
+    answer: 'Taskers earn the reward associated with eligible tasks they successfully complete and have approved.',
+  },
+  {
+    question: 'Can I choose which tasks I complete?',
+    answer:
+      'TaskBridge is designed to let Taskers discover opportunities and choose tasks that fit their interests, skills and availability.',
+  },
+]
+
+const advertiserFaqs = [
+  {
+    question: 'What is an Advertiser?',
+    answer: 'An Advertiser is someone who creates a task on TaskBridge because they need something done by another person.',
+  },
+  {
+    question: 'What can I post as an Advertiser?',
+    answer:
+      'Advertisers can create tasks for a variety of digital, local, research, feedback, assistance and other practical needs, depending on what TaskBridge supports at launch.',
+  },
+  {
+    question: 'How do Advertisers create a task?',
+    answer:
+      'Advertisers provide the task details, instructions, requirements and reward so Taskers know exactly what needs to be done.',
+  },
+  {
+    question: 'Do Advertisers choose who completes their task?',
+    answer:
+      'TaskBridge can help Advertisers reach relevant Taskers. The exact matching and selection experience will depend on the task and platform features available at launch.',
+  },
+]
+
+const generalFaqs = [
+  {
+    question: 'When is TaskBridge launching?',
+    answer: 'TaskBridge is currently preparing for launch. Join the waitlist to receive important launch updates and early-access information.',
+  },
+  {
+    question: 'Is TaskBridge free to join?',
+    answer: 'Joining the waitlist is free. Pricing and fees for using specific TaskBridge features will be communicated before launch.',
+  },
+  {
+    question: 'Where will TaskBridge be available?',
+    answer: 'TaskBridge is being built with accessibility in mind, with availability and supported regions expanding over time.',
+  },
+  {
+    question: 'Can businesses use TaskBridge?',
+    answer: 'Yes. Businesses and organizations can use TaskBridge to create tasks and connect with people who can help get them done.',
+  },
+]
+
+function LandingPage() {
+  const heroTitleRef = useScrollReveal<HTMLHeadingElement>({ threshold: 0 })
+  const heroDescRef = useScrollReveal<HTMLParagraphElement>({ threshold: 0 })
+  const heroActionsRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
+  const heroImageRef = useScrollReveal<HTMLDivElement>({ threshold: 0.1 })
+
+  const statsRef = useScrollReveal<HTMLDivElement>()
+
+  const howHeadingRef = useScrollReveal<HTMLDivElement>()
+  const step1Ref = useScrollReveal<HTMLDivElement>()
+  const step2Ref = useScrollReveal<HTMLDivElement>()
+  const step3Ref = useScrollReveal<HTMLDivElement>()
+  const step4Ref = useScrollReveal<HTMLDivElement>()
+  const step5Ref = useScrollReveal<HTMLDivElement>()
+
+  const showcaseHeadingRef = useScrollReveal<HTMLDivElement>()
+  const showcaseCard1Ref = useScrollReveal<HTMLDivElement>()
+  const showcaseCard2Ref = useScrollReveal<HTMLDivElement>()
+  const showcaseCard3Ref = useScrollReveal<HTMLDivElement>()
+
+  const twoSidedHeadingRef = useScrollReveal<HTMLDivElement>()
+  const taskerCardRef = useScrollReveal<HTMLDivElement>()
+  const advertiserCardRef = useScrollReveal<HTMLDivElement>()
+
+  const advertiserFlowHeadingRef = useScrollReveal<HTMLDivElement>()
+  const advStep1Ref = useScrollReveal<HTMLDivElement>()
+  const advStep2Ref = useScrollReveal<HTMLDivElement>()
+  const advStep3Ref = useScrollReveal<HTMLDivElement>()
+  const advStep4Ref = useScrollReveal<HTMLDivElement>()
+
+  const categoriesHeadingRef = useScrollReveal<HTMLDivElement>()
+  const cat1Ref = useScrollReveal<HTMLDivElement>()
+  const cat2Ref = useScrollReveal<HTMLDivElement>()
+  const cat3Ref = useScrollReveal<HTMLDivElement>()
+  const cat4Ref = useScrollReveal<HTMLDivElement>()
+  const cat5Ref = useScrollReveal<HTMLDivElement>()
+  const cat6Ref = useScrollReveal<HTMLDivElement>()
+
+  const spotlightHeadingRef = useScrollReveal<HTMLDivElement>()
+  const spotlightRef = useScrollReveal<HTMLDivElement>()
+
+  const whoHeadingRef = useScrollReveal<HTMLDivElement>()
+  const who1Ref = useScrollReveal<HTMLDivElement>()
+  const who2Ref = useScrollReveal<HTMLDivElement>()
+  const who3Ref = useScrollReveal<HTMLDivElement>()
+  const who4Ref = useScrollReveal<HTMLDivElement>()
+
+  const trustHeadingRef = useScrollReveal<HTMLDivElement>()
+  const trust1Ref = useScrollReveal<HTMLDivElement>()
+  const trust2Ref = useScrollReveal<HTMLDivElement>()
+  const trust3Ref = useScrollReveal<HTMLDivElement>()
+  const trust4Ref = useScrollReveal<HTMLDivElement>()
+
+  const whyHeadingRef = useScrollReveal<HTMLDivElement>()
+  const feature1Ref = useScrollReveal<HTMLDivElement>()
+  const feature2Ref = useScrollReveal<HTMLDivElement>()
+  const feature3Ref = useScrollReveal<HTMLDivElement>()
+  const feature4Ref = useScrollReveal<HTMLDivElement>()
+
+  const previewCopyRef = useScrollReveal<HTMLDivElement>()
+  const previewImageRef = useScrollReveal<HTMLDivElement>()
+
+  const faqHeadingRef = useScrollReveal<HTMLDivElement>()
+  const faqBodyRef = useScrollReveal<HTMLDivElement>()
+
+  const ctaRef = useScrollReveal<HTMLDivElement>()
+
+  return (
+    <div className="waitlist-page landing-page">
+      <Navbar />
+
+      <main>
+        {/* Hero Section — no "Launching Soon" badge */}
+        <section className="hero">
+          <div className="hero-container">
+            <div className="hero-copy">
+              <h1 ref={heroTitleRef} className="hero-title reveal reveal-fade-blur">
+                Get things done.
+                <br />
+                Get <span className="hero-title-accent">rewarded.</span>
+              </h1>
+              <p ref={heroDescRef} className="hero-description reveal reveal-up reveal-delay-1">
+                TaskBridge is a marketplace connecting Taskers who complete tasks and earn
+                rewards with Advertisers who need real work done.
+              </p>
+              <div ref={heroActionsRef} className="hero-actions reveal reveal-up reveal-delay-2">
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                  Get Started
+                </Link>
+                <a href="#how-it-works" className="btn btn-tint btn-block">
+                  How It Works
+                </a>
+              </div>
+            </div>
+
+            <div ref={heroImageRef} className="hero-image-wrap reveal reveal-scale reveal-delay-1">
+              <div className="hero-image-frame">
+                <img
+                  className="hero-image"
+                  src="/dashboard_mockup.png"
+                  alt="TaskBridge app dashboard mockup"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ UNIQUE SECTION 1: Live Stats Band ============ */}
+        <section className="stats-band">
+          <div ref={statsRef} className="stats-band-container reveal reveal-up">
+            <div className="stat-item">
+              <span className="stat-value">
+                <AnimatedCounter end={1284} suffix="+" />
+              </span>
+              <span className="stat-label">People waiting</span>
+            </div>
+            <div className="stat-divider" />
+            <div className="stat-item">
+              <span className="stat-value">
+                <AnimatedCounter end={9} />
+              </span>
+              <span className="stat-label">Task categories</span>
+            </div>
+            <div className="stat-divider" />
+            <div className="stat-item">
+              <span className="stat-value">
+                <AnimatedCounter end={2} />
+              </span>
+              <span className="stat-label">Ways to join</span>
+            </div>
+          </div>
+        </section>
+
+        {/* How TaskBridge Works */}
+        <section className="how-it-works" id="how-it-works">
+          <div className="section-container">
+            <div ref={howHeadingRef} className="section-heading reveal reveal-up">
+              <h2>From idea to done, in five simple steps</h2>
+              <p>TaskBridge makes it effortless for tasks to get posted, discovered, and completed.</p>
+            </div>
+
+            <div className="steps-stack">
+              <div ref={step1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentList />
+                </div>
+                <span className="step-label">STEP 01</span>
+                <h3>Post a Task</h3>
+                <p>Advertisers create a task in minutes by describing what they need done, adding clear instructions and defining requirements.</p>
+              </div>
+
+              <div ref={step2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineBanknotes />
+                </div>
+                <span className="step-label">STEP 02</span>
+                <h3>Set Your Budget</h3>
+                <p>Advertisers choose how much to pay per completed task, set the number of participants and fund their campaign to make it live.</p>
+              </div>
+
+              <div ref={step3Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <span className="step-label">STEP 03</span>
+                <h3>Discover</h3>
+                <p>Taskers find tasks that match what they can do, from simple digital checks to local physical assistance.</p>
+              </div>
+
+              <div ref={step4Ref} className="step-card reveal reveal-left reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCheckCircle />
+                </div>
+                <span className="step-label">STEP 04</span>
+                <h3>Complete</h3>
+                <p>Follow clear instructions to get the task done and submit your work directly through the app.</p>
+              </div>
+
+              <div ref={step5Ref} className="step-card reveal reveal-right reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineBanknotes />
+                </div>
+                <span className="step-label">STEP 05</span>
+                <h3>Get Rewarded</h3>
+                <p>Earn your reward instantly when your work is approved, and transfer your balance easily.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ UNIQUE SECTION 2: Visual "How It Feels" Showcase ============ */}
+        <section className="feel-showcase">
+          <div className="section-container">
+            <div ref={showcaseHeadingRef} className="section-heading reveal reveal-up">
+              <h2>What using TaskBridge actually feels like</h2>
+              <p>No clutter, no confusion — just a clear path from posting to getting paid.</p>
+            </div>
+
+            <div className="showcase-grid">
+              <div ref={showcaseCard1Ref} className="showcase-card showcase-card-tall reveal reveal-left">
+                <div className="showcase-icon">
+                  <HiOutlineBolt />
+                </div>
+                <h3>Instant clarity</h3>
+                <p>Every task shows exactly what's expected, what it pays, and how long it takes — before you commit to anything.</p>
+              </div>
+
+              <div ref={showcaseCard2Ref} className="showcase-card reveal reveal-up reveal-delay-1">
+                <div className="showcase-icon">
+                  <HiOutlineGlobeAlt />
+                </div>
+                <h3>Work from anywhere</h3>
+                <p>Digital tasks travel with you. Local tasks connect you to opportunities nearby.</p>
+              </div>
+
+              <div ref={showcaseCard3Ref} className="showcase-card reveal reveal-right reveal-delay-2">
+                <div className="showcase-icon">
+                  <HiOutlineSparkles />
+                </div>
+                <h3>Momentum that compounds</h3>
+                <p>Completed tasks build your track record, making it easier to access better opportunities over time.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Two-Sided Marketplace */}
+        <section className="two-sided" id="for-taskers">
+          <div className="section-container">
+            <div ref={twoSidedHeadingRef} className="section-heading reveal reveal-up">
+              <h2>One platform. Two ways to get things done.</h2>
+              <p>Whether you're looking for opportunities or need something done, TaskBridge connects the right people to the right tasks.</p>
+            </div>
+
+            <div className="two-sided-grid">
+              <div ref={taskerCardRef} className="side-card reveal reveal-left">
+                <span className="side-label">For Taskers</span>
+                <div className="side-icon">
+                  <HiOutlineMagnifyingGlass />
+                </div>
+                <h3>Find tasks. Do the work. Get rewarded.</h3>
+                <p>Discover tasks that match your skills, interests and location. Complete them, submit your work and earn rewards when your work is approved.</p>
+                <ul className="side-benefits">
+                  <li>Discover relevant tasks</li>
+                  <li>Choose opportunities that fit you</li>
+                  <li>Complete tasks on your terms</li>
+                  <li>Earn rewards for approved work</li>
+                </ul>
+                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                  Get Started as a Tasker
+                </Link>
+              </div>
+
+              <div id="for-advertisers" ref={advertiserCardRef} className="side-card reveal reveal-right">
+                <span className="side-label">For Advertisers</span>
+                <div className="side-icon">
+                  <HiOutlineMegaphone />
+                </div>
+                <h3>Need something done? Put it in front of the right people.</h3>
+                <p>Create a task, define what you need, set your reward and let TaskBridge connect you with people ready to get it done.</p>
+                <ul className="side-benefits">
+                  <li>Create and publish tasks</li>
+                  <li>Set your requirements and reward</li>
+                  <li>Reach relevant Taskers</li>
+                  <li>Review submissions and approve completed work</li>
+                </ul>
+                <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                  Get Started as an Advertiser
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* For Advertisers process */}
+        <section className="advertiser-flow">
+          <div className="section-container">
+            <div ref={advertiserFlowHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Turn things you need done into simple tasks.</h2>
+              <p>From getting local help to collecting information or completing digital work, TaskBridge helps you turn real-world needs into clear, actionable tasks.</p>
+            </div>
+
+            <div className="steps-stack steps-stack-4">
+              <div ref={advStep1Ref} className="step-card reveal reveal-left">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentList />
+                </div>
+                <span className="step-label">01</span>
+                <h3>Create a Task</h3>
+                <p>Describe what needs to be done, add instructions and define who you're looking for.</p>
+              </div>
+
+              <div ref={advStep2Ref} className="step-card reveal reveal-up reveal-delay-1">
+                <div className="step-icon">
+                  <HiOutlineCurrencyDollar />
+                </div>
+                <span className="step-label">02</span>
+                <h3>Set the Reward</h3>
+                <p>Choose a reward and provide the details Taskers need before they get started.</p>
+              </div>
+
+              <div ref={advStep3Ref} className="step-card reveal reveal-up reveal-delay-2">
+                <div className="step-icon">
+                  <HiOutlineDocumentText />
+                </div>
+                <span className="step-label">03</span>
+                <h3>Get Submissions</h3>
+                <p>People interested in your task complete the work and submit their results.</p>
+              </div>
+
+              <div ref={advStep4Ref} className="step-card reveal reveal-right reveal-delay-3">
+                <div className="step-icon">
+                  <HiOutlineClipboardDocumentCheck />
+                </div>
+                <span className="step-label">04</span>
+                <h3>Review &amp; Approve</h3>
+                <p>Review submissions and approve completed work that meets your requirements.</p>
+              </div>
+            </div>
+
+            <div className="advertiser-flow-actions">
+              <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                Get Started as an Advertiser
+              </Link>
+              <a href="#how-it-works" className="btn btn-tint btn-block">
+                See How It Works
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* What can you get done */}
+        <section className="categories">
+          <div className="section-container">
+            <div ref={categoriesHeadingRef} className="section-heading reveal reveal-up">
+              <h2>What can you get done with TaskBridge?</h2>
+              <p>A few examples of the kinds of tasks Advertisers can create.</p>
+            </div>
+
+            <div className="categories-grid">
+              <div ref={cat1Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon"><HiOutlineMapPin /></span>
+                <h4>Local Tasks</h4>
+                <p>Need someone nearby to help with a simple physical task?</p>
+              </div>
+              <div ref={cat2Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon"><HiOutlineChatBubbleLeftRight /></span>
+                <h4>Research &amp; Feedback</h4>
+                <p>Get opinions, responses or real-world information from people.</p>
+              </div>
+              <div ref={cat3Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon"><HiOutlineComputerDesktop /></span>
+                <h4>Digital Tasks</h4>
+                <p>Delegate simple online work that can be completed remotely.</p>
+              </div>
+              <div ref={cat4Ref} className="category-card reveal reveal-up-scale">
+                <span className="category-icon"><HiOutlineCamera /></span>
+                <h4>Content &amp; Media</h4>
+                <p>Get help with simple content, photography, video or media-related tasks.</p>
+              </div>
+              <div ref={cat5Ref} className="category-card reveal reveal-up-scale reveal-delay-1">
+                <span className="category-icon"><HiOutlineEye /></span>
+                <h4>Testing &amp; Feedback</h4>
+                <p>Have people test an experience, product or process and share their feedback.</p>
+              </div>
+              <div ref={cat6Ref} className="category-card reveal reveal-up-scale reveal-delay-2">
+                <span className="category-icon"><HiOutlineTruck /></span>
+                <h4>Errands &amp; Assistance</h4>
+                <p>Get help with everyday tasks that require a real person.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ UNIQUE SECTION 3: Founding Member Spotlight ============ */}
+        <section className="spotlight">
+          <div className="section-container">
+            <div ref={spotlightHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Be part of the first wave</h2>
+              <p>Early members shape what TaskBridge becomes — and get recognized for it.</p>
+            </div>
+
+            <div ref={spotlightRef} className="spotlight-card reveal reveal-up-scale">
+              <div className="spotlight-stars">
+                <HiStar /><HiStar /><HiStar /><HiStar /><HiStar />
+              </div>
+              <p className="spotlight-quote">
+                "Everyone who joins before launch gets a First Access code — a permanent
+                marker of being here from day one."
+              </p>
+              <div className="spotlight-footer">
+                <span className="spotlight-badge">FA-XXXXXXXX</span>
+                <span className="spotlight-caption">Your unique founding member code</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who is TaskBridge for */}
+        <section className="who-for">
+          <div className="section-container">
+            <div ref={whoHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built for people who need things done — and people ready to do them.</h2>
+            </div>
+
+            <div className="who-grid">
+              <div ref={who1Ref} className="who-card reveal reveal-up-scale">
+                <span className="who-icon"><HiOutlineUserCircle /></span>
+                <h4>Individuals</h4>
+                <p>Get help with everyday tasks and small projects.</p>
+              </div>
+              <div ref={who2Ref} className="who-card reveal reveal-up-scale reveal-delay-1">
+                <span className="who-icon"><HiOutlineBuildingOffice2 /></span>
+                <h4>Businesses</h4>
+                <p>Delegate useful work and reach people who can help.</p>
+              </div>
+              <div ref={who3Ref} className="who-card reveal reveal-up-scale reveal-delay-2">
+                <span className="who-icon"><HiOutlineBuildingOffice /></span>
+                <h4>Organizations</h4>
+                <p>Create structured tasks and gather responses, feedback or assistance.</p>
+              </div>
+              <div ref={who4Ref} className="who-card reveal reveal-up-scale reveal-delay-3">
+                <span className="who-icon"><HiOutlineIdentification /></span>
+                <h4>Taskers</h4>
+                <p>Find opportunities and earn rewards by completing tasks.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust */}
+        <section className="trust">
+          <div className="section-container">
+            <div ref={trustHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Built around clear expectations.</h2>
+              <p>TaskBridge is designed to make interactions between Taskers and Advertisers straightforward.</p>
+            </div>
+
+            <div className="trust-grid">
+              <div ref={trust1Ref} className="trust-card reveal reveal-up-scale">
+                <span className="trust-icon"><HiOutlineClipboardDocumentList /></span>
+                <h4>Clear Task Details</h4>
+                <p>Taskers should know what is expected before accepting a task.</p>
+              </div>
+              <div ref={trust2Ref} className="trust-card reveal reveal-up-scale reveal-delay-1">
+                <span className="trust-icon"><HiOutlineCurrencyDollar /></span>
+                <h4>Transparent Rewards</h4>
+                <p>Advertisers define the reward associated with a task.</p>
+              </div>
+              <div ref={trust3Ref} className="trust-card reveal reveal-up-scale reveal-delay-2">
+                <span className="trust-icon"><HiOutlineClipboardDocumentCheck /></span>
+                <h4>Submission Review</h4>
+                <p>Advertisers can review submitted work before approving completion.</p>
+              </div>
+              <div ref={trust4Ref} className="trust-card reveal reveal-up-scale reveal-delay-3">
+                <span className="trust-icon"><HiOutlineShieldCheck /></span>
+                <h4>Useful Profiles &amp; Information</h4>
+                <p>Give both sides enough context to make better decisions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Why TaskBridge */}
+        <section className="why-taskora" id="why-taskora">
+          <div className="section-container">
+            <div ref={whyHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Why choose TaskBridge?</h2>
+              <p>We're building the most reliable platform for the next generation of flexible earning.</p>
+            </div>
+
+            <div className="features-stack">
+              <div ref={feature1Ref} className="feature-card reveal reveal-up-scale">
+                <span className="feature-icon"><HiOutlineRocketLaunch /></span>
+                <h4>Find Opportunities</h4>
+                <p>Access a curated feed of verified tasks relevant to your skills and location.</p>
+              </div>
+              <div ref={feature2Ref} className="feature-card reveal reveal-up-scale reveal-delay-1">
+                <span className="feature-icon"><HiOutlineTag /></span>
+                <h4>Earn Rewards</h4>
+                <p>Get paid fairly and quickly. No hidden fees or complex point systems.</p>
+              </div>
+              <div ref={feature3Ref} className="feature-card reveal reveal-up-scale reveal-delay-2">
+                <span className="feature-icon"><HiOutlineUsers /></span>
+                <h4>Simple &amp; Accessible</h4>
+                <p>An interface built for real people. No technical jargon, just momentum.</p>
+              </div>
+              <div ref={feature4Ref} className="feature-card reveal reveal-up-scale reveal-delay-3">
+                <span className="feature-icon"><HiOutlineShieldCheck /></span>
+                <h4>Built Around Trust</h4>
+                <p>Secure payments and verified task providers ensure you're always protected.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Product Preview */}
+        <section className="product-preview">
+          <div className="section-container preview-container">
+            <div ref={previewCopyRef} className="preview-copy reveal reveal-left">
+              <h2>Designed for clarity and speed.</h2>
+              <p>Take a look at how we've reimagined task management. The TaskBridge platform is designed to stay out of your way so you can focus on completion.</p>
+              <ul className="preview-list">
+                <li>
+                  <div className="preview-icon"><HiOutlineAdjustmentsHorizontal /></div>
+                  <div>
+                    <h5>Smart Filters</h5>
+                    <p>Quickly sort by category, distance, or reward value.</p>
+                  </div>
+                </li>
+                <li>
+                  <div className="preview-icon"><HiOutlineChartBar /></div>
+                  <div>
+                    <h5>Reward Summary</h5>
+                    <p>A real-time overview of your earnings and pending approvals.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div ref={previewImageRef} className="preview-image-wrap reveal reveal-scale reveal-delay-1">
+              <img
+                className="preview-image"
+                src="/dashboard_mockup.png"
+                alt="TaskBridge desktop dashboard"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="faq-section" id="faq">
+          <div className="section-container">
+            <div ref={faqHeadingRef} className="section-heading reveal reveal-up">
+              <h2>Frequently asked questions</h2>
+            </div>
+
+            <div ref={faqBodyRef} className="faq-body reveal reveal-up reveal-delay-1">
+              <FaqAccordion groupLabel="For Taskers" items={taskerFaqs} />
+              <FaqAccordion groupLabel="For Advertisers" items={advertiserFaqs} />
+              <FaqAccordion groupLabel="General" items={generalFaqs} />
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="final-cta">
+          <div ref={ctaRef} className="final-cta-container reveal reveal-up-scale">
+            <h2>Ready to get things done?</h2>
+            <p>Whether you're ready to earn by completing tasks or you have something that needs to get done, TaskBridge is here.</p>
+
+            <div className="final-cta-actions">
+              <Link to="/signup?role=worker" className="btn btn-light btn-block">
+                Get Started as a Tasker
+              </Link>
+              <Link to="/signup?role=advertiser" className="btn btn-outline-light btn-block">
+                Get Started as an Advertiser
+              </Link>
+            </div>
+
+            <p className="final-cta-note">No spam, ever. Only important product updates.</p>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
+export default LandingPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Landing/LandingPage.css ---
+@import '../Waitlist/WaitlistPage.css';
+
+/* ============ UNIQUE: Stats Band ============ */
+.stats-band {
+  background: var(--color-primary);
+  padding: 32px var(--margin-mobile);
+}
+
+.stats-band-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.stat-label {
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+/* ============ UNIQUE: Feel Showcase ============ */
+.feel-showcase {
+  padding: 56px 0;
+  background: var(--color-surface-container-low);
+}
+
+.showcase-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.showcase-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.showcase-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.showcase-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.showcase-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.showcase-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.showcase-card-tall {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.showcase-card-tall .showcase-icon {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.showcase-card-tall h3,
+.showcase-card-tall p {
+  color: #ffffff;
+}
+
+.showcase-card-tall p {
+  opacity: 0.9;
+}
+
+/* ============ UNIQUE: Founding Member Spotlight ============ */
+.spotlight {
+  padding: 56px 0;
+}
+
+.spotlight-card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.spotlight-stars {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  color: #f59e0b;
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.spotlight-quote {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 24px;
+}
+
+.spotlight-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.spotlight-badge {
+  display: inline-block;
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.spotlight-caption {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+/* ============ Responsive ============ */
+@media (min-width: 640px) {
+  .stats-band-container {
+    gap: 40px;
+  }
+
+  .stat-value {
+    font-size: 32px;
+  }
+}
+
+@media (min-width: 768px) {
+  .showcase-grid {
+    flex-direction: row;
+  }
+
+  .showcase-card {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .showcase-card-tall {
+    flex: 1.2;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CreateAccountStep.tsx ---
+import { useState, FormEvent, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { sendVerificationCode } from '../../lib/emailVerification'
+import { ApiRequestError } from '../../lib/api'
+import type { UserRole } from '../../types/api'
+import './SignupFlow.css'
+
+interface FormErrors {
+  [key: string]: string
+}
+
+function isValidRole(value: string | null): value is UserRole {
+  return value === 'worker' || value === 'advertiser'
+}
+
+function CreateAccountStep() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { data, updateData } = useSignupFlow()
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
+  const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
+  const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role')
+    if (isValidRole(roleParam)) {
+      updateData({ role: roleParam })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
+  const validate = (): FormErrors => {
+    const next: FormErrors = {}
+
+    if (!data.firstName.trim()) next.firstName = 'First name is required'
+    if (!data.lastName.trim()) next.lastName = 'Last name is required'
+
+    if (!data.email.trim()) {
+      next.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      next.email = 'Enter a valid email address'
+    }
+
+    if (!data.phoneNumber.trim()) {
+      next.phoneNumber = 'Phone number is required'
+    } else if (!/^\+?[0-9]{7,15}$/.test(data.phoneNumber.replace(/\s/g, ''))) {
+      next.phoneNumber = 'Enter a valid phone number (with country code)'
+    }
+
+    if (!data.agreedToTerms) {
+      next.agreedToTerms = 'You must agree to the Terms and Privacy Policy to continue'
+    }
+
+    return next
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    const validationErrors = validate()
+    setErrors(validationErrors)
+    if (Object.keys(validationErrors).length > 0) return
+
+    const email = data.email.trim()
+    setSubmitting(true)
+
+    try {
+      const { taskId } = await sendVerificationCode({ email })
+      updateData({ email, verificationTaskId: taskId, emailVerified: false })
+      navigate('/signup/verify-email')
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Could not send a verification code. Please try again.')
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="signup-page">
+      <Navbar />
+
+      <main className="signup-main">
+        <div className="signup-container">
+          <div ref={headingRef} className="signup-heading reveal reveal-up">
+            <h1>Create your account</h1>
+            <p>Join 120,000+ Nigerians earning on TaskBridge</p>
+          </div>
+
+          <form
+            ref={formRef}
+            className="signup-form reveal reveal-up reveal-delay-1"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="firstName">First name</label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Ada"
+                  value={data.firstName}
+                  onChange={(e) => {
+                    updateData({ firstName: e.target.value })
+                    if (errors.firstName) setErrors((p) => ({ ...p, firstName: '' }))
+                  }}
+                  className={errors.firstName ? 'input-error' : ''}
+                  disabled={submitting}
+                />
+                {errors.firstName && <span className="field-error">{errors.firstName}</span>}
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="lastName">Last name</label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Lovelace"
+                  value={data.lastName}
+                  onChange={(e) => {
+                    updateData({ lastName: e.target.value })
+                    if (errors.lastName) setErrors((p) => ({ ...p, lastName: '' }))
+                  }}
+                  className={errors.lastName ? 'input-error' : ''}
+                  disabled={submitting}
+                />
+                {errors.lastName && <span className="field-error">{errors.lastName}</span>}
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="email">Email address</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="ada@taskbridge.dev"
+                value={data.email}
+                onChange={(e) => {
+                  updateData({ email: e.target.value })
+                  if (errors.email) setErrors((p) => ({ ...p, email: '' }))
+                }}
+                className={errors.email ? 'input-error' : ''}
+                disabled={submitting}
+              />
+              {errors.email && <span className="field-error">{errors.email}</span>}
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="phoneNumber">Phone number</label>
+              <input
+                id="phoneNumber"
+                type="tel"
+                placeholder="+2348012345678"
+                value={data.phoneNumber}
+                onChange={(e) => {
+                  updateData({ phoneNumber: e.target.value })
+                  if (errors.phoneNumber) setErrors((p) => ({ ...p, phoneNumber: '' }))
+                }}
+                className={errors.phoneNumber ? 'input-error' : ''}
+                disabled={submitting}
+              />
+              {errors.phoneNumber && <span className="field-error">{errors.phoneNumber}</span>}
+            </div>
+
+            <div className="terms-field">
+              <label className="terms-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={data.agreedToTerms}
+                  onChange={(e) => {
+                    updateData({ agreedToTerms: e.target.checked })
+                    if (errors.agreedToTerms) setErrors((p) => ({ ...p, agreedToTerms: '' }))
+                  }}
+                  className="terms-checkbox-input"
+                  disabled={submitting}
+                />
+                <span className={`terms-checkbox-box ${errors.agreedToTerms ? 'terms-checkbox-box-error' : ''}`}>
+                  <svg viewBox="0 0 16 16" className="terms-checkbox-tick">
+                    <path d="M3 8.5L6.5 12L13 4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+                <span className="terms-checkbox-text">
+                  I agree to TaskBridge's{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a>{' '}
+                  and{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                </span>
+              </label>
+              {errors.agreedToTerms && (
+                <span className="field-error field-error-terms">{errors.agreedToTerms}</span>
+              )}
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-block btn-submit" disabled={submitting}>
+              <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+                Create Account
+              </span>
+              {submitting && <span className="btn-spinner" aria-label="Loading" />}
+            </button>
+
+            <p className="signup-footnote">
+              Already have an account? <Link to="/login">Login</Link>
+            </p>
+          </form>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
+export default CreateAccountStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CheckEmailStep.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import FlowShell from '../../components/FlowShell/FlowShell'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { resendVerificationCode } from '../../lib/emailVerification'
+import { ApiRequestError } from '../../lib/api'
+import { HiOutlineEnvelope } from 'react-icons/hi2'
+import './SignupFlow.css'
+
+function CheckEmailStep() {
+  const navigate = useNavigate()
+  const { data, updateData } = useSignupFlow()
+  const [resending, setResending] = useState(false)
+
+  const handleResend = async () => {
+    if (resending) return
+    setResending(true)
+    try {
+      const { taskId } = await resendVerificationCode(
+        data.verificationTaskId
+          ? { taskId: data.verificationTaskId }
+          : { email: data.email }
+      )
+      updateData({ verificationTaskId: taskId })
+      toast.success('Verification code resent.')
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        if (err.status === 429) {
+          toast.error(err.message)
+        } else if (err.status === 409) {
+          toast.error('This email is already verified.')
+        } else {
+          toast.error(err.message || 'Could not resend the code. Please try again.')
+        }
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    } finally {
+      setResending(false)
+    }
+  }
+
+  return (
+    <FlowShell>
+      <div className="flow-step-body flow-step-body-center">
+        <h1 className="flow-heading">Check your email</h1>
+        <p className="flow-subheading">
+          We sent a 6-digit code to <strong>{data.email || 'your email'}</strong>
+        </p>
+
+        <div className="flow-email-icon">
+          <HiOutlineEnvelope />
+        </div>
+
+        <button
+          type="button"
+          className="btn btn-primary btn-block"
+          onClick={() => navigate('/signup/otp')}
+        >
+          Enter Verification Code
+        </button>
+
+        <p className="flow-resend-line">
+          Didn't receive the email?{' '}
+          <button type="button" className="flow-resend-link" onClick={handleResend} disabled={resending}>
+            {resending ? 'Resending…' : 'Resend code'}
+          </button>
+        </p>
+      </div>
+    </FlowShell>
+  )
+}
+
+export default CheckEmailStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/OtpStep.tsx ---
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import FlowShell from '../../components/FlowShell/FlowShell'
+import OtpInput from '../../components/OtpInput/OtpInput'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { verifyEmailCode, resendVerificationCode } from '../../lib/emailVerification'
+import { ApiRequestError } from '../../lib/api'
+import './SignupFlow.css'
+
+const EXPIRY_SECONDS = 5 * 60
+
+function formatTime(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
+
+function OtpStep() {
+  const navigate = useNavigate()
+  const { data, updateData } = useSignupFlow()
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(''))
+  const [error, setError] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [secondsLeft, setSecondsLeft] = useState(EXPIRY_SECONDS)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    // No verification session yet (e.g. direct navigation) — send them back to start over.
+    if (!data.verificationTaskId) {
+      navigate('/signup', { replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setSecondsLeft((s) => (s > 0 ? s - 1 : 0))
+    }, 1000)
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [])
+
+  const handleVerify = async () => {
+    const code = otp.join('')
+    if (code.length < 6) {
+      setError('Enter the full 6-digit code')
+      return
+    }
+    setError('')
+    setVerifying(true)
+
+    try {
+      await verifyEmailCode({ code, taskId: data.verificationTaskId })
+      updateData({ emailVerified: true })
+      setVerifying(false)
+      navigate('/signup/password')
+    } catch (err) {
+      setVerifying(false)
+      if (err instanceof ApiRequestError) {
+        if (err.status === 401) {
+          setError('Incorrect code. Please try again.')
+        } else if (err.status === 410) {
+          setError('This code has expired. Request a new one.')
+        } else if (err.status === 409) {
+          // Already verified — safe to just continue.
+          updateData({ emailVerified: true })
+          navigate('/signup/password')
+          return
+        } else if (err.status === 404) {
+          setError('Verification session not found. Request a new code.')
+        } else {
+          setError(err.message || 'Could not verify the code. Please try again.')
+        }
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    }
+  }
+
+  const handleResend = async () => {
+    if (resending) return
+    setResending(true)
+    try {
+      const { taskId } = await resendVerificationCode(
+        data.verificationTaskId
+          ? { taskId: data.verificationTaskId }
+          : { email: data.email }
+      )
+      updateData({ verificationTaskId: taskId })
+      setSecondsLeft(EXPIRY_SECONDS)
+      setOtp(Array(6).fill(''))
+      setError('')
+      toast.success('A new code has been sent.')
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        if (err.status === 429) {
+          toast.error(err.message)
+        } else if (err.status === 409) {
+          toast.error('This email is already verified.')
+        } else {
+          toast.error(err.message || 'Could not resend the code. Please try again.')
+        }
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    } finally {
+      setResending(false)
+    }
+  }
+
+  return (
+    <FlowShell>
+      <div className="flow-step-body">
+        <h1 className="flow-heading">Enter OTP</h1>
+        <p className="flow-subheading">Enter the 6-digit code we sent to your email</p>
+
+        <OtpInput value={otp} onChange={setOtp} disabled={verifying} error={!!error} />
+        {error && <span className="field-error flow-otp-error">{error}</span>}
+
+        <button
+          type="button"
+          className="btn btn-primary btn-block btn-submit flow-otp-submit"
+          onClick={handleVerify}
+          disabled={verifying}
+        >
+          <span className={verifying ? 'btn-label btn-label-hidden' : 'btn-label'}>
+            Verify Code
+          </span>
+          {verifying && <span className="btn-spinner" aria-label="Loading" />}
+        </button>
+
+        <p className="flow-expiry-line">
+          Code expires in <strong>{formatTime(secondsLeft)}</strong>
+        </p>
+
+        <p className="flow-resend-line">
+          Didn't receive it?{' '}
+          <button type="button" className="flow-resend-link" onClick={handleResend} disabled={resending}>
+            {resending ? 'Resending…' : 'Resend'}
+          </button>
+        </p>
+      </div>
+    </FlowShell>
+  )
+}
+
+export default OtpStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CreatePasswordStep.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import FlowShell from '../../components/FlowShell/FlowShell'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2'
+import './SignupFlow.css'
+
+interface FormErrors {
+  [key: string]: string
+}
+
+function CreatePasswordStep() {
+  const navigate = useNavigate()
+  const { data, updateData } = useSignupFlow()
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [errors, setErrors] = useState<FormErrors>({})
+
+  const validate = (): FormErrors => {
+    const next: FormErrors = {}
+
+    if (!data.password) {
+      next.password = 'Password is required'
+    } else if (data.password.length < 8) {
+      next.password = 'Password must be at least 8 characters'
+    }
+
+    if (!confirmPassword) {
+      next.confirmPassword = 'Please confirm your password'
+    } else if (confirmPassword !== data.password) {
+      next.confirmPassword = 'Passwords do not match'
+    }
+
+    return next
+  }
+
+  const handleSubmit = () => {
+    const validationErrors = validate()
+    setErrors(validationErrors)
+    if (Object.keys(validationErrors).length > 0) return
+
+    navigate('/signup/role')
+  }
+
+  return (
+    <FlowShell>
+      <div className="flow-step-body">
+        <h1 className="flow-heading">Create a password</h1>
+        <p className="flow-subheading">Choose a strong password to protect your account</p>
+
+        <div className="form-field">
+          <label htmlFor="password">Password</label>
+          <div className="password-input-wrap">
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="At least 8 characters"
+              value={data.password}
+              onChange={(e) => {
+                updateData({ password: e.target.value })
+                if (errors.password) setErrors((p) => ({ ...p, password: '' }))
+              }}
+              className={errors.password ? 'input-error' : ''}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((s) => !s)}
+              tabIndex={-1}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
+            </button>
+          </div>
+          {errors.password && <span className="field-error">{errors.password}</span>}
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <div className="password-input-wrap">
+            <input
+              id="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value)
+                if (errors.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: '' }))
+              }}
+              className={errors.confirmPassword ? 'input-error' : ''}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowConfirmPassword((s) => !s)}
+              tabIndex={-1}
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+            >
+              {showConfirmPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
+            </button>
+          </div>
+          {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
+        </div>
+
+        <button type="button" className="btn btn-primary btn-block" onClick={handleSubmit}>
+          Set Password
+        </button>
+      </div>
+    </FlowShell>
+  )
+}
+
+export default CreatePasswordStep
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/RoleStep.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
+import RoleSelect from '../../components/RoleSelect/RoleSelect'
+import { useSignupFlow, generateUsernameBase, generateUsernameFallback } from '../../context/SignupFlowContext'
+import { joinWaitlist } from '../../lib/waitlist'
+import { ApiRequestError } from '../../lib/api'
+import type { UserRole } from '../../types/api'
+import './SignupFlow.css'
+
+function RoleStep() {
+  const navigate = useNavigate()
+  const { data, updateData } = useSignupFlow()
+  const role = data.role ?? 'worker'
+  const [submitting, setSubmitting] = useState(false)
+
+  const handleChange = (newRole: UserRole) => {
+    updateData({ role: newRole })
+  }
+
+  const handleContinue = async () => {
+    if (role === 'advertiser') {
+      navigate('/signup/business')
+      return
+    }
+
+    setSubmitting(true)
+    const usernameBase = generateUsernameBase(data.firstName, data.lastName)
+
+    try {
+      const { user } = await joinWaitlist({
+        firstName: data.firstName.trim(),
+        lastName: data.lastName.trim(),
+        username: usernameBase,
+        email: data.email.trim(),
+        phoneNumber: data.phoneNumber.trim(),
+        password: data.password,
+        role,
+      })
+      updateData({ username: usernameBase })
+      toast.success(`Welcome, ${user.first_name}!`)
+      navigate('/signup/done')
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 409) {
+        // Username collision — retry once with a random numeric suffix.
+        const fallbackUsername = generateUsernameFallback(usernameBase)
+        try {
+          const { user } = await joinWaitlist({
+            firstName: data.firstName.trim(),
+            lastName: data.lastName.trim(),
+            username: fallbackUsername,
+            email: data.email.trim(),
+            phoneNumber: data.phoneNumber.trim(),
+            password: data.password,
+            role,
+          })
+          updateData({ username: fallbackUsername })
+          toast.success(`Welcome, ${user.first_name}!`)
+          navigate('/signup/done')
+        } catch (retryErr) {
+          if (retryErr instanceof ApiRequestError) {
+            toast.error(
+              retryErr.status === 409
+                ? 'That email or phone number is already registered.'
+                : retryErr.message
+            )
+          } else {
+            toast.error('Could not reach the server. Check your connection and try again.')
+          }
+        }
+      } else if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <FlowCenterShell
+      heading="How will you use TaskBridge?"
+      subheading="This choice is permanent and cannot be changed later"
+    >
+      <RoleSelect value={role} onChange={handleChange} />
+
+      <button
+        type="button"
+        className="btn btn-primary btn-block btn-submit"
+        onClick={handleContinue}
+        disabled={submitting}
+      >
+        <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+          Continue
+        </span>
+        {submitting && <span className="btn-spinner" aria-label="Loading" />}
+      </button>
+    </FlowCenterShell>
+  )
+}
+
+export default RoleStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/BusinessInfoStep.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
+import { useSignupFlow, generateUsernameBase, generateUsernameFallback } from '../../context/SignupFlowContext'
+import { joinWaitlist } from '../../lib/waitlist'
+import { ApiRequestError } from '../../lib/api'
+import type { BusinessDetailsPayload } from '../../types/api'
+import './SignupFlow.css'
+
+interface FormErrors {
+  [key: string]: string
+}
+
+function BusinessInfoStep() {
+  const navigate = useNavigate()
+  const { data, updateData } = useSignupFlow()
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
+
+  const validate = (): FormErrors => {
+    const next: FormErrors = {}
+    if (!data.businessName.trim()) next.businessName = 'Business name is required'
+    if (!data.industry.trim()) next.industry = 'Industry is required'
+    return next
+  }
+
+  const submitWithUsername = async (username: string, businessDetails: BusinessDetailsPayload) => {
+    return joinWaitlist({
+      firstName: data.firstName.trim(),
+      lastName: data.lastName.trim(),
+      username,
+      email: data.email.trim(),
+      phoneNumber: data.phoneNumber.trim(),
+      password: data.password,
+      role: 'advertiser',
+      businessDetails,
+    })
+  }
+
+  const handleSubmit = async () => {
+    const validationErrors = validate()
+    setErrors(validationErrors)
+    if (Object.keys(validationErrors).length > 0) return
+
+    setSubmitting(true)
+    const usernameBase = generateUsernameBase(data.firstName, data.lastName)
+    const businessDetails: BusinessDetailsPayload = {
+      businessName: data.businessName.trim(),
+      businessIndustry: data.industry.trim(),
+      businessWebsite: data.website.trim() || undefined,
+    }
+
+    try {
+      const { user } = await submitWithUsername(usernameBase, businessDetails)
+      updateData({ username: usernameBase })
+      toast.success(`Welcome, ${user.first_name}!`)
+      navigate('/signup/done')
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 409) {
+        const fallbackUsername = generateUsernameFallback(usernameBase)
+        try {
+          const { user } = await submitWithUsername(fallbackUsername, businessDetails)
+          updateData({ username: fallbackUsername })
+          toast.success(`Welcome, ${user.first_name}!`)
+          navigate('/signup/done')
+        } catch (retryErr) {
+          if (retryErr instanceof ApiRequestError) {
+            toast.error(
+              retryErr.status === 409
+                ? 'That email or phone number is already registered.'
+                : retryErr.message
+            )
+          } else {
+            toast.error('Could not reach the server. Check your connection and try again.')
+          }
+        }
+      } else if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <FlowCenterShell
+      heading="Tell us about your business"
+      subheading="This helps us show your tasks to the right people"
+    >
+      <div className="form-field">
+        <label htmlFor="businessName">Business name</label>
+        <input
+          id="businessName"
+          type="text"
+          placeholder="Acme Technologies Ltd"
+          value={data.businessName}
+          onChange={(e) => {
+            updateData({ businessName: e.target.value })
+            if (errors.businessName) setErrors((p) => ({ ...p, businessName: '' }))
+          }}
+          className={errors.businessName ? 'input-error' : ''}
+          disabled={submitting}
+        />
+        {errors.businessName && <span className="field-error">{errors.businessName}</span>}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="industry">Industry</label>
+        <input
+          id="industry"
+          type="text"
+          placeholder="e.g. Fintech, E-commerce, Music"
+          value={data.industry}
+          onChange={(e) => {
+            updateData({ industry: e.target.value })
+            if (errors.industry) setErrors((p) => ({ ...p, industry: '' }))
+          }}
+          className={errors.industry ? 'input-error' : ''}
+          disabled={submitting}
+        />
+        {errors.industry && <span className="field-error">{errors.industry}</span>}
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="website">
+          Website <span className="optional-tag">(optional)</span>
+        </label>
+        <input
+          id="website"
+          type="url"
+          placeholder="https://yourbusiness.com"
+          value={data.website}
+          onChange={(e) => updateData({ website: e.target.value })}
+          disabled={submitting}
+        />
+      </div>
+
+      <button
+        type="button"
+        className="btn btn-primary btn-block btn-submit"
+        onClick={handleSubmit}
+        disabled={submitting}
+      >
+        <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+          Go to Dashboard
+        </span>
+        {submitting && <span className="btn-spinner" aria-label="Loading" />}
+      </button>
+    </FlowCenterShell>
+  )
+}
+
+export default BusinessInfoStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/SignupDoneStep.tsx ---
+import { Link } from 'react-router-dom'
+import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import './SignupFlow.css'
+
+function SignupDoneStep() {
+  const { data } = useSignupFlow()
+
+  return (
+    <FlowCenterShell
+      heading={`You're all set, ${data.firstName || 'there'}!`}
+      subheading="This is a placeholder — the dashboard isn't built yet."
+    >
+      <Link to="/" className="btn btn-primary btn-block">
+        Back to Home
+      </Link>
+    </FlowCenterShell>
+  )
+}
+
+export default SignupDoneStep
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/SignupFlow.css ---
+@import '../Signup/SignupPage.css';
+
+/* ============ Full-screen step body (FlowShell steps) ============ */
+.flow-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.flow-step-body .form-field {
+  width: 100%;
+  text-align: left;
+}
+
+.flow-step-body-center {
+  align-items: center;
+  text-align: center;
+}
+
+.flow-heading {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.flow-subheading {
+  font-size: 14.5px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.flow-subheading strong {
+  color: var(--color-on-surface);
+  font-weight: 600;
+}
+
+.flow-email-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 12px 0;
+}
+
+.flow-resend-line {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.flow-resend-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.flow-resend-link:hover {
+  text-decoration: underline;
+}
+
+.flow-expiry-line {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.flow-expiry-line strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.flow-otp-error {
+  margin-top: -8px;
+}
+
+.flow-otp-submit {
+  margin-top: 4px;
+}
+
+/* ============ Two-column name row (Create Account step) ============ */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ---
 import { useEffect, useRef } from 'react'
 
@@ -3887,8 +6690,63 @@ export function joinWaitlist(payload: WaitlistPayload) {
   })
 }
 
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/emailVerification.ts ---
+import { apiRequest } from './api'
+import type {
+  SendVerificationPayload,
+  SendVerificationResponse,
+  VerifyCodePayload,
+  VerifyCodeResponse,
+  ResendVerificationPayload,
+  ResendVerificationResponse,
+} from '../types/api'
+
+const EMAIL_VERIFICATION_SERVICE_TOKEN = import.meta.env.VITE_EMAIL_VERIFICATION_SERVICE_TOKEN
+
+if (!EMAIL_VERIFICATION_SERVICE_TOKEN) {
+  console.warn(
+    'VITE_EMAIL_VERIFICATION_SERVICE_TOKEN is not set. Add it to your .env file to enable email verification.'
+  )
+}
+
+const serviceAuthHeaders = {
+  Authorization: `Bearer ${EMAIL_VERIFICATION_SERVICE_TOKEN}`,
+}
+
+export function sendVerificationCode(payload: SendVerificationPayload) {
+  return apiRequest<SendVerificationResponse>('/emailverification/send', {
+    method: 'POST',
+    headers: serviceAuthHeaders,
+    body: payload,
+  })
+}
+
+export function verifyEmailCode(payload: VerifyCodePayload) {
+  return apiRequest<VerifyCodeResponse>('/emailverification/verify', {
+    method: 'POST',
+    headers: serviceAuthHeaders,
+    body: payload,
+  })
+}
+
+export function resendVerificationCode(payload: ResendVerificationPayload) {
+  return apiRequest<ResendVerificationResponse>('/emailverification/resend', {
+    method: 'POST',
+    headers: serviceAuthHeaders,
+    body: payload,
+  })
+}
+
+
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ---
 export type UserRole = 'worker' | 'advertiser'
+
+export interface BusinessDetailsPayload {
+  businessName?: string
+  businessIndustry?: string
+  businessWebsite?: string
+}
 
 export interface WaitlistPayload {
   firstName: string
@@ -3899,6 +6757,7 @@ export interface WaitlistPayload {
   password: string
   role: UserRole
   referredByCode?: string
+  businessDetails?: BusinessDetailsPayload
 }
 
 export interface WaitlistUser {
@@ -3925,3 +6784,127 @@ export interface ApiError {
   requiredNaira?: number
   currentBalanceNaira?: number
 }
+
+// ---- Email verification (service-to-service, separate from user auth) ----
+
+export interface SendVerificationPayload {
+  email: string
+}
+
+export interface SendVerificationResponse {
+  status: 'sent'
+  email: string
+  taskId: string
+  expiresAt: string
+}
+
+export interface VerifyCodePayload {
+  code: string
+  taskId: string
+}
+
+export interface VerifyCodeResponse {
+  status: 'verified'
+  email: string
+}
+
+export interface ResendVerificationPayload {
+  taskId?: string
+  email?: string
+}
+
+export interface ResendVerificationResponse {
+  status: 'resent'
+  email: string
+  taskId: string
+  resendCount: number
+  expiresAt: string
+}
+
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/context/SignupFlowContext.tsx ---
+import { createContext, useContext, useState, ReactNode } from 'react'
+import type { UserRole } from '../types/api'
+
+export interface SignupFlowData {
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  phoneNumber: string
+  agreedToTerms: boolean
+  password: string
+  role: UserRole | null
+  businessName: string
+  industry: string
+  website: string
+  /** Session id returned by /emailverification/send, used by /verify and /resend */
+  verificationTaskId: string
+  /** Set once /emailverification/verify succeeds; not sent to the backend directly */
+  emailVerified: boolean
+}
+
+interface SignupFlowContextValue {
+  data: SignupFlowData
+  updateData: (patch: Partial<SignupFlowData>) => void
+  reset: () => void
+}
+
+const initialData: SignupFlowData = {
+  firstName: '',
+  lastName: '',
+  username: '',
+  email: '',
+  phoneNumber: '',
+  agreedToTerms: false,
+  password: '',
+  role: null,
+  businessName: '',
+  industry: '',
+  website: '',
+  verificationTaskId: '',
+  emailVerified: false,
+}
+
+const SignupFlowContext = createContext<SignupFlowContextValue | undefined>(undefined)
+
+export function SignupFlowProvider({ children }: { children: ReactNode }) {
+  const [data, setData] = useState<SignupFlowData>(initialData)
+
+  const updateData = (patch: Partial<SignupFlowData>) => {
+    setData((prev) => ({ ...prev, ...patch }))
+  }
+
+  const reset = () => setData(initialData)
+
+  return (
+    <SignupFlowContext.Provider value={{ data, updateData, reset }}>
+      {children}
+    </SignupFlowContext.Provider>
+  )
+}
+
+export function useSignupFlow() {
+  const ctx = useContext(SignupFlowContext)
+  if (!ctx) {
+    throw new Error('useSignupFlow must be used within a SignupFlowProvider')
+  }
+  return ctx
+}
+
+/**
+ * Derives a username candidate from first/last name, e.g. "Ada Lovelace" -> "adalovelace".
+ * Strips anything that isn't a-z/0-9 after lowercasing, so accents/punctuation/spaces are dropped.
+ */
+export function generateUsernameBase(firstName: string, lastName: string): string {
+  const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const base = `${clean(firstName)}${clean(lastName)}`
+  return base || 'user'
+}
+
+/** Appends a short random numeric suffix, used as a collision fallback on 409. */
+export function generateUsernameFallback(base: string): string {
+  const suffix = Math.floor(1000 + Math.random() * 9000) // 4 digits
+  return `${base}${suffix}`
+}
+

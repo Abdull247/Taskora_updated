@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FlowShell from '../../components/FlowShell/FlowShell'
 import { useSignupFlow } from '../../context/SignupFlowContext'
+import { withMinDelay } from '../../lib/useMinDelay'
 import { HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2'
 import './SignupFlow.css'
 
@@ -16,6 +17,7 @@ function CreatePasswordStep() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
 
   const validate = (): FormErrors => {
     const next: FormErrors = {}
@@ -35,11 +37,14 @@ function CreatePasswordStep() {
     return next
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = validate()
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
+    setSubmitting(true)
+    await withMinDelay(async () => {})
+    setSubmitting(false)
     navigate('/signup/role')
   }
 
@@ -62,6 +67,7 @@ function CreatePasswordStep() {
                 if (errors.password) setErrors((p) => ({ ...p, password: '' }))
               }}
               className={errors.password ? 'input-error' : ''}
+              disabled={submitting}
             />
             <button
               type="button"
@@ -89,6 +95,7 @@ function CreatePasswordStep() {
                 if (errors.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: '' }))
               }}
               className={errors.confirmPassword ? 'input-error' : ''}
+              disabled={submitting}
             />
             <button
               type="button"
@@ -103,8 +110,16 @@ function CreatePasswordStep() {
           {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
         </div>
 
-        <button type="button" className="btn btn-primary btn-block" onClick={handleSubmit}>
-          Set Password
+        <button
+          type="button"
+          className="btn btn-primary btn-block btn-submit"
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+            Set Password
+          </span>
+          {submitting && <span className="btn-spinner" aria-label="Loading" />}
         </button>
       </div>
     </FlowShell>

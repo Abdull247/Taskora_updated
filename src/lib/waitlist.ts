@@ -12,3 +12,4 @@ export function joinWaitlist(payload: WaitlistPayload) {
     body,
   })
 }
+

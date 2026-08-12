@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import { useSignupFlow } from '../../context/SignupFlowContext'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
 
@@ -20,6 +21,7 @@ function CreateAccountStep() {
   const [searchParams] = useSearchParams()
   const { data, updateData } = useSignupFlow()
   const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
   const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
   const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
 
@@ -34,7 +36,8 @@ function CreateAccountStep() {
   const validate = (): FormErrors => {
     const next: FormErrors = {}
 
-    if (!data.fullName.trim()) next.fullName = 'Full name is required'
+    if (!data.firstName.trim()) next.firstName = 'First name is required'
+    if (!data.lastName.trim()) next.lastName = 'Last name is required'
 
     if (!data.email.trim()) {
       next.email = 'Email is required'
@@ -55,13 +58,17 @@ function CreateAccountStep() {
     return next
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const validationErrors = validate()
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
-    navigate('/signup/verify-email')
+    setSubmitting(true)
+    await withMinDelay(async () => {})
+    updateData({ email: data.email.trim() })
+    setSubmitting(false)
+    navigate('/signup/password')
   }
 
   return (
@@ -81,20 +88,40 @@ function CreateAccountStep() {
             onSubmit={handleSubmit}
             noValidate
           >
-            <div className="form-field">
-              <label htmlFor="fullName">Full name</label>
-              <input
-                id="fullName"
-                type="text"
-                placeholder="Ada Lovelace"
-                value={data.fullName}
-                onChange={(e) => {
-                  updateData({ fullName: e.target.value })
-                  if (errors.fullName) setErrors((p) => ({ ...p, fullName: '' }))
-                }}
-                className={errors.fullName ? 'input-error' : ''}
-              />
-              {errors.fullName && <span className="field-error">{errors.fullName}</span>}
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="firstName">First name</label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Ada"
+                  value={data.firstName}
+                  onChange={(e) => {
+                    updateData({ firstName: e.target.value })
+                    if (errors.firstName) setErrors((p) => ({ ...p, firstName: '' }))
+                  }}
+                  className={errors.firstName ? 'input-error' : ''}
+                  disabled={submitting}
+                />
+                {errors.firstName && <span className="field-error">{errors.firstName}</span>}
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="lastName">Last name</label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Lovelace"
+                  value={data.lastName}
+                  onChange={(e) => {
+                    updateData({ lastName: e.target.value })
+                    if (errors.lastName) setErrors((p) => ({ ...p, lastName: '' }))
+                  }}
+                  className={errors.lastName ? 'input-error' : ''}
+                  disabled={submitting}
+                />
+                {errors.lastName && <span className="field-error">{errors.lastName}</span>}
+              </div>
             </div>
 
             <div className="form-field">
@@ -109,6 +136,7 @@ function CreateAccountStep() {
                   if (errors.email) setErrors((p) => ({ ...p, email: '' }))
                 }}
                 className={errors.email ? 'input-error' : ''}
+                disabled={submitting}
               />
               {errors.email && <span className="field-error">{errors.email}</span>}
             </div>
@@ -125,6 +153,7 @@ function CreateAccountStep() {
                   if (errors.phoneNumber) setErrors((p) => ({ ...p, phoneNumber: '' }))
                 }}
                 className={errors.phoneNumber ? 'input-error' : ''}
+                disabled={submitting}
               />
               {errors.phoneNumber && <span className="field-error">{errors.phoneNumber}</span>}
             </div>
@@ -139,6 +168,7 @@ function CreateAccountStep() {
                     if (errors.agreedToTerms) setErrors((p) => ({ ...p, agreedToTerms: '' }))
                   }}
                   className="terms-checkbox-input"
+                  disabled={submitting}
                 />
                 <span className={`terms-checkbox-box ${errors.agreedToTerms ? 'terms-checkbox-box-error' : ''}`}>
                   <svg viewBox="0 0 16 16" className="terms-checkbox-tick">
@@ -157,8 +187,11 @@ function CreateAccountStep() {
               )}
             </div>
 
-            <button type="submit" className="btn btn-primary btn-block btn-submit">
-              Create Account
+            <button type="submit" className="btn btn-primary btn-block btn-submit" disabled={submitting}>
+              <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+                Create Account
+              </span>
+              {submitting && <span className="btn-spinner" aria-label="Loading" />}
             </button>
 
             <p className="signup-footnote">

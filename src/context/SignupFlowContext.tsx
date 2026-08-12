@@ -2,7 +2,9 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 import type { UserRole } from '../types/api'
 
 export interface SignupFlowData {
-  fullName: string
+  firstName: string
+  lastName: string
+  username: string
   email: string
   phoneNumber: string
   agreedToTerms: boolean
@@ -11,6 +13,10 @@ export interface SignupFlowData {
   businessName: string
   industry: string
   website: string
+  /** Session id returned by /emailverification/send, used by /verify and /resend */
+  verificationTaskId: string
+  /** Set once /emailverification/verify succeeds; not sent to the backend directly */
+  emailVerified: boolean
 }
 
 interface SignupFlowContextValue {
@@ -20,7 +26,9 @@ interface SignupFlowContextValue {
 }
 
 const initialData: SignupFlowData = {
-  fullName: '',
+  firstName: '',
+  lastName: '',
+  username: '',
   email: '',
   phoneNumber: '',
   agreedToTerms: false,
@@ -29,6 +37,8 @@ const initialData: SignupFlowData = {
   businessName: '',
   industry: '',
   website: '',
+  verificationTaskId: '',
+  emailVerified: false,
 }
 
 const SignupFlowContext = createContext<SignupFlowContextValue | undefined>(undefined)
@@ -56,3 +66,20 @@ export function useSignupFlow() {
   }
   return ctx
 }
+
+/**
+ * Derives a username candidate from first/last name, e.g. "Ada Lovelace" -> "adalovelace".
+ * Strips anything that isn't a-z/0-9 after lowercasing, so accents/punctuation/spaces are dropped.
+ */
+export function generateUsernameBase(firstName: string, lastName: string): string {
+  const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const base = `${clean(firstName)}${clean(lastName)}`
+  return base || 'user'
+}
+
+/** Appends a short random numeric suffix, used as a collision fallback on 409. */
+export function generateUsernameFallback(base: string): string {
+  const suffix = Math.floor(1000 + Math.random() * 9000) // 4 digits
+  return `${base}${suffix}`
+}
+
