@@ -3,13 +3,16 @@
 /* App-level shell styles */
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/App.tsx ---
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { SignupFlowProvider } from './context/SignupFlowContext'
 import LandingPage from './pages/Landing/LandingPage'
 import WaitlistPage from './pages/Waitlist/WaitlistPage'
 import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
+import LoginPage from './pages/Login/LoginPage'
+import DashboardPage from './pages/Dashboard/DashboardPage'
+import { isAuthenticated } from './lib/authStatus'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
 import OtpStep from './pages/SignupFlow/OtpStep'
@@ -51,7 +54,7 @@ function App() {
       />
       <SignupFlowProvider>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/waitlist" element={<WaitlistPage />} />
           <Route path="/waitlist/for-taskers" element={<ForTaskersPage />} />
@@ -67,24 +70,8 @@ function App() {
 
           <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
-          <Route
-            path="/login"
-            element={
-              <ComingSoonPage
-                title="Sign In Coming Soon"
-                description="Login isn't open to the public yet. Join the waitlist and we'll email you the moment it's ready."
-              />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ComingSoonPage
-                title="Dashboard Coming Soon"
-                description="Your TaskBridge dashboard is still in the works. Join the waitlist to get early access when it launches."
-              />
-            }
-          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
@@ -1371,6 +1358,234 @@ export default OtpInput
 
 .otp-box:disabled {
   opacity: 0.6;
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/DashboardTopbar/DashboardTopbar.tsx ---
+import { HiBars3, HiOutlineBell } from 'react-icons/hi2'
+import './DashboardTopbar.css'
+
+interface DashboardTopbarProps {
+  initials: string
+  hasNotifications?: boolean
+  onMenuClick?: () => void
+  onBellClick?: () => void
+  onAvatarClick?: () => void
+}
+
+function DashboardTopbar({
+  initials,
+  hasNotifications = false,
+  onMenuClick,
+  onBellClick,
+  onAvatarClick,
+}: DashboardTopbarProps) {
+  return (
+    <header className="dash-topbar">
+      <button type="button" className="dash-topbar-icon-btn" onClick={onMenuClick} aria-label="Open menu">
+        <HiBars3 />
+      </button>
+
+      <div className="dash-topbar-right">
+        <button
+          type="button"
+          className="dash-topbar-icon-btn dash-topbar-bell"
+          onClick={onBellClick}
+          aria-label="Notifications"
+        >
+          <HiOutlineBell />
+          {hasNotifications && <span className="dash-topbar-dot" />}
+        </button>
+
+        <button type="button" className="dash-topbar-avatar" onClick={onAvatarClick} aria-label="Account">
+          {initials}
+        </button>
+      </div>
+    </header>
+  )
+}
+
+export default DashboardTopbar
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/DashboardTopbar/DashboardTopbar.css ---
+.dash-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 var(--margin-mobile);
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.dash-topbar-icon-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: var(--color-on-surface);
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease;
+}
+
+.dash-topbar-icon-btn:hover {
+  background: var(--color-surface-container-low);
+}
+
+.dash-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash-topbar-bell {
+  font-size: 21px;
+  color: var(--color-slate-text);
+}
+
+.dash-topbar-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 1.5px solid #ffffff;
+}
+
+.dash-topbar-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 992px) {
+  .dash-topbar {
+    padding: 0 var(--margin-desktop);
+    height: 68px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/BottomNav/BottomNav.tsx ---
+import { NavLink } from 'react-router-dom'
+import {
+  HiSquares2X2,
+  HiOutlineSquares2X2,
+  HiClipboardDocumentList,
+  HiOutlineClipboardDocumentList,
+  HiWallet,
+  HiOutlineWallet,
+  HiBell,
+  HiOutlineBell,
+  HiUsers,
+  HiOutlineUsers,
+} from 'react-icons/hi2'
+import './BottomNav.css'
+
+const tabs = [
+  { to: '/dashboard', label: 'Dashboard', Icon: HiOutlineSquares2X2, ActiveIcon: HiSquares2X2 },
+  { to: '/dashboard/tasks', label: 'Browse Tasks', Icon: HiOutlineClipboardDocumentList, ActiveIcon: HiClipboardDocumentList },
+  { to: '/dashboard/wallet', label: 'Wallet', Icon: HiOutlineWallet, ActiveIcon: HiWallet },
+  { to: '/dashboard/notifications', label: 'Notifications', Icon: HiOutlineBell, ActiveIcon: HiBell },
+  { to: '/dashboard/referral', label: 'Referral', Icon: HiOutlineUsers, ActiveIcon: HiUsers },
+]
+
+function BottomNav() {
+  return (
+    <nav className="bottom-nav">
+      {tabs.map(({ to, label, Icon, ActiveIcon }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === '/dashboard'}
+          className={({ isActive }) => `bottom-nav-item ${isActive ? 'bottom-nav-item-active' : ''}`}
+        >
+          {({ isActive }) => (
+            <>
+              <span className="bottom-nav-icon">{isActive ? <ActiveIcon /> : <Icon />}</span>
+              <span className="bottom-nav-label">{label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
+
+export default BottomNav
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/BottomNav/BottomNav.css ---
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #ffffff;
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex: 1;
+  padding: 4px 2px;
+  text-decoration: none;
+  color: #94a3b8;
+  transition: color 0.15s ease;
+}
+
+.bottom-nav-icon {
+  display: flex;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.bottom-nav-label {
+  font-family: var(--font-label);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bottom-nav-item-active {
+  color: var(--color-primary);
+}
+
+@media (min-width: 992px) {
+  .bottom-nav-label {
+    font-size: 11.5px;
+  }
 }
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ---
@@ -5597,13 +5812,11 @@ export default LandingPage
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CreateAccountStep.tsx ---
 import { useState, FormEvent, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import { useSignupFlow } from '../../context/SignupFlowContext'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
-import { sendVerificationCode } from '../../lib/emailVerification'
-import { ApiRequestError } from '../../lib/api'
+import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
 
@@ -5663,21 +5876,11 @@ function CreateAccountStep() {
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
-    const email = data.email.trim()
     setSubmitting(true)
-
-    try {
-      const { taskId } = await sendVerificationCode({ email })
-      updateData({ email, verificationTaskId: taskId, emailVerified: false })
-      navigate('/signup/verify-email')
-    } catch (err) {
-      if (err instanceof ApiRequestError) {
-        toast.error(err.message || 'Could not send a verification code. Please try again.')
-      } else {
-        toast.error('Could not reach the server. Check your connection and try again.')
-      }
-      setSubmitting(false)
-    }
+    await withMinDelay(async () => {})
+    updateData({ email: data.email.trim() })
+    setSubmitting(false)
+    navigate('/signup/password')
   }
 
   return (
@@ -5817,7 +6020,6 @@ function CreateAccountStep() {
 
 export default CreateAccountStep
 
-
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CheckEmailStep.tsx ---
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -5902,9 +6104,12 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FlowShell from '../../components/FlowShell/FlowShell'
 import OtpInput from '../../components/OtpInput/OtpInput'
-import { useSignupFlow } from '../../context/SignupFlowContext'
+import { useSignupFlow, generateUsernameBase, generateUsernameFallback } from '../../context/SignupFlowContext'
 import { verifyEmailCode, resendVerificationCode } from '../../lib/emailVerification'
+import { joinWaitlist } from '../../lib/waitlist'
 import { ApiRequestError } from '../../lib/api'
+import { withMinDelay } from '../../lib/useMinDelay'
+import type { BusinessDetailsPayload } from '../../types/api'
 import './SignupFlow.css'
 
 const EXPIRY_SECONDS = 5 * 60
@@ -5942,6 +6147,64 @@ function OtpStep() {
     }
   }, [])
 
+  const createAccount = async () => {
+    const role = data.role ?? 'worker'
+    const usernameBase = generateUsernameBase(data.firstName, data.lastName)
+    const businessDetails: BusinessDetailsPayload | undefined =
+      role === 'advertiser'
+        ? {
+            businessName: data.businessName.trim(),
+            businessIndustry: data.industry.trim(),
+            businessWebsite: data.website.trim() || undefined,
+          }
+        : undefined
+
+    const submitWithUsername = (username: string) =>
+      withMinDelay(() =>
+        joinWaitlist({
+          firstName: data.firstName.trim(),
+          lastName: data.lastName.trim(),
+          username,
+          email: data.email.trim(),
+          phoneNumber: data.phoneNumber.trim(),
+          password: data.password,
+          role,
+          businessDetails,
+        })
+      )
+
+    try {
+      const { user } = await submitWithUsername(usernameBase)
+      updateData({ username: usernameBase })
+      toast.success(`Welcome, ${user.first_name}!`)
+      navigate('/signup/done')
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 409) {
+        const fallbackUsername = generateUsernameFallback(usernameBase)
+        try {
+          const { user } = await submitWithUsername(fallbackUsername)
+          updateData({ username: fallbackUsername })
+          toast.success(`Welcome, ${user.first_name}!`)
+          navigate('/signup/done')
+        } catch (retryErr) {
+          if (retryErr instanceof ApiRequestError) {
+            toast.error(
+              retryErr.status === 409
+                ? 'That email or phone number is already registered.'
+                : retryErr.message
+            )
+          } else {
+            toast.error('Could not reach the server. Check your connection and try again.')
+          }
+        }
+      } else if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+    }
+  }
+
   const handleVerify = async () => {
     const code = otp.join('')
     if (code.length < 6) {
@@ -5952,10 +6215,10 @@ function OtpStep() {
     setVerifying(true)
 
     try {
-      await verifyEmailCode({ code, taskId: data.verificationTaskId })
+      await withMinDelay(() => verifyEmailCode({ code, taskId: data.verificationTaskId }))
       updateData({ emailVerified: true })
+      await createAccount()
       setVerifying(false)
-      navigate('/signup/password')
     } catch (err) {
       setVerifying(false)
       if (err instanceof ApiRequestError) {
@@ -5964,9 +6227,11 @@ function OtpStep() {
         } else if (err.status === 410) {
           setError('This code has expired. Request a new one.')
         } else if (err.status === 409) {
-          // Already verified — safe to just continue.
+          // Already verified — safe to just continue creating the account.
           updateData({ emailVerified: true })
-          navigate('/signup/password')
+          setVerifying(true)
+          await createAccount()
+          setVerifying(false)
           return
         } else if (err.status === 404) {
           setError('Verification session not found. Request a new code.')
@@ -6048,12 +6313,12 @@ function OtpStep() {
 
 export default OtpStep
 
-
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/CreatePasswordStep.tsx ---
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FlowShell from '../../components/FlowShell/FlowShell'
 import { useSignupFlow } from '../../context/SignupFlowContext'
+import { withMinDelay } from '../../lib/useMinDelay'
 import { HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2'
 import './SignupFlow.css'
 
@@ -6068,6 +6333,7 @@ function CreatePasswordStep() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
 
   const validate = (): FormErrors => {
     const next: FormErrors = {}
@@ -6087,11 +6353,14 @@ function CreatePasswordStep() {
     return next
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = validate()
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
+    setSubmitting(true)
+    await withMinDelay(async () => {})
+    setSubmitting(false)
     navigate('/signup/role')
   }
 
@@ -6114,6 +6383,7 @@ function CreatePasswordStep() {
                 if (errors.password) setErrors((p) => ({ ...p, password: '' }))
               }}
               className={errors.password ? 'input-error' : ''}
+              disabled={submitting}
             />
             <button
               type="button"
@@ -6141,6 +6411,7 @@ function CreatePasswordStep() {
                 if (errors.confirmPassword) setErrors((p) => ({ ...p, confirmPassword: '' }))
               }}
               className={errors.confirmPassword ? 'input-error' : ''}
+              disabled={submitting}
             />
             <button
               type="button"
@@ -6155,8 +6426,16 @@ function CreatePasswordStep() {
           {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
         </div>
 
-        <button type="button" className="btn btn-primary btn-block" onClick={handleSubmit}>
-          Set Password
+        <button
+          type="button"
+          className="btn btn-primary btn-block btn-submit"
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+            Set Password
+          </span>
+          {submitting && <span className="btn-spinner" aria-label="Loading" />}
         </button>
       </div>
     </FlowShell>
@@ -6171,9 +6450,10 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
 import RoleSelect from '../../components/RoleSelect/RoleSelect'
-import { useSignupFlow, generateUsernameBase, generateUsernameFallback } from '../../context/SignupFlowContext'
-import { joinWaitlist } from '../../lib/waitlist'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { sendVerificationCode } from '../../lib/emailVerification'
 import { ApiRequestError } from '../../lib/api'
+import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
 
@@ -6194,55 +6474,16 @@ function RoleStep() {
     }
 
     setSubmitting(true)
-    const usernameBase = generateUsernameBase(data.firstName, data.lastName)
-
     try {
-      const { user } = await joinWaitlist({
-        firstName: data.firstName.trim(),
-        lastName: data.lastName.trim(),
-        username: usernameBase,
-        email: data.email.trim(),
-        phoneNumber: data.phoneNumber.trim(),
-        password: data.password,
-        role,
-      })
-      updateData({ username: usernameBase })
-      toast.success(`Welcome, ${user.first_name}!`)
-      navigate('/signup/done')
+      const { taskId } = await withMinDelay(() => sendVerificationCode({ email: data.email.trim() }))
+      updateData({ verificationTaskId: taskId, emailVerified: false })
+      navigate('/signup/verify-email')
     } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 409) {
-        // Username collision — retry once with a random numeric suffix.
-        const fallbackUsername = generateUsernameFallback(usernameBase)
-        try {
-          const { user } = await joinWaitlist({
-            firstName: data.firstName.trim(),
-            lastName: data.lastName.trim(),
-            username: fallbackUsername,
-            email: data.email.trim(),
-            phoneNumber: data.phoneNumber.trim(),
-            password: data.password,
-            role,
-          })
-          updateData({ username: fallbackUsername })
-          toast.success(`Welcome, ${user.first_name}!`)
-          navigate('/signup/done')
-        } catch (retryErr) {
-          if (retryErr instanceof ApiRequestError) {
-            toast.error(
-              retryErr.status === 409
-                ? 'That email or phone number is already registered.'
-                : retryErr.message
-            )
-          } else {
-            toast.error('Could not reach the server. Check your connection and try again.')
-          }
-        }
-      } else if (err instanceof ApiRequestError) {
-        toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+      if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Could not send a verification code. Please try again.')
       } else {
         toast.error('Could not reach the server. Check your connection and try again.')
       }
-    } finally {
       setSubmitting(false)
     }
   }
@@ -6271,16 +6512,15 @@ function RoleStep() {
 
 export default RoleStep
 
-
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/BusinessInfoStep.tsx ---
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
-import { useSignupFlow, generateUsernameBase, generateUsernameFallback } from '../../context/SignupFlowContext'
-import { joinWaitlist } from '../../lib/waitlist'
+import { useSignupFlow } from '../../context/SignupFlowContext'
+import { sendVerificationCode } from '../../lib/emailVerification'
 import { ApiRequestError } from '../../lib/api'
-import type { BusinessDetailsPayload } from '../../types/api'
+import { withMinDelay } from '../../lib/useMinDelay'
 import './SignupFlow.css'
 
 interface FormErrors {
@@ -6300,62 +6540,22 @@ function BusinessInfoStep() {
     return next
   }
 
-  const submitWithUsername = async (username: string, businessDetails: BusinessDetailsPayload) => {
-    return joinWaitlist({
-      firstName: data.firstName.trim(),
-      lastName: data.lastName.trim(),
-      username,
-      email: data.email.trim(),
-      phoneNumber: data.phoneNumber.trim(),
-      password: data.password,
-      role: 'advertiser',
-      businessDetails,
-    })
-  }
-
   const handleSubmit = async () => {
     const validationErrors = validate()
     setErrors(validationErrors)
     if (Object.keys(validationErrors).length > 0) return
 
     setSubmitting(true)
-    const usernameBase = generateUsernameBase(data.firstName, data.lastName)
-    const businessDetails: BusinessDetailsPayload = {
-      businessName: data.businessName.trim(),
-      businessIndustry: data.industry.trim(),
-      businessWebsite: data.website.trim() || undefined,
-    }
-
     try {
-      const { user } = await submitWithUsername(usernameBase, businessDetails)
-      updateData({ username: usernameBase })
-      toast.success(`Welcome, ${user.first_name}!`)
-      navigate('/signup/done')
+      const { taskId } = await withMinDelay(() => sendVerificationCode({ email: data.email.trim() }))
+      updateData({ verificationTaskId: taskId, emailVerified: false })
+      navigate('/signup/verify-email')
     } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 409) {
-        const fallbackUsername = generateUsernameFallback(usernameBase)
-        try {
-          const { user } = await submitWithUsername(fallbackUsername, businessDetails)
-          updateData({ username: fallbackUsername })
-          toast.success(`Welcome, ${user.first_name}!`)
-          navigate('/signup/done')
-        } catch (retryErr) {
-          if (retryErr instanceof ApiRequestError) {
-            toast.error(
-              retryErr.status === 409
-                ? 'That email or phone number is already registered.'
-                : retryErr.message
-            )
-          } else {
-            toast.error('Could not reach the server. Check your connection and try again.')
-          }
-        }
-      } else if (err instanceof ApiRequestError) {
-        toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+      if (err instanceof ApiRequestError) {
+        toast.error(err.message || 'Could not send a verification code. Please try again.')
       } else {
         toast.error('Could not reach the server. Check your connection and try again.')
       }
-    } finally {
       setSubmitting(false)
     }
   }
@@ -6420,7 +6620,7 @@ function BusinessInfoStep() {
         disabled={submitting}
       >
         <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
-          Go to Dashboard
+          Continue
         </span>
         {submitting && <span className="btn-spinner" aria-label="Loading" />}
       </button>
@@ -6430,30 +6630,135 @@ function BusinessInfoStep() {
 
 export default BusinessInfoStep
 
-
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/SignupDoneStep.tsx ---
-import { Link } from 'react-router-dom'
-import FlowCenterShell from '../../components/FlowCenterShell/FlowCenterShell'
+import { Link, Navigate } from 'react-router-dom'
+import { HiCheck, HiOutlineBell, HiOutlineEnvelope, HiOutlineRocketLaunch, HiOutlineUsers } from 'react-icons/hi2'
+import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
 import { useSignupFlow } from '../../context/SignupFlowContext'
-import './SignupFlow.css'
+import '../WaitlistSuccess/WaitlistSuccessPage.css'
+
+const TELEGRAM_URL = 'https://t.me/+Oyl3Hlt2wXdkOTFk'
+const WHATSAPP_URL = 'https://chat.whatsapp.com/CZMTBeQmnG51DHuNTsLzTV'
+
+const steps = [
+  {
+    icon: HiOutlineEnvelope,
+    title: "We'll keep you updated",
+    description: 'Important updates and product news will be sent straight to your inbox.',
+  },
+  {
+    icon: HiOutlineRocketLaunch,
+    title: 'Start exploring',
+    description: 'Your dashboard is ready — jump in and see what TaskBridge has for you.',
+  },
+  {
+    icon: HiOutlineUsers,
+    title: 'Help shape TaskBridge',
+    description: 'Share feedback and help us build the best platform for you.',
+  },
+]
 
 function SignupDoneStep() {
   const { data } = useSignupFlow()
 
+  // Guard against direct/refresh navigation without having actually completed signup.
+  if (!data.emailVerified) {
+    return <Navigate to="/signup" replace />
+  }
+
   return (
-    <FlowCenterShell
-      heading={`You're all set, ${data.firstName || 'there'}!`}
-      subheading="This is a placeholder — the dashboard isn't built yet."
-    >
-      <Link to="/" className="btn btn-primary btn-block">
-        Back to Home
-      </Link>
-    </FlowCenterShell>
+    <section className="success-page">
+      <Navbar />
+
+      <main className="success-container">
+        {/* Success animation */}
+        <div className="success-animation">
+          <span className="spark spark-1" />
+          <span className="spark spark-2" />
+          <span className="spark spark-3" />
+          <span className="spark spark-4" />
+
+          <div className="success-circle">
+            <HiCheck className="check-icon" />
+          </div>
+        </div>
+
+        {/* Headings */}
+        <div className="headings">
+          <h1>
+            Welcome to <span className="blue-txt">TaskBridge</span>!
+          </h1>
+          <p className="success-description">
+            {data.firstName ? `You're all set, ${data.firstName}. ` : "You're all set. "}
+            Your account is ready to go.
+          </p>
+        </div>
+
+        {/* Community card */}
+        <div className="telegram-card">
+          <div className="telegram-header">
+            <div className="icon-circle">
+              <HiOutlineBell />
+            </div>
+
+            <div className="telegram-content">
+              <h3>Stay updated</h3>
+              <p>Join our community channels to get updates, sneak peeks and product news.</p>
+            </div>
+          </div>
+
+          <div className="channel-buttons">
+            <button
+              type="button"
+              className="telegram-button"
+              onClick={() => window.open(TELEGRAM_URL, '_blank', 'noopener,noreferrer')}
+            >
+              <FaTelegramPlane className="telegram-icon" />
+              <span>Join our Telegram</span>
+            </button>
+
+            <button
+              type="button"
+              className="whatsapp-button"
+              onClick={() => window.open(WHATSAPP_URL, '_blank', 'noopener,noreferrer')}
+            >
+              <FaWhatsapp className="telegram-icon" />
+              <span>Join our WhatsApp</span>
+            </button>
+          </div>
+        </div>
+
+        {/* What happens next */}
+        <div className="steps">
+          <h1>What happens next?</h1>
+
+          {steps.map((step) => (
+            <div className="step" key={step.title}>
+              <div className="step-icon">
+                <step.icon />
+              </div>
+
+              <div className="step-content">
+                <h4>{step.title}</h4>
+                <p>{step.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Link to="/dashboard" className="back-home">
+          Open Dashboard
+        </Link>
+      </main>
+
+      <Footer />
+    </section>
   )
 }
 
 export default SignupDoneStep
-
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/SignupFlow/SignupFlow.css ---
 @import '../Signup/SignupPage.css';
@@ -6567,7 +6872,925 @@ export default SignupDoneStep
 @media (max-width: 420px) {
   .form-row {
     flex-direction: column;
-    gap: 0;
+    gap: 20px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Login/LoginPage.tsx ---
+import { useState, FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import Navbar from '../../components/Navbar/Navbar'
+import Footer from '../../components/Footer/Footer'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { login } from '../../lib/auth'
+import { ApiRequestError } from '../../lib/api'
+import { withMinDelay } from '../../lib/useMinDelay'
+import { HiOutlineEye, HiOutlineEyeSlash, HiOutlineShieldCheck } from 'react-icons/hi2'
+import '../Signup/SignupPage.css'
+
+interface FormData {
+  email: string
+  password: string
+}
+
+interface FormErrors {
+  [key: string]: string
+}
+
+function LoginPage() {
+  const navigate = useNavigate()
+  const [form, setForm] = useState<FormData>({ email: '', password: '' })
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const headingRef = useScrollReveal<HTMLDivElement>({ threshold: 0 })
+  const formRef = useScrollReveal<HTMLFormElement>({ threshold: 0, rootMargin: '0px' })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[name]
+        return next
+      })
+    }
+  }
+
+  const validate = (): FormErrors => {
+    const next: FormErrors = {}
+
+    if (!form.email.trim()) {
+      next.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      next.email = 'Enter a valid email address'
+    }
+
+    if (!form.password) {
+      next.password = 'Password is required'
+    }
+
+    return next
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    const validationErrors = validate()
+    setErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) return
+
+    setSubmitting(true)
+    try {
+      const { accessToken, refreshToken, user } = await withMinDelay(() =>
+        login({ email: form.email.trim(), password: form.password })
+      )
+
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
+
+      toast.success(`Welcome back, ${user.firstName}!`)
+
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 600)
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        if (err.status === 401) {
+          toast.error('Incorrect email or password.')
+        } else if (err.status === 404) {
+          toast.error('No account found with that email.')
+        } else {
+          toast.error(err.message || 'Something went wrong on our end. Please try again shortly.')
+        }
+      } else {
+        toast.error('Could not reach the server. Check your connection and try again.')
+      }
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="signup-page">
+      <Navbar />
+
+      <main className="signup-main">
+        <div className="signup-container">
+          <div ref={headingRef} className="signup-heading reveal reveal-up">
+            <span className="signup-eyebrow">
+              <HiOutlineShieldCheck /> Welcome back
+            </span>
+            <h1>Sign In</h1>
+            <p>Log in to continue to your TaskBridge account.</p>
+          </div>
+
+          <form
+            ref={formRef}
+            className="signup-form reveal reveal-up reveal-delay-1"
+            onSubmit={handleSubmit}
+            noValidate
+          >
+            <div className="form-field">
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="ada@taskbridge.dev"
+                value={form.email}
+                onChange={handleChange}
+                disabled={submitting}
+                className={errors.email ? 'input-error' : ''}
+              />
+              {errors.email && <span className="field-error">{errors.email}</span>}
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="password">Password</label>
+              <div className="password-input-wrap">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Your password"
+                  value={form.password}
+                  onChange={handleChange}
+                  disabled={submitting}
+                  className={errors.password ? 'input-error' : ''}
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((s) => !s)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <HiOutlineEyeSlash /> : <HiOutlineEye />}
+                </button>
+              </div>
+              {errors.password && <span className="field-error">{errors.password}</span>}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-block btn-submit"
+              disabled={submitting}
+            >
+              <span className={submitting ? 'btn-label btn-label-hidden' : 'btn-label'}>
+                Sign In
+              </span>
+              {submitting && <span className="btn-spinner" aria-label="Loading" />}
+            </button>
+
+            <p className="signup-footnote">
+              Don't have an account? <Link to="/signup">Signup</Link>
+            </p>
+          </form>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+
+export default LoginPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Dashboard/DashboardPage.tsx ---
+import { Link } from 'react-router-dom'
+import {
+  HiOutlineWallet,
+  HiCheckCircle,
+  HiArrowTrendingUp,
+  HiOutlineMagnifyingGlass,
+  HiOutlineUsers,
+  HiOutlineShieldCheck,
+  HiArrowUpRight,
+  HiArrowDownRight,
+  HiStar,
+} from 'react-icons/hi2'
+import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import BottomNav from '../../components/BottomNav/BottomNav'
+import './DashboardPage.css'
+
+interface TaskItem {
+  id: string
+  category: string
+  verified: boolean
+  reward: number
+  title: string
+  duration: string
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  slotsLeft: number
+  rating: number
+}
+
+interface EarningItem {
+  id: string
+  type: 'credit' | 'debit'
+  title: string
+  subtitle: string
+  amount: number
+  when: string
+}
+
+const recommendedTasks: TaskItem[] = [
+  {
+    id: '1',
+    category: 'Social Media',
+    verified: true,
+    reward: 150,
+    title: 'Follow @OfficialMTN on Instagram and like their latest 3 posts',
+    duration: '5 mins',
+    difficulty: 'Easy',
+    slotsLeft: 48,
+    rating: 4.8,
+  },
+  {
+    id: '2',
+    category: 'App Download',
+    verified: true,
+    reward: 300,
+    title: 'Download KliqPay app, create an account and complete profile setup',
+    duration: '10 mins',
+    difficulty: 'Easy',
+    slotsLeft: 120,
+    rating: 4.9,
+  },
+  {
+    id: '3',
+    category: 'Review',
+    verified: false,
+    reward: 200,
+    title: 'Write a genuine Google Play review for Opay (min. 50 words)',
+    duration: '8 mins',
+    difficulty: 'Medium',
+    slotsLeft: 30,
+    rating: 4.7,
+  },
+]
+
+const recentEarnings: EarningItem[] = [
+  {
+    id: '1',
+    type: 'credit',
+    title: 'Task Reward',
+    subtitle: 'Follow @OfficialMTN on Insta...',
+    amount: 150,
+    when: 'Today, 2:30 PM',
+  },
+  {
+    id: '2',
+    type: 'credit',
+    title: 'Task Reward',
+    subtitle: 'Download KliqPay app',
+    amount: 300,
+    when: 'Today, 10:15 AM',
+  },
+  {
+    id: '3',
+    type: 'debit',
+    title: 'Withdrawal',
+    subtitle: 'GTBank ••••4521',
+    amount: -5000,
+    when: 'Yesterday',
+  },
+]
+
+function formatNaira(value: number) {
+  const abs = Math.abs(value)
+  return `₦${abs.toLocaleString('en-NG')}`
+}
+
+function difficultyClass(difficulty: TaskItem['difficulty']) {
+  if (difficulty === 'Easy') return 'task-diff-easy'
+  if (difficulty === 'Medium') return 'task-diff-medium'
+  return 'task-diff-hard'
+}
+
+function DashboardPage() {
+  const firstName = 'Chidi'
+  const initials = 'CE'
+
+  return (
+    <div className="dashboard-page">
+      <DashboardTopbar initials={initials} hasNotifications />
+
+      <main className="dashboard-main">
+        {/* Greeting */}
+        <div className="dash-greeting">
+          <h1>
+            Good morning, {firstName} <span className="dash-wave">👋</span>
+          </h1>
+          <p>You have 3 pending approvals</p>
+        </div>
+
+        {/* Balance card */}
+        <div className="balance-card">
+          <div className="balance-card-top">
+            <div>
+              <span className="balance-label">Total Balance</span>
+              <div className="balance-value">₦12,450.00</div>
+              <span className="balance-pending">₦3,200 pending approval</span>
+            </div>
+            <div className="balance-icon">
+              <HiOutlineWallet />
+            </div>
+          </div>
+
+          <div className="balance-actions">
+            <Link to="/dashboard/wallet" className="btn-balance btn-balance-tint">
+              View Wallet
+            </Link>
+            <button type="button" className="btn-balance btn-balance-primary">
+              Withdraw
+            </button>
+          </div>
+        </div>
+
+        {/* Stats row */}
+        <div className="stats-row">
+          <div className="stat-card">
+            <div className="stat-card-top">
+              <span className="stat-card-label">Tasks Completed</span>
+              <span className="stat-card-icon"><HiCheckCircle /></span>
+            </div>
+            <div className="stat-card-value">248</div>
+            <span className="stat-card-delta stat-card-delta-up">+12 this week</span>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-top">
+              <span className="stat-card-label">Earnings (July)</span>
+              <span className="stat-card-icon"><HiArrowTrendingUp /></span>
+            </div>
+            <div className="stat-card-value">₦8,750</div>
+            <span className="stat-card-delta stat-card-delta-up">+₦1,200 vs last month</span>
+          </div>
+        </div>
+
+        {/* Quick actions */}
+        <div className="dash-section">
+          <span className="dash-section-label">Quick Actions</span>
+
+          <div className="quick-actions-grid">
+            <Link to="/dashboard/tasks" className="quick-action-card">
+              <span className="quick-action-icon"><HiOutlineMagnifyingGlass /></span>
+              <span className="quick-action-label">Browse Tasks</span>
+            </Link>
+            <Link to="/dashboard/wallet" className="quick-action-card">
+              <span className="quick-action-icon"><HiOutlineWallet /></span>
+              <span className="quick-action-label">My Wallet</span>
+            </Link>
+            <Link to="/dashboard/referral" className="quick-action-card">
+              <span className="quick-action-icon"><HiOutlineUsers /></span>
+              <span className="quick-action-label">Referral</span>
+            </Link>
+            <Link to="/dashboard/verify" className="quick-action-card">
+              <span className="quick-action-icon"><HiOutlineShieldCheck /></span>
+              <span className="quick-action-label">Verify ID</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Recommended tasks */}
+        <div className="dash-section">
+          <div className="dash-section-header">
+            <span className="dash-section-label">Recommended Tasks</span>
+            <Link to="/dashboard/tasks" className="dash-section-link">
+              See all →
+            </Link>
+          </div>
+
+          <div className="task-list">
+            {recommendedTasks.map((task) => (
+              <div key={task.id} className="task-card">
+                <div className="task-card-top">
+                  <div className="task-tags">
+                    <span className="task-tag task-tag-category">{task.category}</span>
+                    {task.verified && <span className="task-tag task-tag-verified">Verified</span>}
+                  </div>
+                  <span className="task-reward">{formatNaira(task.reward)}</span>
+                </div>
+
+                <h3 className="task-title">{task.title}</h3>
+
+                <div className="task-meta">
+                  <span>{task.duration}</span>
+                  <span className={difficultyClass(task.difficulty)}>{task.difficulty}</span>
+                  <span>{task.slotsLeft} slots left</span>
+                  <span className="task-rating">
+                    <HiStar /> {task.rating}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent earnings */}
+        <div className="dash-section">
+          <div className="dash-section-header">
+            <span className="dash-section-label">Recent Earnings</span>
+            <Link to="/dashboard/wallet" className="dash-section-link">
+              View all →
+            </Link>
+          </div>
+
+          <div className="earnings-list">
+            {recentEarnings.map((item) => (
+              <div key={item.id} className="earnings-row">
+                <span className={`earnings-icon ${item.type === 'credit' ? 'earnings-icon-credit' : 'earnings-icon-debit'}`}>
+                  {item.type === 'credit' ? <HiArrowUpRight /> : <HiArrowDownRight />}
+                </span>
+
+                <div className="earnings-info">
+                  <span className="earnings-title">{item.title}</span>
+                  <span className="earnings-subtitle">{item.subtitle}</span>
+                </div>
+
+                <div className="earnings-amount-wrap">
+                  <span className={`earnings-amount ${item.type === 'credit' ? 'earnings-amount-credit' : 'earnings-amount-debit'}`}>
+                    {item.type === 'credit' ? '+' : '-'}
+                    {formatNaira(item.amount)}
+                  </span>
+                  <span className="earnings-when">{item.when}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default DashboardPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Dashboard/DashboardPage.css ---
+.dashboard-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+.dashboard-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===== Greeting ===== */
+.dash-greeting h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-wave {
+  font-size: 20px;
+}
+
+.dash-greeting p {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* ===== Balance card ===== */
+.balance-card {
+  background: var(--color-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 83, 212, 0.12);
+}
+
+.balance-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.balance-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.balance-value {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 6px 0 4px;
+}
+
+.balance-pending {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.balance-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.balance-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-balance {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 16px;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-balance:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.btn-balance-tint {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.btn-balance-primary {
+  background: #ffffff;
+  color: var(--color-primary);
+}
+
+/* ===== Stats row ===== */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.stat-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.stat-card-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  max-width: 100px;
+  line-height: 1.4;
+}
+
+.stat-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.stat-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.stat-card-delta {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-card-delta-up {
+  color: var(--color-success-green);
+}
+
+/* ===== Section shell ===== */
+.dash-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-section-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.dash-section-link {
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* ===== Quick actions ===== */
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quick-action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quick-action-card:active {
+  transform: scale(0.98);
+}
+
+.quick-action-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.quick-action-label {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ===== Recommended tasks ===== */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.task-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.task-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.task-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.task-tag-category {
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+}
+
+.task-tag-verified {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.task-reward {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0f172a;
+  margin: 0 0 12px;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--font-label);
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+}
+
+.task-diff-easy {
+  color: var(--color-success-green);
+  font-weight: 700;
+}
+
+.task-diff-medium {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.task-diff-hard {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.task-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.task-rating svg {
+  font-size: 13px;
+}
+
+/* ===== Recent earnings ===== */
+.earnings-list {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.earnings-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.earnings-row:last-child {
+  border-bottom: none;
+}
+
+.earnings-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.earnings-icon-credit {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.earnings-icon-debit {
+  background: #fef2f2;
+  color: #ba1a1a;
+}
+
+.earnings-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.earnings-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.earnings-subtitle {
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.earnings-amount-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.earnings-amount {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.earnings-amount-credit {
+  color: var(--color-success-green);
+}
+
+.earnings-amount-debit {
+  color: #ba1a1a;
+}
+
+.earnings-when {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 768px) {
+  .dashboard-main {
+    padding: 28px var(--margin-desktop) 40px;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -6739,6 +7962,40 @@ export function resendVerificationCode(payload: ResendVerificationPayload) {
 }
 
 
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/useMinDelay.ts ---
+/**
+ * Wraps an async action so that whatever "loading" state you flip on stays
+ * true for at least `minMs`, even if the action resolves (or rejects) faster.
+ * Purely cosmetic — makes button spinners feel real instead of flickering.
+ */
+export async function withMinDelay<T>(action: () => Promise<T>, minMs = 700): Promise<T> {
+  const start = Date.now()
+  try {
+    return await action()
+  } finally {
+    const elapsed = Date.now() - start
+    if (elapsed < minMs) {
+      await new Promise((resolve) => setTimeout(resolve, minMs - elapsed))
+    }
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/auth.ts ---
+import { apiRequest } from './api'
+import type { LoginPayload, LoginResponse } from '../types/api'
+
+export function login(payload: LoginPayload) {
+  return apiRequest<LoginResponse>('/auth/login', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/authStatus.ts ---
+export function isAuthenticated(): boolean {
+  return Boolean(localStorage.getItem('accessToken'))
+}
+
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ---
 export type UserRole = 'worker' | 'advertiser'
 
@@ -6821,6 +8078,26 @@ export interface ResendVerificationResponse {
   expiresAt: string
 }
 
+
+export interface LoginPayload {
+  email: string
+  password: string
+}
+
+export interface LoginUser {
+  id: string
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  role: UserRole
+}
+
+export interface LoginResponse {
+  accessToken: string
+  refreshToken: string
+  user: LoginUser
+}
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/context/SignupFlowContext.tsx ---
 import { createContext, useContext, useState, ReactNode } from 'react'

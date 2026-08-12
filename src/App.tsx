@@ -7,6 +7,7 @@ import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import LoginPage from './pages/Login/LoginPage'
 import DashboardPage from './pages/Dashboard/DashboardPage'
+import BrowseTasksPage from './pages/BrowseTasks/BrowseTasksPage'
 import { isAuthenticated } from './lib/authStatus'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
@@ -67,6 +68,7 @@ function App() {
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/tasks" element={<BrowseTasksPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -1,0 +1,243 @@
+.browse-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+/* ============ Sticky zone (heading + search + chips) ============ */
+/* Sits directly below DashboardTopbar (which is sticky top:0 itself),
+   so this stacks right under it and stays pinned while the task list
+   scrolls beneath — same "nested scroll" feel as a CoordinatorLayout
+   with a pinned toolbar + scrolling RecyclerView, but it's really just
+   two stacked sticky elements inside one page-level scroll. */
+.browse-sticky-zone {
+  position: sticky;
+  top: 60px;
+  z-index: 40;
+  background: var(--color-surface);
+  padding: 16px var(--margin-mobile) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.browse-heading {
+  margin-bottom: 14px;
+}
+
+.browse-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.browse-heading p {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* ============ Search ============ */
+.browse-search-wrap {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.browse-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+.browse-search-input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-container-low);
+  outline: none;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  color: var(--color-on-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.browse-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.browse-search-input:focus {
+  background: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
+}
+
+/* ============ Chip row (horizontal scroll) ============ */
+.browse-chip-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.browse-chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+.browse-chip {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.browse-chip:active {
+  transform: scale(0.96);
+}
+
+.browse-chip-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ============ Main list (part of normal page scroll) ============ */
+.browse-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+}
+
+.browse-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--color-on-surface-variant);
+  font-size: 14.5px;
+}
+
+/* ============ Task list / card (shared visual language with Dashboard) ============ */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.task-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.task-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.task-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.task-tag-category {
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+}
+
+.task-tag-verified {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.task-reward {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0f172a;
+  margin: 0 0 12px;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--font-label);
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+}
+
+.task-diff-easy {
+  color: var(--color-success-green);
+  font-weight: 700;
+}
+
+.task-diff-medium {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.task-diff-hard {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.task-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.task-rating svg {
+  font-size: 13px;
+}
+
+/* ============ Desktop ============ */
+@media (min-width: 768px) {
+  .browse-sticky-zone {
+    top: 68px;
+    padding: 20px var(--margin-desktop) 0;
+  }
+
+  .browse-main {
+    padding: 20px var(--margin-desktop) 40px;
+  }
+}
