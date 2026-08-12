@@ -167,7 +167,7 @@ function LoginPage() {
             </button>
 
             <p className="signup-footnote">
-              Don't have an account? <Link to="/signup">Join the waitlist</Link>
+              Don't have an account? <Link to="/signup">Signup</Link>
             </p>
           </form>
         </div>
