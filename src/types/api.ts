@@ -99,3 +99,117 @@ export interface LoginResponse {
   refreshToken: string
   user: LoginUser
 }
+
+// ---- /me ----
+
+export interface MeWallet {
+  id: string
+  balanceKobo: string
+  currency: string
+}
+
+export interface MeWorkerStats {
+  pendingApprovals: number
+  completedTasks: number
+  completedThisWeek: number
+  earningsThisMonthKobo: number
+  earningsLastMonthKobo: number
+  earningsDeltaKobo: number
+}
+
+export interface MeAdvertiserStats {
+  pendingApprovals: number
+  completedTasks: number
+  completedThisWeek: number
+  spentThisMonthKobo: number
+  spentLastMonthKobo: number
+  spentDeltaKobo: number
+}
+
+export type MeStats = MeWorkerStats | MeAdvertiserStats
+
+export interface MeUser {
+  id: string
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  phoneNumber: string
+  role: UserRole
+  referralCode: string
+  referredBy: string | null
+  isVerified: boolean
+  emailVerifiedAt: string | null
+  isFirstAccess: boolean
+  firstAccessCode: string | null
+  firstAccessRewardGranted: boolean
+  businessName: string | null
+  businessIndustry: string | null
+  businessWebsite: string | null
+  createdAt: string
+  updatedAt: string
+  wallet: MeWallet
+  referralCount: number
+  stats: MeStats
+}
+
+export interface MeResponse {
+  user: MeUser
+}
+
+// Narrowing helpers — the /me stats shape depends on role.
+export function isWorkerStats(stats: MeStats): stats is MeWorkerStats {
+  return 'earningsThisMonthKobo' in stats
+}
+
+export function isAdvertiserStats(stats: MeStats): stats is MeAdvertiserStats {
+  return 'spentThisMonthKobo' in stats
+}
+
+// ---- /tasks/categories ----
+
+export interface TaskSubcategoryItem {
+  subcategory: string
+  displayName: string
+  baseRateKobo: number
+  subcategoryId: string
+}
+
+export interface TaskCategoryItem {
+  category: string
+  description: string
+  categoryId: string
+  subcategories: TaskSubcategoryItem[]
+}
+
+export interface TaskCategoriesResponse {
+  categories: TaskCategoryItem[]
+}
+
+// ---- /recommended (and /tasks — same row shape) ----
+
+export interface TaskListItem {
+  id: string
+  job_link: string
+  job_description: string
+  proof_required: boolean
+  proof_type: string | null
+  quantity: number
+  worker_earn_kobo: string
+  completed_count: number
+  spots_remaining: number
+  expires_at: string
+  created_at: string
+  category_name: string
+  subcategory_name: string
+  advertiser_username: string
+}
+
+export interface RecommendedTasksResponse {
+  tasks: TaskListItem[]
+}
+
+export interface TasksResponse {
+  tasks: TaskListItem[]
+}
+

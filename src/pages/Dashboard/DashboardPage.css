@@ -458,3 +458,45 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ===== Loading / error inline states ===== */
+.dash-inline-status {
+  font-size: 13.5px;
+  color: var(--color-on-surface-variant);
+  padding: 4px 2px;
+  margin: 0;
+}
+
+.dash-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+}
+
+.dash-error-banner p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #ba1a1a;
+  flex: 1;
+}
+
+.dash-error-banner button {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ba1a1a;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 8px;
+}
+
+.stat-card-delta-down {
+  color: #ba1a1a;
+}

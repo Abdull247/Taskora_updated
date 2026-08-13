@@ -1,125 +1,142 @@
-import { useMemo, useState } from 'react'
-import {
-  HiOutlineMagnifyingGlass,
-  HiStar,
-} from 'react-icons/hi2'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { HiOutlineMagnifyingGlass } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import BrowseTasksSkeleton from '../../components/BrowseTasksSkeleton/BrowseTasksSkeleton'
+import { getTaskCategories, getTasks } from '../../lib/tasks'
+import { ApiRequestError } from '../../lib/api'
+import type { TaskCategoryItem, TaskListItem } from '../../types/api'
 import './BrowseTasksPage.css'
 
-interface TaskItem {
-  id: string
-  category: string
-  verified: boolean
-  reward: number
-  title: string
-  duration: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
-  slotsLeft: number
-  rating: number
+const ALL_CHIP_ID = 'all'
+
+function formatNaira(kobo: number) {
+  const naira = kobo / 100
+  return `₦${naira.toLocaleString('en-NG', {
+    minimumFractionDigits: naira % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`
 }
 
-const allTasks: TaskItem[] = [
-  {
-    id: '1',
-    category: 'Social Media',
-    verified: true,
-    reward: 150,
-    title: 'Follow @OfficialMTN on Instagram and like their latest 3 posts',
-    duration: '5 mins',
-    difficulty: 'Easy',
-    slotsLeft: 48,
-    rating: 4.8,
-  },
-  {
-    id: '2',
-    category: 'App Download',
-    verified: true,
-    reward: 300,
-    title: 'Download KliqPay app, create an account and complete profile setup',
-    duration: '10 mins',
-    difficulty: 'Easy',
-    slotsLeft: 120,
-    rating: 4.9,
-  },
-  {
-    id: '3',
-    category: 'Review',
-    verified: false,
-    reward: 200,
-    title: 'Write a genuine Google Play review for Opay (min. 50 words)',
-    duration: '8 mins',
-    difficulty: 'Medium',
-    slotsLeft: 30,
-    rating: 4.7,
-  },
-  {
-    id: '4',
-    category: 'Social Media',
-    verified: true,
-    reward: 100,
-    title: 'Subscribe to a YouTube channel and turn on notifications',
-    duration: '3 mins',
-    difficulty: 'Easy',
-    slotsLeft: 75,
-    rating: 4.6,
-  },
-  {
-    id: '5',
-    category: 'Survey',
-    verified: true,
-    reward: 250,
-    title: 'Complete a 5-minute survey about mobile banking habits',
-    duration: '5 mins',
-    difficulty: 'Medium',
-    slotsLeft: 60,
-    rating: 4.5,
-  },
-  {
-    id: '6',
-    category: 'App Download',
-    verified: false,
-    reward: 350,
-    title: 'Install PiggyVest, verify your BVN and fund your wallet with ₦1,000',
-    duration: '15 mins',
-    difficulty: 'Hard',
-    slotsLeft: 18,
-    rating: 4.4,
-  },
-]
-
-const categories = ['All', 'Social Media', 'App Download', 'Review', 'Survey']
-
-function formatNaira(value: number) {
-  return `₦${value.toLocaleString('en-NG')}`
+function categoryLabel(name: string) {
+  return name
+    .toLowerCase()
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
-function difficultyClass(difficulty: TaskItem['difficulty']) {
+function difficultyFromReward(rewardKobo: number): 'Easy' | 'Medium' | 'Hard' {
+  const naira = rewardKobo / 100
+  if (naira < 100) return 'Easy'
+  if (naira < 300) return 'Medium'
+  return 'Hard'
+}
+
+function difficultyClass(difficulty: 'Easy' | 'Medium' | 'Hard') {
   if (difficulty === 'Easy') return 'task-diff-easy'
   if (difficulty === 'Medium') return 'task-diff-medium'
   return 'task-diff-hard'
 }
 
+function timeLeftLabel(expiresAt: string) {
+  const diffMs = new Date(expiresAt).getTime() - Date.now()
+  if (diffMs <= 0) return 'Expired'
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  if (days >= 1) return `${days}d left`
+  const hours = Math.floor(diffMs / (1000 * 60 * 60))
+  if (hours >= 1) return `${hours}h left`
+  const minutes = Math.max(1, Math.floor(diffMs / (1000 * 60)))
+  return `${minutes}m left`
+}
+
 function BrowseTasksPage() {
-  const [activeCategory, setActiveCategory] = useState('All')
+  const navigate = useNavigate()
+
+  const [categories, setCategories] = useState<TaskCategoryItem[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
+  const [categoriesError, setCategoriesError] = useState<string | null>(null)
+
+  const [activeCategoryId, setActiveCategoryId] = useState<string>(ALL_CHIP_ID)
+
+  const [tasks, setTasks] = useState<TaskListItem[]>([])
+  const [tasksLoading, setTasksLoading] = useState(true)
+  const [tasksError, setTasksError] = useState<string | null>(null)
+
   const [query, setQuery] = useState('')
 
-  const filteredTasks = useMemo(() => {
-    return allTasks.filter((task) => {
-      const matchesCategory = activeCategory === 'All' || task.category === activeCategory
-      const matchesQuery = task.title.toLowerCase().includes(query.trim().toLowerCase())
-      return matchesCategory && matchesQuery
+  const loadCategories = useCallback(async () => {
+    setCategoriesLoading(true)
+    setCategoriesError(null)
+    try {
+      const { categories: cats } = await getTaskCategories()
+      setCategories(cats)
+    } catch {
+      setCategoriesError('Could not load categories.')
+    } finally {
+      setCategoriesLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadCategories()
+  }, [loadCategories])
+
+  const loadTasks = useCallback(() => {
+    let cancelled = false
+    setTasksLoading(true)
+    setTasksError(null)
+
+    getTasks({
+      limit: 30,
+      categoryId: activeCategoryId === ALL_CHIP_ID ? undefined : activeCategoryId,
     })
-  }, [activeCategory, query])
+      .then(({ tasks: fetched }) => {
+        if (!cancelled) setTasks(fetched)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        if (err instanceof ApiRequestError && err.status === 401) {
+          navigate('/login', { replace: true })
+          return
+        }
+        setTasksError('Could not load tasks. Pull down to try again.')
+      })
+      .finally(() => {
+        if (!cancelled) setTasksLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [activeCategoryId, navigate])
+
+  useEffect(() => {
+    const cancel = loadTasks()
+    return cancel
+  }, [loadTasks])
+
+  const filteredTasks = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return tasks
+    return tasks.filter((task) => task.job_description.toLowerCase().includes(q))
+  }, [tasks, query])
+
+  const showInitialSkeleton = categoriesLoading && tasksLoading
 
   return (
     <div className="browse-page">
-      <DashboardTopbar initials="CE" hasNotifications />
+      <DashboardTopbar initials="··" hasNotifications />
 
       <div className="browse-sticky-zone">
         <div className="browse-heading">
           <h1>Browse Tasks</h1>
-          <p>{filteredTasks.length} task{filteredTasks.length === 1 ? '' : 's'} available</p>
+          <p>
+            {tasksLoading
+              ? 'Loading tasks…'
+              : `${filteredTasks.length} task${filteredTasks.length === 1 ? '' : 's'} available`}
+          </p>
         </div>
 
         <div className="browse-search-wrap">
@@ -133,49 +150,82 @@ function BrowseTasksPage() {
           />
         </div>
 
-        <div className="browse-chip-row">
-          {categories.map((cat) => (
+        {categoriesLoading ? (
+          <div className="browse-chip-row browse-chip-row-skel-inline">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="skel skel-chip" />
+            ))}
+          </div>
+        ) : categoriesError ? (
+          <div className="browse-chip-error">
+            <span>{categoriesError}</span>
+            <button type="button" onClick={loadCategories}>Retry</button>
+          </div>
+        ) : (
+          <div className="browse-chip-row">
             <button
-              key={cat}
               type="button"
-              className={`browse-chip ${activeCategory === cat ? 'browse-chip-active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
+              className={`browse-chip ${activeCategoryId === ALL_CHIP_ID ? 'browse-chip-active' : ''}`}
+              onClick={() => setActiveCategoryId(ALL_CHIP_ID)}
             >
-              {cat}
+              All
             </button>
-          ))}
-        </div>
+            {categories.map((cat) => (
+              <button
+                key={cat.categoryId}
+                type="button"
+                className={`browse-chip ${activeCategoryId === cat.categoryId ? 'browse-chip-active' : ''}`}
+                onClick={() => setActiveCategoryId(cat.categoryId)}
+              >
+                {categoryLabel(cat.category)}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <main className="browse-main">
-        {filteredTasks.length === 0 ? (
+        {showInitialSkeleton ? (
+          <BrowseTasksSkeleton showChips={false} />
+        ) : tasksLoading ? (
+          <BrowseTasksSkeleton showChips={false} />
+        ) : tasksError ? (
+          <div className="browse-empty">
+            <p>{tasksError}</p>
+            <button type="button" className="browse-retry-btn" onClick={loadTasks}>
+              Retry
+            </button>
+          </div>
+        ) : filteredTasks.length === 0 ? (
           <div className="browse-empty">
             <p>No tasks match your search.</p>
           </div>
         ) : (
           <div className="task-list">
-            {filteredTasks.map((task) => (
-              <div key={task.id} className="task-card">
-                <div className="task-card-top">
-                  <div className="task-tags">
-                    <span className="task-tag task-tag-category">{task.category}</span>
-                    {task.verified && <span className="task-tag task-tag-verified">Verified</span>}
+            {filteredTasks.map((task) => {
+              const rewardKobo = Number(task.worker_earn_kobo)
+              const difficulty = difficultyFromReward(rewardKobo)
+              return (
+                <div key={task.id} className="task-card">
+                  <div className="task-card-top">
+                    <div className="task-tags">
+                      <span className="task-tag task-tag-category">
+                        {categoryLabel(task.category_name)}
+                      </span>
+                    </div>
+                    <span className="task-reward">{formatNaira(rewardKobo)}</span>
                   </div>
-                  <span className="task-reward">{formatNaira(task.reward)}</span>
-                </div>
 
-                <h3 className="task-title">{task.title}</h3>
+                  <h3 className="task-title">{task.job_description}</h3>
 
-                <div className="task-meta">
-                  <span>{task.duration}</span>
-                  <span className={difficultyClass(task.difficulty)}>{task.difficulty}</span>
-                  <span>{task.slotsLeft} slots left</span>
-                  <span className="task-rating">
-                    <HiStar /> {task.rating}
-                  </span>
+                  <div className="task-meta">
+                    <span className={difficultyClass(difficulty)}>{difficulty}</span>
+                    <span>{task.spots_remaining} spot{task.spots_remaining === 1 ? '' : 's'} left</span>
+                    <span>{timeLeftLabel(task.expires_at)}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </main>
