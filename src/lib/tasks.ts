@@ -4,6 +4,8 @@ import type {
   TaskCategoriesResponse,
   TaskDetailResponse,
   TasksResponse,
+  SubmissionProof,
+  SubmitTaskProofResponse,
 } from '../types/api'
 
 /**
@@ -59,5 +61,16 @@ export function getTasks(params: GetTasksParams = {}) {
 export function getTaskById(id: string) {
   return authFetch<TaskDetailResponse>(`/tasks/${encodeURIComponent(id)}`, {
     method: 'GET',
+  })
+}
+
+/**
+ * Worker-only. Submits task proof for review. Returns 201 on success and
+ * 409 if the worker already has a pending/approved submission.
+ */
+export function submitTaskProof(id: string, proof: SubmissionProof) {
+  return authFetch<SubmitTaskProofResponse>(`/tasks/${encodeURIComponent(id)}/submit`, {
+    method: 'POST',
+    body: { proof },
   })
 }

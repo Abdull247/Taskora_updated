@@ -233,6 +233,8 @@ export interface ProofConfigItem {
 export interface ProofConfig {
   text: ProofConfigItem
   screenshot: ProofConfigItem
+  link?: ProofConfigItem
+  video?: ProofConfigItem
 }
 
 export interface RatingCriterion {
@@ -279,5 +281,34 @@ export interface TaskDetail {
 
 export interface TaskDetailResponse {
   task: TaskDetail
+}
+
+// ---- POST /tasks/:id/submit ----
+
+export type SubmissionStatus = 'pending' | 'approved' | 'rejected'
+
+export interface SubmissionVideoItem {
+  url: string
+  durationSeconds: number
+}
+
+export type SubmissionProof = {
+  text?: string[]
+  screenshot?: string[]
+  link?: string[]
+  video?: SubmissionVideoItem[]
+}
+
+export interface Submission {
+  id: string
+  task_id: string
+  worker_id: string
+  proof: SubmissionProof
+  status: SubmissionStatus
+  submitted_at: string
+}
+
+export interface SubmitTaskProofResponse {
+  submission: Submission
 }
 

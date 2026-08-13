@@ -17,6 +17,7 @@ import {
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import TaskDetailsSkeleton from '../../components/TaskDetailsSkeleton/TaskDetailsSkeleton'
+import TaskSubmission from '../../components/TaskSubmission/TaskSubmission'
 import { getTaskById } from '../../lib/tasks'
 import { ApiRequestError } from '../../lib/api'
 import type { TaskDetail, TaskStatus } from '../../types/api'
@@ -186,6 +187,14 @@ function TaskDetailsPage() {
     return true
   }, [task])
 
+  const canSubmit = useMemo(() => {
+    if (!task) return false
+    if (task.status !== 'active') return false
+    if (task.spots_remaining <= 0) return false
+    if (new Date(task.expires_at).getTime() <= Date.now()) return false
+    return true
+  }, [task])
+
   const unavailableLabel = useMemo(() => {
     if (!task) return 'Unavailable'
     if (task.status === 'expired') return 'Task expired'
@@ -348,6 +357,13 @@ function TaskDetailsPage() {
                 )}
               </div>
             </section>
+
+            {/* Submission */}
+            <TaskSubmission
+              taskId={task.id}
+              proofConfig={task.proof_config}
+              disabled={!canSubmit}
+            />
 
             {/* Evaluation */}
             {task.task_data.scenario || task.task_data.evaluationCriteria.length > 0 ? (
