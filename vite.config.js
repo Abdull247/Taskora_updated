@@ -6,5 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: ['.monkeycode-ai.live'],
-  },
+    watch: {
+     usePolling: true,
+     interval: 1000
+   }
+  }
 })
