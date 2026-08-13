@@ -153,6 +153,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+}
+
+.ct-row .ct-input {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .ct-row-num {
@@ -283,8 +289,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   padding-left: 50px;
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .ct-proof-controls {
+    padding-left: 0;
+  }
 }
 
 .ct-check {
@@ -328,8 +342,18 @@
 }
 
 /* ===== Criterion row ===== */
+.ct-row-criterion {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ct-row-criterion .ct-input {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
 .ct-row-criterion .ct-select {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   width: auto;
   padding: 11px 12px;
 }
@@ -340,6 +364,10 @@
 
 .ct-select-scale {
   max-width: 72px;
+}
+
+.ct-row-criterion .ct-remove {
+  margin-left: auto;
 }
 
 /* ===== Budget card ===== */

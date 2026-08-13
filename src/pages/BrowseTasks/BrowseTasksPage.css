@@ -18,6 +18,7 @@
   background: var(--color-surface);
   padding: 16px var(--margin-mobile) 0;
   border-bottom: 1px solid var(--color-border-subtle);
+  overflow-x: clip;
 }
 
 .browse-heading {
@@ -393,6 +394,14 @@
 
 .browse-fab:active {
   transform: scale(0.92);
+}
+
+/* On desktop the content column sits right of the app sidebar,
+   so center the FAB within the content area instead of the viewport. */
+@media (min-width: 1024px) {
+  .browse-fab {
+    right: calc((100vw - var(--app-nav-width) - 640px) / 2 + 16px);
+  }
 }
 
 /* ============ Task list error / retry ============ */

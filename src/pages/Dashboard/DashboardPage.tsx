@@ -11,6 +11,7 @@ import {
   HiArrowDownRight,
   HiStar,
   HiOutlineMegaphone,
+  HiOutlineClipboardDocumentCheck,
 } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
@@ -352,10 +353,16 @@ function DashboardPage() {
             <div className="dash-section-header">
               <span className="dash-section-label">Your Tasks</span>
             </div>
-            <Link to="/dashboard/tasks" className="quick-action-card">
-              <span className="quick-action-icon"><HiOutlineMegaphone /></span>
-              <span className="quick-action-label">Manage your posted tasks</span>
-            </Link>
+            <div className="quick-actions-grid">
+              <Link to="/dashboard/tasks" className="quick-action-card">
+                <span className="quick-action-icon"><HiOutlineMegaphone /></span>
+                <span className="quick-action-label">Manage your posted tasks</span>
+              </Link>
+              <Link to="/dashboard/review" className="quick-action-card">
+                <span className="quick-action-icon"><HiOutlineClipboardDocumentCheck /></span>
+                <span className="quick-action-label">Review submissions</span>
+              </Link>
+            </div>
           </div>
         )}
 

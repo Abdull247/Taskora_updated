@@ -317,10 +317,15 @@ export interface SubmitTaskProofResponse {
 // ---- Advertiser task management / submissions ----
 
 export interface ProofConfigPayloadItem {
-  minCount: number
-  maxCount: number
   isAllowed: boolean
   isRequired: boolean
+  minCount?: number
+  maxCount?: number
+}
+
+export interface VideoProofConfigPayload extends ProofConfigPayloadItem {
+  minDurationSeconds?: number
+  maxDurationSeconds?: number
 }
 
 export interface CreateTaskPayload {
@@ -329,24 +334,16 @@ export interface CreateTaskPayload {
   jobLink: string
   jobDescription: string
   instructions: string[]
-  requirements: string[]
-  proofConfig: {
-    text: ProofConfigPayloadItem
-    screenshot: ProofConfigPayloadItem
-    link: ProofConfigPayloadItem
-    video: ProofConfigPayloadItem
+  requirements?: string[]
+  proofConfig?: {
+    screenshot?: ProofConfigPayloadItem
+    text?: ProofConfigPayloadItem
+    link?: ProofConfigPayloadItem
+    video?: VideoProofConfigPayload
   }
-  taskData: {
-    scenario: string
-    experienceType: string
-    evaluationCriteria: Array<{
-      question: string
-      type: 'RATING' | 'TEXT'
-      scale?: number
-    }>
-  }
+  taskData?: Record<string, unknown>
   quantity: number
-  workerEarnNaira: number
+  workerEarnKobo: number
   expiresAt: string
 }
 

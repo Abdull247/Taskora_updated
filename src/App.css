@@ -1,1 +1,21 @@
 /* App-level shell styles */
+
+/*
+ * Prevent any child from widening a dashboard page horizontally.
+ * overflow-x: clip does NOT create a scroll container, so position: sticky
+ * elements (topbar, sticky search zone) keep working normally while no
+ * horizontal scrollbar / page shift can occur.
+ */
+.dashboard-page,
+.browse-page,
+.task-detail-page,
+.create-task-page,
+.submissions-page,
+.my-submissions-page,
+.wallet-page,
+.notifications-page,
+.referral-page,
+.review-page,
+.soon-page {
+  overflow-x: clip;
+}

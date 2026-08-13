@@ -19,7 +19,7 @@ import BottomNav from '../../components/BottomNav/BottomNav'
 import TaskDetailsSkeleton from '../../components/TaskDetailsSkeleton/TaskDetailsSkeleton'
 import TaskSubmission from '../../components/TaskSubmission/TaskSubmission'
 import { getTaskById } from '../../lib/tasks'
-import { getMe } from '../../lib/me'
+import { getMe, getStoredRole } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
 import type { MeUser, TaskDetail, TaskStatus } from '../../types/api'
 import './TaskDetailsPage.css'
@@ -98,7 +98,7 @@ function TaskDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [notFound, setNotFound] = useState(false)
-  const [role, setRole] = useState<MeUser['role'] | null>(null)
+  const [role, setRole] = useState<MeUser['role'] | null>(() => getStoredRole())
 
   useEffect(() => {
     let cancelled = false

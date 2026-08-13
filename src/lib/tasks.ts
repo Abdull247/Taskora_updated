@@ -1,4 +1,5 @@
 import { authFetch, apiRequest } from './api'
+import { cachedGet, cacheDelete, cacheDeletePrefix } from './cache'
 import type {
   ApproveSubmissionResponse,
   CreateTaskPayload,
@@ -20,20 +21,23 @@ import type {
  * returns 403 — there is no advertiser-facing equivalent yet).
  */
 export function getRecommendedTasks(limit = 10) {
-  return authFetch<RecommendedTasksResponse>(`/recommended?limit=${limit}`, {
-    method: 'GET',
-  })
+  return cachedGet(`recommended:${limit}`, () =>
+    authFetch<RecommendedTasksResponse>(`/recommended?limit=${limit}`, {
+      method: 'GET',
+    })
+  )
 }
-
 
 /**
  * No auth required. Returns all task categories, their subcategories,
  * and floor rates — used to populate the category chip row / picker.
  */
 export function getTaskCategories() {
-  return apiRequest<TaskCategoriesResponse>('/tasks/categories', {
-    method: 'GET',
-  })
+  return cachedGet('task-categories', () =>
+    apiRequest<TaskCategoriesResponse>('/tasks/categories', {
+      method: 'GET',
+    })
+  )
 }
 
 export interface GetTasksParams {
@@ -55,9 +59,12 @@ export function getTasks(params: GetTasksParams = {}) {
   if (params.subcategoryId) query.set('subcategoryId', params.subcategoryId)
 
   const qs = query.toString()
-  return authFetch<TasksResponse>(`/tasks${qs ? `?${qs}` : ''}`, {
-    method: 'GET',
-  })
+  const key = `tasks:${params.categoryId ?? ''}:${params.subcategoryId ?? ''}:${params.limit ?? ''}:${params.offset ?? ''}`
+  return cachedGet(key, () =>
+    authFetch<TasksResponse>(`/tasks${qs ? `?${qs}` : ''}`, {
+      method: 'GET',
+    })
+  )
 }
 
 /**
@@ -65,46 +72,65 @@ export function getTasks(params: GetTasksParams = {}) {
  * task payload (instructions, proof config, evaluation criteria, etc.).
  */
 export function getTaskById(id: string) {
-  return authFetch<TaskDetailResponse>(`/tasks/${encodeURIComponent(id)}`, {
-    method: 'GET',
-  })
+  return cachedGet(`task:${id}`, () =>
+    authFetch<TaskDetailResponse>(`/tasks/${encodeURIComponent(id)}`, {
+      method: 'GET',
+    })
+  )
 }
 
 /**
  * Worker-only. Submits task proof for review. Returns 201 on success and
  * 409 if the worker already has a pending/approved submission.
  */
-export function submitTaskProof(id: string, proof: SubmissionProof) {
-  return authFetch<SubmitTaskProofResponse>(`/tasks/${encodeURIComponent(id)}/submit`, {
-    method: 'POST',
-    body: { proof },
-  })
+export async function submitTaskProof(id: string, proof: SubmissionProof) {
+  const res = await authFetch<SubmitTaskProofResponse>(
+    `/tasks/${encodeURIComponent(id)}/submit`,
+    {
+      method: 'POST',
+      body: { proof },
+    }
+  )
+  cacheDelete(`task:${id}`)
+  cacheDelete('submissions-mine')
+  cacheDeletePrefix('tasks:')
+  cacheDelete('me')
+  return res
 }
 
 /**
  * Advertiser-only. Creates a new task and holds the budget from the wallet.
  */
-export function createTask(payload: CreateTaskPayload) {
-  return authFetch<CreateTaskResponse>('/tasks', {
+export async function createTask(payload: CreateTaskPayload) {
+  const res = await authFetch<CreateTaskResponse>('/tasks', {
     method: 'POST',
     body: payload,
   })
+  cacheDelete('tasks-mine')
+  cacheDeletePrefix('tasks:')
+  cacheDelete('wallet')
+  cacheDelete('me')
+  return res
 }
 
 /**
  * Advertiser-only. All tasks created by the logged-in advertiser.
  */
 export function getMyTasks() {
-  return authFetch<MineTasksResponse>('/tasks/mine', { method: 'GET' })
+  return cachedGet('tasks-mine', () =>
+    authFetch<MineTasksResponse>('/tasks/mine', { method: 'GET' })
+  )
 }
 
 /**
  * Advertiser-only (must own the task). All submissions for a task.
  */
 export function getTaskSubmissions(taskId: string) {
-  return authFetch<SubmissionsResponse>(
-    `/tasks/${encodeURIComponent(taskId)}/submissions`,
-    { method: 'GET' }
+  return cachedGet(`task-submissions:${taskId}`, () =>
+    authFetch<SubmissionsResponse>(
+      `/tasks/${encodeURIComponent(taskId)}/submissions`,
+      { method: 'GET' }
+    )
   )
 }
 
@@ -112,25 +138,34 @@ export function getTaskSubmissions(taskId: string) {
  * Worker-only. The worker's submission history.
  */
 export function getMySubmissions() {
-  return authFetch<SubmissionsResponse>('/submissions/mine', { method: 'GET' })
+  return cachedGet('submissions-mine', () =>
+    authFetch<SubmissionsResponse>('/submissions/mine', { method: 'GET' })
+  )
 }
 
 /**
  * Advertiser-only. Approves a submission and pays the worker.
  */
-export function approveSubmission(submissionId: string) {
-  return authFetch<ApproveSubmissionResponse>(
+export async function approveSubmission(submissionId: string) {
+  const res = await authFetch<ApproveSubmissionResponse>(
     `/submissions/${encodeURIComponent(submissionId)}/approve`,
     { method: 'POST' }
   )
+  cacheDeletePrefix('task-submissions:')
+  cacheDelete('wallet')
+  cacheDelete('me')
+  return res
 }
 
 /**
  * Advertiser-only. Rejects a submission with a reason the worker can read.
  */
-export function rejectSubmission(submissionId: string, reason: string) {
-  return authFetch<RejectSubmissionResponse>(
+export async function rejectSubmission(submissionId: string, reason: string) {
+  const res = await authFetch<RejectSubmissionResponse>(
     `/submissions/${encodeURIComponent(submissionId)}/reject`,
     { method: 'POST', body: { reason } }
   )
+  cacheDeletePrefix('task-submissions:')
+  cacheDelete('me')
+  return res
 }

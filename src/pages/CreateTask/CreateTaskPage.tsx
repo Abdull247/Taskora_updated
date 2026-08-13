@@ -155,10 +155,11 @@ function CreateTaskPage() {
     setCriteria((prev) => prev.map((row, idx) => (idx === i ? { ...row, ...patch } : row)))
 
   const updateProof = (type: string, patch: Partial<ProofDraft>) =>
-    setProofConfig((prev) => ({
-      ...prev,
-      [type]: { ...prev[type], ...patch },
-    }))
+    setProofConfig((prev) => {
+      const next = { ...prev[type], ...patch }
+      if (patch.isAllowed === false) next.isRequired = false
+      return { ...prev, [type]: next }
+    })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -242,10 +243,16 @@ function CreateTaskPage() {
       instructions: cleanInstructions,
       requirements: requirements.map((r) => r.trim()).filter(Boolean),
       proofConfig: {
-        text: proofPayload.text,
-        screenshot: proofPayload.screenshot,
-        link: proofPayload.link,
-        video: proofPayload.video,
+        text: { ...proofPayload.text, minCount: proofConfig.text.minCount, maxCount: proofConfig.text.maxCount },
+        screenshot: { ...proofPayload.screenshot, minCount: proofConfig.screenshot.minCount, maxCount: proofConfig.screenshot.maxCount },
+        link: { ...proofPayload.link, minCount: proofConfig.link.minCount, maxCount: proofConfig.link.maxCount },
+        video: {
+          ...proofPayload.video,
+          minCount: proofConfig.video.minCount,
+          maxCount: proofConfig.video.maxCount,
+          minDurationSeconds: proofConfig.video.isAllowed ? 1 : undefined,
+          maxDurationSeconds: proofConfig.video.isAllowed ? 300 : undefined,
+        },
       },
       taskData: {
         scenario: scenario.trim(),
@@ -259,7 +266,7 @@ function CreateTaskPage() {
           ),
       },
       quantity,
-      workerEarnNaira: pay,
+      workerEarnKobo: Math.round(pay * 100),
       expiresAt: new Date(expiresAt).toISOString(),
     }
 

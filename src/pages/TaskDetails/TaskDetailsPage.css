@@ -512,7 +512,8 @@
   font-weight: 700;
   color: #0f172a;
   min-width: 0;
-  word-break: break-word;
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
 }
 
 .td-spec-value a {

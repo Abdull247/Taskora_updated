@@ -16,9 +16,14 @@ function DashboardTopbar({
   onBellClick,
   onAvatarClick,
 }: DashboardTopbarProps) {
+  const handleMenuClick = () => {
+    window.dispatchEvent(new CustomEvent('taskbridge:open-menu'))
+    onMenuClick?.()
+  }
+
   return (
     <header className="dash-topbar">
-      <button type="button" className="dash-topbar-icon-btn" onClick={onMenuClick} aria-label="Open menu">
+      <button type="button" className="dash-topbar-icon-btn" onClick={handleMenuClick} aria-label="Open menu">
         <HiBars3 />
       </button>
 

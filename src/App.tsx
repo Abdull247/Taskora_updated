@@ -12,6 +12,7 @@ import TaskDetailsPage from './pages/TaskDetails/TaskDetailsPage'
 import CreateTaskPage from './pages/CreateTask/CreateTaskPage'
 import TaskSubmissionsPage from './pages/TaskSubmissions/TaskSubmissionsPage'
 import MySubmissionsPage from './pages/MySubmissions/MySubmissionsPage'
+import ReviewSubmissionsPage from './pages/ReviewSubmissions/ReviewSubmissionsPage'
 import WalletPage from './pages/Wallet/WalletPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
 import ReferralPage from './pages/Referral/ReferralPage'
@@ -24,8 +25,9 @@ import RoleStep from './pages/SignupFlow/RoleStep'
 import BusinessInfoStep from './pages/SignupFlow/BusinessInfoStep'
 import SignupDoneStep from './pages/SignupFlow/SignupDoneStep'
 import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
-import ComingSoonPage from './pages/ComingSoon/ComingSoonPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
+import ComingSoonDashboardPage from './pages/ComingSoonDashboard/ComingSoonDashboardPage'
+import AppNav from './components/AppNav/AppNav'
 import './App.css'
 
 function App() {
@@ -56,6 +58,7 @@ function App() {
         }}
       />
       <SignupFlowProvider>
+        <AppNav />
         <Routes>
           <Route path="/" element={isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
           <Route path="/landing" element={<LandingPage />} />
@@ -80,9 +83,11 @@ function App() {
           <Route path="/dashboard/tasks/create" element={<CreateTaskPage />} />
           <Route path="/dashboard/tasks/:id/submissions" element={<TaskSubmissionsPage />} />
           <Route path="/dashboard/submissions" element={<MySubmissionsPage />} />
+          <Route path="/dashboard/review" element={<ReviewSubmissionsPage />} />
           <Route path="/dashboard/wallet" element={<WalletPage />} />
           <Route path="/dashboard/notifications" element={<NotificationsPage />} />
           <Route path="/dashboard/referral" element={<ReferralPage />} />
+          <Route path="/dashboard/verify" element={<ComingSoonDashboardPage title="ID Verification" description="Self-serve identity verification is on the way. In the meantime your account already benefits from our verification checks." />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

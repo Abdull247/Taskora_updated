@@ -1,14 +1,17 @@
 import { authFetch } from './api'
+import { cachedGet } from './cache'
 import type { WalletResponse, WalletTransactionsResponse, WalletTransaction } from '../types/api'
 
 export function getWallet() {
-  return authFetch<WalletResponse>('/wallet', { method: 'GET' })
+  return cachedGet('wallet', () => authFetch<WalletResponse>('/wallet', { method: 'GET' }))
 }
 
 export function getWalletTransactions(limit = 20, offset = 0) {
-  return authFetch<WalletTransactionsResponse>(
-    `/wallet/transactions?limit=${limit}&offset=${offset}`,
-    { method: 'GET' }
+  return cachedGet(`wallet-transactions:${limit}:${offset}`, () =>
+    authFetch<WalletTransactionsResponse>(
+      `/wallet/transactions?limit=${limit}&offset=${offset}`,
+      { method: 'GET' }
+    )
   )
 }
 

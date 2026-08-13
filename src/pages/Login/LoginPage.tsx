@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { login } from '../../lib/auth'
+import { setStoredRole } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
 import { withMinDelay } from '../../lib/useMinDelay'
 import { HiOutlineEye, HiOutlineEyeSlash, HiOutlineShieldCheck } from 'react-icons/hi2'
@@ -72,6 +73,7 @@ function LoginPage() {
 
       localStorage.setItem('accessToken', accessToken)
       localStorage.setItem('refreshToken', refreshToken)
+      setStoredRole(user.role)
 
       toast.success(`Welcome back, ${user.firstName}!`)
 

@@ -5,7 +5,7 @@ import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import BrowseTasksSkeleton from '../../components/BrowseTasksSkeleton/BrowseTasksSkeleton'
 import { getTaskCategories, getTasks, getMyTasks } from '../../lib/tasks'
-import { getMe } from '../../lib/me'
+import { getMe, getStoredRole } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
 import type { TaskCategoryItem, TaskListItem, MeUser } from '../../types/api'
 import './BrowseTasksPage.css'
@@ -55,8 +55,8 @@ function timeLeftLabel(expiresAt: string) {
 function BrowseTasksPage() {
   const navigate = useNavigate()
 
-  const [role, setRole] = useState<MeUser['role'] | null>(null)
-  const [roleLoading, setRoleLoading] = useState(true)
+  const [role, setRole] = useState<MeUser['role'] | null>(() => getStoredRole())
+  const [roleLoading, setRoleLoading] = useState(() => getStoredRole() === null)
 
   const [categories, setCategories] = useState<TaskCategoryItem[]>([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
