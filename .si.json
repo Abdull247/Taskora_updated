@@ -33,6 +33,14 @@
     ".xml": {
       "enabled": false,
       "run": "lemminx"
+    },
+    ".sh": {
+      "enabled": true,
+      "run": "bash-language-server start"
+    },
+    ".md": {
+      "enabled": false,
+      "run": "marksman server"
     }
   }
 }

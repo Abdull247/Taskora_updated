@@ -12,6 +12,10 @@ import ForTaskersPage from './pages/ForTaskers/ForTaskersPage'
 import ForAdvertisersPage from './pages/ForAdvertisers/ForAdvertisersPage'
 import LoginPage from './pages/Login/LoginPage'
 import DashboardPage from './pages/Dashboard/DashboardPage'
+import BrowseTasksPage from './pages/BrowseTasks/BrowseTasksPage'
+import WalletPage from './pages/Wallet/WalletPage'
+import NotificationsPage from './pages/Notifications/NotificationsPage'
+import ReferralPage from './pages/Referral/ReferralPage'
 import { isAuthenticated } from './lib/authStatus'
 import CreateAccountStep from './pages/SignupFlow/CreateAccountStep'
 import CheckEmailStep from './pages/SignupFlow/CheckEmailStep'
@@ -72,6 +76,10 @@ function App() {
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/tasks" element={<BrowseTasksPage />} />
+          <Route path="/dashboard/wallet" element={<WalletPage />} />
+          <Route path="/dashboard/notifications" element={<NotificationsPage />} />
+          <Route path="/dashboard/referral" element={<ReferralPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
@@ -1586,6 +1594,437 @@ export default BottomNav
   .bottom-nav-label {
     font-size: 11.5px;
   }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/DashboardSkeleton/DashboardSkeleton.tsx ---
+function DashboardSkeleton() {
+  return (
+    <div className="dashboard-main dash-skeleton" aria-busy="true" aria-label="Loading dashboard">
+      {/* Greeting */}
+      <div className="skel-greeting">
+        <div className="skel skel-text skel-greeting-title" />
+        <div className="skel skel-text skel-greeting-sub" />
+      </div>
+
+      {/* Balance card */}
+      <div className="skel-balance-card">
+        <div className="skel-balance-card-top">
+          <div className="skel-balance-card-left">
+            <div className="skel skel-text skel-balance-label" />
+            <div className="skel skel-text skel-balance-value" />
+            <div className="skel skel-text skel-balance-pending" />
+          </div>
+          <div className="skel skel-balance-icon" />
+        </div>
+        <div className="skel-balance-actions">
+          <div className="skel skel-balance-btn" />
+          <div className="skel skel-balance-btn" />
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="stats-row">
+        {[0, 1].map((i) => (
+          <div key={i} className="skel-stat-card">
+            <div className="skel-stat-card-top">
+              <div className="skel skel-text skel-stat-label" />
+              <div className="skel skel-stat-icon" />
+            </div>
+            <div className="skel skel-text skel-stat-value" />
+            <div className="skel skel-text skel-stat-delta" />
+          </div>
+        ))}
+      </div>
+
+      {/* Quick actions */}
+      <div className="dash-section">
+        <div className="skel skel-text skel-section-label" />
+        <div className="quick-actions-grid">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="skel-quick-action-card">
+              <div className="skel skel-quick-action-icon" />
+              <div className="skel skel-text skel-quick-action-label" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recommended tasks */}
+      <div className="dash-section">
+        <div className="dash-section-header">
+          <div className="skel skel-text skel-section-label" />
+          <div className="skel skel-text skel-section-link" />
+        </div>
+        <div className="task-list">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="skel-task-card">
+              <div className="skel-task-card-top">
+                <div className="skel skel-task-tag" />
+                <div className="skel skel-text skel-task-reward" />
+              </div>
+              <div className="skel skel-text skel-task-title" />
+              <div className="skel skel-text skel-task-title skel-task-title-short" />
+              <div className="skel-task-meta">
+                <div className="skel skel-text skel-task-meta-item" />
+                <div className="skel skel-text skel-task-meta-item" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent earnings */}
+      <div className="dash-section">
+        <div className="dash-section-header">
+          <div className="skel skel-text skel-section-label" />
+          <div className="skel skel-text skel-section-link" />
+        </div>
+        <div className="earnings-list">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="skel-earnings-row">
+              <div className="skel skel-earnings-icon" />
+              <div className="skel-earnings-info">
+                <div className="skel skel-text skel-earnings-title" />
+                <div className="skel skel-text skel-earnings-subtitle" />
+              </div>
+              <div className="skel-earnings-amount-wrap">
+                <div className="skel skel-text skel-earnings-amount" />
+                <div className="skel skel-text skel-earnings-when" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default DashboardSkeleton
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/components/DashboardSkeleton/DashboardSkeleton.css ---
+/* ============ Shimmer base ============ */
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+}
+
+.skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: skel-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skel-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel::after {
+    animation: none;
+  }
+}
+
+.skel-text {
+  height: 12px;
+  border-radius: 4px;
+}
+
+.dash-skeleton {
+  animation: skel-fade-in 0.2s ease;
+}
+
+@keyframes skel-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============ Greeting ============ */
+.skel-greeting {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skel-greeting-title {
+  width: 180px;
+  height: 20px;
+}
+
+.skel-greeting-sub {
+  width: 220px;
+  height: 12px;
+}
+
+/* ============ Balance card ============ */
+.skel-balance-card {
+  background: var(--color-primary);
+  opacity: 0.9;
+  border-radius: var(--radius-xl);
+  padding: 24px;
+}
+
+.skel-balance-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.skel-balance-card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skel-balance-label {
+  width: 90px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.skel-balance-value {
+  width: 140px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.skel-balance-pending {
+  width: 160px;
+  height: 11px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.skel-balance-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.skel-balance-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.skel-balance-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.skel-balance-btn::after {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.skel-balance-icon::after,
+.skel-balance-label::after,
+.skel-balance-value::after,
+.skel-balance-pending::after {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+/* ============ Stats row ============ */
+.skel-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.skel-stat-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.skel-stat-label {
+  width: 70px;
+  height: 10px;
+}
+
+.skel-stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.skel-stat-value {
+  width: 90px;
+  height: 22px;
+  margin-bottom: 8px;
+}
+
+.skel-stat-delta {
+  width: 110px;
+  height: 10px;
+}
+
+/* ============ Quick actions ============ */
+.skel-section-label {
+  width: 110px;
+  height: 11px;
+  margin-bottom: 2px;
+}
+
+.skel-section-link {
+  width: 60px;
+  height: 12px;
+}
+
+.skel-quick-action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+}
+
+.skel-quick-action-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.skel-quick-action-label {
+  width: 70%;
+  height: 12px;
+}
+
+/* ============ Task cards ============ */
+.skel-task-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.skel-task-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.skel-task-tag {
+  width: 90px;
+  height: 20px;
+  border-radius: var(--radius-full);
+}
+
+.skel-task-reward {
+  width: 60px;
+  height: 16px;
+}
+
+.skel-task-title {
+  width: 95%;
+  height: 13px;
+  margin-bottom: 8px;
+}
+
+.skel-task-title-short {
+  width: 65%;
+  margin-bottom: 14px;
+}
+
+.skel-task-meta {
+  display: flex;
+  gap: 16px;
+}
+
+.skel-task-meta-item {
+  width: 60px;
+  height: 10px;
+}
+
+/* ============ Earnings rows ============ */
+.skel-earnings-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.skel-earnings-row:last-child {
+  border-bottom: none;
+}
+
+.skel-earnings-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skel-earnings-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skel-earnings-title {
+  width: 55%;
+  height: 12px;
+}
+
+.skel-earnings-subtitle {
+  width: 75%;
+  height: 10px;
+}
+
+.skel-earnings-amount-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.skel-earnings-amount {
+  width: 50px;
+  height: 12px;
+}
+
+.skel-earnings-when {
+  width: 60px;
+  height: 10px;
 }
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/index.css ---
@@ -7060,7 +7499,8 @@ function LoginPage() {
 export default LoginPage
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Dashboard/DashboardPage.tsx ---
-import { Link } from 'react-router-dom'
+import { useEffect, useState, useCallback } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   HiOutlineWallet,
   HiCheckCircle,
@@ -7071,22 +7511,21 @@ import {
   HiArrowUpRight,
   HiArrowDownRight,
   HiStar,
+  HiOutlineMegaphone,
 } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import DashboardSkeleton from '../../components/DashboardSkeleton/DashboardSkeleton'
+import { getMe } from '../../lib/me'
+import { getRecommendedTasks } from '../../lib/tasks'
+import { ApiRequestError } from '../../lib/api'
+import {
+  isWorkerStats,
+  isAdvertiserStats,
+  type MeUser,
+  type TaskListItem,
+} from '../../types/api'
 import './DashboardPage.css'
-
-interface TaskItem {
-  id: string
-  category: string
-  verified: boolean
-  reward: number
-  title: string
-  duration: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
-  slotsLeft: number
-  rating: number
-}
 
 interface EarningItem {
   id: string
@@ -7097,42 +7536,7 @@ interface EarningItem {
   when: string
 }
 
-const recommendedTasks: TaskItem[] = [
-  {
-    id: '1',
-    category: 'Social Media',
-    verified: true,
-    reward: 150,
-    title: 'Follow @OfficialMTN on Instagram and like their latest 3 posts',
-    duration: '5 mins',
-    difficulty: 'Easy',
-    slotsLeft: 48,
-    rating: 4.8,
-  },
-  {
-    id: '2',
-    category: 'App Download',
-    verified: true,
-    reward: 300,
-    title: 'Download KliqPay app, create an account and complete profile setup',
-    duration: '10 mins',
-    difficulty: 'Easy',
-    slotsLeft: 120,
-    rating: 4.9,
-  },
-  {
-    id: '3',
-    category: 'Review',
-    verified: false,
-    reward: 200,
-    title: 'Write a genuine Google Play review for Opay (min. 50 words)',
-    duration: '8 mins',
-    difficulty: 'Medium',
-    slotsLeft: 30,
-    rating: 4.7,
-  },
-]
-
+// TODO: replace with GET /wallet/transactions once that's wired up on this page.
 const recentEarnings: EarningItem[] = [
   {
     id: '1',
@@ -7160,41 +7564,160 @@ const recentEarnings: EarningItem[] = [
   },
 ]
 
-function formatNaira(value: number) {
-  const abs = Math.abs(value)
-  return `₦${abs.toLocaleString('en-NG')}`
+function formatNaira(kobo: number) {
+  const naira = kobo / 100
+  return `₦${naira.toLocaleString('en-NG', { minimumFractionDigits: naira % 1 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`
 }
 
-function difficultyClass(difficulty: TaskItem['difficulty']) {
+function formatNairaSigned(kobo: number) {
+  const sign = kobo < 0 ? '-' : '+'
+  return `${sign}${formatNaira(Math.abs(kobo))}`
+}
+
+function initialsFor(firstName: string, lastName: string) {
+  const a = firstName.trim().charAt(0)
+  const b = lastName.trim().charAt(0)
+  return `${a}${b}`.toUpperCase() || '?'
+}
+
+function difficultyFromReward(rewardKobo: number): 'Easy' | 'Medium' | 'Hard' {
+  const naira = rewardKobo / 100
+  if (naira < 100) return 'Easy'
+  if (naira < 300) return 'Medium'
+  return 'Hard'
+}
+
+function difficultyClass(difficulty: 'Easy' | 'Medium' | 'Hard') {
   if (difficulty === 'Easy') return 'task-diff-easy'
   if (difficulty === 'Medium') return 'task-diff-medium'
   return 'task-diff-hard'
 }
 
+function categoryLabel(name: string) {
+  return name
+    .toLowerCase()
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+}
+
+function greetingForNow() {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
 function DashboardPage() {
-  const firstName = 'Chidi'
-  const initials = 'CE'
+  const navigate = useNavigate()
+
+  const [user, setUser] = useState<MeUser | null>(null)
+  const [meLoading, setMeLoading] = useState(true)
+  const [meError, setMeError] = useState<string | null>(null)
+
+  const [tasks, setTasks] = useState<TaskListItem[]>([])
+  const [tasksLoading, setTasksLoading] = useState(false)
+  const [tasksError, setTasksError] = useState<string | null>(null)
+
+  const loadMe = useCallback(async () => {
+    setMeLoading(true)
+    setMeError(null)
+    try {
+      const { user: me } = await getMe()
+      setUser(me)
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.status === 401) {
+        navigate('/login', { replace: true })
+        return
+      }
+      setMeError('Could not load your account. Pull down to try again.')
+    } finally {
+      setMeLoading(false)
+    }
+  }, [navigate])
+
+  useEffect(() => {
+    loadMe()
+  }, [loadMe])
+
+  useEffect(() => {
+    if (!user || user.role !== 'worker') return
+
+    let cancelled = false
+    setTasksLoading(true)
+    setTasksError(null)
+
+    getRecommendedTasks(6)
+      .then(({ tasks: recommended }) => {
+        if (!cancelled) setTasks(recommended)
+      })
+      .catch(() => {
+        if (!cancelled) setTasksError('Could not load recommended tasks.')
+      })
+      .finally(() => {
+        if (!cancelled) setTasksLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [user])
+
+  const isAdvertiser = user?.role === 'advertiser'
+  const balanceCardActionLabel = isAdvertiser ? 'Deposit' : 'Withdraw'
+
+  // Show skeleton only on initial load, not on background retries
+  if (meLoading) {
+    return (
+      <div className="dashboard-page">
+        <DashboardTopbar initials="··" hasNotifications={false} />
+        <DashboardSkeleton />
+        <BottomNav />
+      </div>
+    )
+  }
 
   return (
     <div className="dashboard-page">
-      <DashboardTopbar initials={initials} hasNotifications />
+      <DashboardTopbar initials={user ? initialsFor(user.firstName, user.lastName) : '··'} hasNotifications />
 
       <main className="dashboard-main">
         {/* Greeting */}
         <div className="dash-greeting">
           <h1>
-            Good morning, {firstName} <span className="dash-wave">👋</span>
+            {greetingForNow()}, {user ? user.firstName : '…'} <span className="dash-wave">👋</span>
           </h1>
-          <p>You have 3 pending approvals</p>
+          {user && (
+            <p>
+              {isAdvertiser
+                ? `${user.stats.pendingApprovals} submission${user.stats.pendingApprovals === 1 ? '' : 's'} awaiting your review`
+                : `You have ${user.stats.pendingApprovals} pending approval${user.stats.pendingApprovals === 1 ? '' : 's'}`}
+            </p>
+          )}
         </div>
+
+        {meError && (
+          <div className="dash-error-banner">
+            <p>{meError}</p>
+            <button type="button" onClick={loadMe}>Retry</button>
+          </div>
+        )}
 
         {/* Balance card */}
         <div className="balance-card">
           <div className="balance-card-top">
             <div>
               <span className="balance-label">Total Balance</span>
-              <div className="balance-value">₦12,450.00</div>
-              <span className="balance-pending">₦3,200 pending approval</span>
+              <div className="balance-value">
+                {user ? formatNaira(Number(user.wallet.balanceKobo)) : '₦0.00'}
+              </div>
+              {user && (
+                <span className="balance-pending">
+                  {isAdvertiser
+                    ? `${user.stats.pendingApprovals} pending approval${user.stats.pendingApprovals === 1 ? '' : 's'}`
+                    : `${user.stats.pendingApprovals} task${user.stats.pendingApprovals === 1 ? '' : 's'} awaiting approval`}
+                </span>
+              )}
             </div>
             <div className="balance-icon">
               <HiOutlineWallet />
@@ -7205,32 +7728,53 @@ function DashboardPage() {
             <Link to="/dashboard/wallet" className="btn-balance btn-balance-tint">
               View Wallet
             </Link>
-            <button type="button" className="btn-balance btn-balance-primary">
-              Withdraw
-            </button>
+            <Link to="/dashboard/wallet" className="btn-balance btn-balance-primary">
+              {balanceCardActionLabel}
+            </Link>
           </div>
         </div>
 
         {/* Stats row */}
-        <div className="stats-row">
-          <div className="stat-card">
-            <div className="stat-card-top">
-              <span className="stat-card-label">Tasks Completed</span>
-              <span className="stat-card-icon"><HiCheckCircle /></span>
+        {user && (
+          <div className="stats-row">
+            <div className="stat-card">
+              <div className="stat-card-top">
+                <span className="stat-card-label">Tasks Completed</span>
+                <span className="stat-card-icon"><HiCheckCircle /></span>
+              </div>
+              <div className="stat-card-value">{user.stats.completedTasks}</div>
+              <span className="stat-card-delta stat-card-delta-up">
+                +{user.stats.completedThisWeek} this week
+              </span>
             </div>
-            <div className="stat-card-value">248</div>
-            <span className="stat-card-delta stat-card-delta-up">+12 this week</span>
-          </div>
 
-          <div className="stat-card">
-            <div className="stat-card-top">
-              <span className="stat-card-label">Earnings (July)</span>
-              <span className="stat-card-icon"><HiArrowTrendingUp /></span>
-            </div>
-            <div className="stat-card-value">₦8,750</div>
-            <span className="stat-card-delta stat-card-delta-up">+₦1,200 vs last month</span>
+            {isWorkerStats(user.stats) && (
+              <div className="stat-card">
+                <div className="stat-card-top">
+                  <span className="stat-card-label">Earnings (this month)</span>
+                  <span className="stat-card-icon"><HiArrowTrendingUp /></span>
+                </div>
+                <div className="stat-card-value">{formatNaira(user.stats.earningsThisMonthKobo)}</div>
+                <span className={`stat-card-delta ${user.stats.earningsDeltaKobo >= 0 ? 'stat-card-delta-up' : 'stat-card-delta-down'}`}>
+                  {formatNairaSigned(user.stats.earningsDeltaKobo)} vs last month
+                </span>
+              </div>
+            )}
+
+            {isAdvertiserStats(user.stats) && (
+              <div className="stat-card">
+                <div className="stat-card-top">
+                  <span className="stat-card-label">Spent (this month)</span>
+                  <span className="stat-card-icon"><HiArrowTrendingUp /></span>
+                </div>
+                <div className="stat-card-value">{formatNaira(user.stats.spentThisMonthKobo)}</div>
+                <span className={`stat-card-delta ${user.stats.spentDeltaKobo <= 0 ? 'stat-card-delta-up' : 'stat-card-delta-down'}`}>
+                  {formatNairaSigned(user.stats.spentDeltaKobo)} vs last month
+                </span>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Quick actions */}
         <div className="dash-section">
@@ -7256,42 +7800,70 @@ function DashboardPage() {
           </div>
         </div>
 
-        {/* Recommended tasks */}
-        <div className="dash-section">
-          <div className="dash-section-header">
-            <span className="dash-section-label">Recommended Tasks</span>
-            <Link to="/dashboard/tasks" className="dash-section-link">
-              See all →
+        {/* Recommended tasks — worker only (backend /recommended is worker-only) */}
+        {!isAdvertiser && (
+          <div className="dash-section">
+            <div className="dash-section-header">
+              <span className="dash-section-label">Recommended Tasks</span>
+              <Link to="/dashboard/tasks" className="dash-section-link">
+                See all →
+              </Link>
+            </div>
+
+            {tasksLoading && <p className="dash-inline-status">Loading tasks…</p>}
+
+            {tasksError && (
+              <div className="dash-error-banner">
+                <p>{tasksError}</p>
+              </div>
+            )}
+
+            {!tasksLoading && !tasksError && tasks.length === 0 && (
+              <p className="dash-inline-status">No recommended tasks right now — check back soon.</p>
+            )}
+
+            {!tasksLoading && tasks.length > 0 && (
+              <div className="task-list">
+                {tasks.map((task) => {
+                  const rewardKobo = Number(task.worker_earn_kobo)
+                  const difficulty = difficultyFromReward(rewardKobo)
+                  return (
+                    <div key={task.id} className="task-card">
+                      <div className="task-card-top">
+                        <div className="task-tags">
+                          <span className="task-tag task-tag-category">{categoryLabel(task.category_name)}</span>
+                        </div>
+                        <span className="task-reward">{formatNaira(rewardKobo)}</span>
+                      </div>
+
+                      <h3 className="task-title">{task.job_description}</h3>
+
+                      <div className="task-meta">
+                        <span className={difficultyClass(difficulty)}>{difficulty}</span>
+                        <span>{task.spots_remaining} slots left</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Advertiser CTA in place of Recommended Tasks (no advertiser task-feed endpoint yet) */}
+        {isAdvertiser && (
+          <div className="dash-section">
+            <div className="dash-section-header">
+              <span className="dash-section-label">Your Tasks</span>
+            </div>
+            <Link to="/dashboard/tasks" className="quick-action-card">
+              <span className="quick-action-icon"><HiOutlineMegaphone /></span>
+              <span className="quick-action-label">Manage your posted tasks</span>
             </Link>
           </div>
+        )}
 
-          <div className="task-list">
-            {recommendedTasks.map((task) => (
-              <div key={task.id} className="task-card">
-                <div className="task-card-top">
-                  <div className="task-tags">
-                    <span className="task-tag task-tag-category">{task.category}</span>
-                    {task.verified && <span className="task-tag task-tag-verified">Verified</span>}
-                  </div>
-                  <span className="task-reward">{formatNaira(task.reward)}</span>
-                </div>
-
-                <h3 className="task-title">{task.title}</h3>
-
-                <div className="task-meta">
-                  <span>{task.duration}</span>
-                  <span className={difficultyClass(task.difficulty)}>{task.difficulty}</span>
-                  <span>{task.slotsLeft} slots left</span>
-                  <span className="task-rating">
-                    <HiStar /> {task.rating}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent earnings */}
+        {/* Recent earnings — still mock, pending /wallet/transactions wiring */}
         <div className="dash-section">
           <div className="dash-section-header">
             <span className="dash-section-label">Recent Earnings</span>
@@ -7315,7 +7887,7 @@ function DashboardPage() {
                 <div className="earnings-amount-wrap">
                   <span className={`earnings-amount ${item.type === 'credit' ? 'earnings-amount-credit' : 'earnings-amount-debit'}`}>
                     {item.type === 'credit' ? '+' : '-'}
-                    {formatNaira(item.amount)}
+                    {formatNaira(Math.abs(item.amount) * 100).replace('₦', '₦')}
                   </span>
                   <span className="earnings-when">{item.when}</span>
                 </div>
@@ -7794,6 +8366,1692 @@ export default DashboardPage
   }
 }
 
+/* ===== Loading / error inline states ===== */
+.dash-inline-status {
+  font-size: 13.5px;
+  color: var(--color-on-surface-variant);
+  padding: 4px 2px;
+  margin: 0;
+}
+
+.dash-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+}
+
+.dash-error-banner p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #ba1a1a;
+  flex: 1;
+}
+
+.dash-error-banner button {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ba1a1a;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 8px;
+}
+
+.stat-card-delta-down {
+  color: #ba1a1a;
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/BrowseTasks/BrowseTasksPage.tsx ---
+import { useMemo, useState } from 'react'
+import {
+  HiOutlineMagnifyingGlass,
+  HiStar,
+} from 'react-icons/hi2'
+import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import BottomNav from '../../components/BottomNav/BottomNav'
+import './BrowseTasksPage.css'
+
+interface TaskItem {
+  id: string
+  category: string
+  verified: boolean
+  reward: number
+  title: string
+  duration: string
+  difficulty: 'Easy' | 'Medium' | 'Hard'
+  slotsLeft: number
+  rating: number
+}
+
+const allTasks: TaskItem[] = [
+  {
+    id: '1',
+    category: 'Social Media',
+    verified: true,
+    reward: 150,
+    title: 'Follow @OfficialMTN on Instagram and like their latest 3 posts',
+    duration: '5 mins',
+    difficulty: 'Easy',
+    slotsLeft: 48,
+    rating: 4.8,
+  },
+  {
+    id: '2',
+    category: 'App Download',
+    verified: true,
+    reward: 300,
+    title: 'Download KliqPay app, create an account and complete profile setup',
+    duration: '10 mins',
+    difficulty: 'Easy',
+    slotsLeft: 120,
+    rating: 4.9,
+  },
+  {
+    id: '3',
+    category: 'Review',
+    verified: false,
+    reward: 200,
+    title: 'Write a genuine Google Play review for Opay (min. 50 words)',
+    duration: '8 mins',
+    difficulty: 'Medium',
+    slotsLeft: 30,
+    rating: 4.7,
+  },
+  {
+    id: '4',
+    category: 'Social Media',
+    verified: true,
+    reward: 100,
+    title: 'Subscribe to a YouTube channel and turn on notifications',
+    duration: '3 mins',
+    difficulty: 'Easy',
+    slotsLeft: 75,
+    rating: 4.6,
+  },
+  {
+    id: '5',
+    category: 'Survey',
+    verified: true,
+    reward: 250,
+    title: 'Complete a 5-minute survey about mobile banking habits',
+    duration: '5 mins',
+    difficulty: 'Medium',
+    slotsLeft: 60,
+    rating: 4.5,
+  },
+  {
+    id: '6',
+    category: 'App Download',
+    verified: false,
+    reward: 350,
+    title: 'Install PiggyVest, verify your BVN and fund your wallet with ₦1,000',
+    duration: '15 mins',
+    difficulty: 'Hard',
+    slotsLeft: 18,
+    rating: 4.4,
+  },
+]
+
+const categories = ['All', 'Social Media', 'App Download', 'Review', 'Survey']
+
+function formatNaira(value: number) {
+  return `₦${value.toLocaleString('en-NG')}`
+}
+
+function difficultyClass(difficulty: TaskItem['difficulty']) {
+  if (difficulty === 'Easy') return 'task-diff-easy'
+  if (difficulty === 'Medium') return 'task-diff-medium'
+  return 'task-diff-hard'
+}
+
+function BrowseTasksPage() {
+  const [activeCategory, setActiveCategory] = useState('All')
+  const [query, setQuery] = useState('')
+
+  const filteredTasks = useMemo(() => {
+    return allTasks.filter((task) => {
+      const matchesCategory = activeCategory === 'All' || task.category === activeCategory
+      const matchesQuery = task.title.toLowerCase().includes(query.trim().toLowerCase())
+      return matchesCategory && matchesQuery
+    })
+  }, [activeCategory, query])
+
+  return (
+    <div className="browse-page">
+      <DashboardTopbar initials="CE" hasNotifications />
+
+      <div className="browse-sticky-zone">
+        <div className="browse-heading">
+          <h1>Browse Tasks</h1>
+          <p>{filteredTasks.length} task{filteredTasks.length === 1 ? '' : 's'} available</p>
+        </div>
+
+        <div className="browse-search-wrap">
+          <HiOutlineMagnifyingGlass className="browse-search-icon" />
+          <input
+            type="text"
+            className="browse-search-input"
+            placeholder="Search tasks..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="browse-chip-row">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              className={`browse-chip ${activeCategory === cat ? 'browse-chip-active' : ''}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <main className="browse-main">
+        {filteredTasks.length === 0 ? (
+          <div className="browse-empty">
+            <p>No tasks match your search.</p>
+          </div>
+        ) : (
+          <div className="task-list">
+            {filteredTasks.map((task) => (
+              <div key={task.id} className="task-card">
+                <div className="task-card-top">
+                  <div className="task-tags">
+                    <span className="task-tag task-tag-category">{task.category}</span>
+                    {task.verified && <span className="task-tag task-tag-verified">Verified</span>}
+                  </div>
+                  <span className="task-reward">{formatNaira(task.reward)}</span>
+                </div>
+
+                <h3 className="task-title">{task.title}</h3>
+
+                <div className="task-meta">
+                  <span>{task.duration}</span>
+                  <span className={difficultyClass(task.difficulty)}>{task.difficulty}</span>
+                  <span>{task.slotsLeft} slots left</span>
+                  <span className="task-rating">
+                    <HiStar /> {task.rating}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default BrowseTasksPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/BrowseTasks/BrowseTasksPage.css ---
+.browse-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+/* ============ Sticky zone (heading + search + chips) ============ */
+/* Sits directly below DashboardTopbar (which is sticky top:0 itself),
+   so this stacks right under it and stays pinned while the task list
+   scrolls beneath — same "nested scroll" feel as a CoordinatorLayout
+   with a pinned toolbar + scrolling RecyclerView, but it's really just
+   two stacked sticky elements inside one page-level scroll. */
+.browse-sticky-zone {
+  position: sticky;
+  top: 60px;
+  z-index: 40;
+  background: var(--color-surface);
+  padding: 16px var(--margin-mobile) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.browse-heading {
+  margin-bottom: 14px;
+}
+
+.browse-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.browse-heading p {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* ============ Search ============ */
+.browse-search-wrap {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.browse-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+.browse-search-input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-container-low);
+  outline: none;
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  color: var(--color-on-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.browse-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.browse-search-input:focus {
+  background: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
+}
+
+/* ============ Chip row (horizontal scroll) ============ */
+.browse-chip-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.browse-chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+.browse-chip {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.browse-chip:active {
+  transform: scale(0.96);
+}
+
+.browse-chip-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ============ Main list (part of normal page scroll) ============ */
+.browse-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+}
+
+.browse-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--color-on-surface-variant);
+  font-size: 14.5px;
+}
+
+/* ============ Task list / card (shared visual language with Dashboard) ============ */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.task-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.task-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.task-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.task-tag-category {
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+}
+
+.task-tag-verified {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.task-reward {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0f172a;
+  margin: 0 0 12px;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--font-label);
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+}
+
+.task-diff-easy {
+  color: var(--color-success-green);
+  font-weight: 700;
+}
+
+.task-diff-medium {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.task-diff-hard {
+  color: #ba1a1a;
+  font-weight: 700;
+}
+
+.task-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.task-rating svg {
+  font-size: 13px;
+}
+
+/* ============ Desktop ============ */
+@media (min-width: 768px) {
+  .browse-sticky-zone {
+    top: 68px;
+    padding: 20px var(--margin-desktop) 0;
+  }
+
+  .browse-main {
+    padding: 20px var(--margin-desktop) 40px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Wallet/WalletPage.tsx ---
+import {
+  HiOutlineBanknotes,
+  HiArrowUpRight,
+  HiArrowDownRight,
+  HiCheckCircle,
+} from 'react-icons/hi2'
+import { PiBankBold } from 'react-icons/pi'
+import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import BottomNav from '../../components/BottomNav/BottomNav'
+import './WalletPage.css'
+
+interface TransactionItem {
+  id: string
+  type: 'credit' | 'debit'
+  title: string
+  subtitle: string
+  amount: number
+  when: string
+}
+
+const transactions: TransactionItem[] = [
+  {
+    id: '1',
+    type: 'credit',
+    title: 'Task Reward',
+    subtitle: 'Follow @OfficialMTN on Insta...',
+    amount: 150,
+    when: 'Today, 2:30 PM',
+  },
+  {
+    id: '2',
+    type: 'credit',
+    title: 'Task Reward',
+    subtitle: 'Download KliqPay app',
+    amount: 300,
+    when: 'Today, 10:15 AM',
+  },
+  {
+    id: '3',
+    type: 'debit',
+    title: 'Withdrawal',
+    subtitle: 'GTBank ••••4521',
+    amount: -5000,
+    when: 'Yesterday',
+  },
+  {
+    id: '4',
+    type: 'credit',
+    title: 'Task Reward',
+    subtitle: 'Stream "Dende" by Asake',
+    amount: 100,
+    when: 'Yesterday',
+  },
+  {
+    id: '5',
+    type: 'credit',
+    title: 'Referral Bonus',
+    subtitle: 'Invited Ngozi Adeyemi',
+    amount: 200,
+    when: '23 Jul 2025',
+  },
+]
+
+function formatNaira(value: number) {
+  const abs = Math.abs(value)
+  return `₦${abs.toLocaleString('en-NG')}`
+}
+
+function WalletPage() {
+  return (
+    <div className="wallet-page">
+      <DashboardTopbar initials="CE" hasNotifications />
+
+      <main className="wallet-main">
+        <div className="wallet-heading">
+          <h1>Wallet</h1>
+        </div>
+
+        {/* Available balance card */}
+        <div className="wallet-balance-card">
+          <span className="wallet-balance-label">Available Balance</span>
+          <div className="wallet-balance-value">₦12,450.00</div>
+          <span className="wallet-balance-sub">Ready to withdraw</span>
+
+          <button type="button" className="btn btn-primary btn-block wallet-withdraw-btn">
+            Withdraw Funds
+          </button>
+        </div>
+
+        {/* Pending / Total earned */}
+        <div className="wallet-stats-row">
+          <div className="wallet-stat-card">
+            <span className="wallet-stat-label">Pending</span>
+            <div className="wallet-stat-value wallet-stat-value-pending">₦3,200.00</div>
+            <span className="wallet-stat-sub">Awaiting approval</span>
+          </div>
+
+          <div className="wallet-stat-card">
+            <span className="wallet-stat-label">Total Earned</span>
+            <div className="wallet-stat-value wallet-stat-value-earned">₦68,750.00</div>
+            <span className="wallet-stat-sub">All time</span>
+          </div>
+        </div>
+
+        {/* Bank account card */}
+        <div className="wallet-bank-card">
+          <span className="wallet-bank-icon">
+            <PiBankBold />
+          </span>
+
+          <div className="wallet-bank-info">
+            <span className="wallet-bank-name">GTBank</span>
+            <span className="wallet-bank-meta">••••4521 · Chidi Okeke</span>
+          </div>
+
+          <span className="wallet-bank-verified">
+            <HiCheckCircle /> Verified
+          </span>
+        </div>
+
+        {/* Recent transactions */}
+        <div className="wallet-section">
+          <div className="wallet-section-header">
+            <span className="wallet-section-label">Recent Transactions</span>
+            <button type="button" className="wallet-section-link">
+              See all
+            </button>
+          </div>
+
+          <div className="earnings-list">
+            {transactions.map((item) => (
+              <div key={item.id} className="earnings-row">
+                <span
+                  className={`earnings-icon ${
+                    item.type === 'credit' ? 'earnings-icon-credit' : 'earnings-icon-debit'
+                  }`}
+                >
+                  {item.type === 'credit' ? <HiArrowUpRight /> : <HiArrowDownRight />}
+                </span>
+
+                <div className="earnings-info">
+                  <span className="earnings-title">{item.title}</span>
+                  <span className="earnings-subtitle">{item.subtitle}</span>
+                </div>
+
+                <div className="earnings-amount-wrap">
+                  <span
+                    className={`earnings-amount ${
+                      item.type === 'credit' ? 'earnings-amount-credit' : 'earnings-amount-debit'
+                    }`}
+                  >
+                    {item.type === 'credit' ? '+' : '-'}
+                    {formatNaira(item.amount)}
+                  </span>
+                  <span className="earnings-when">{item.when}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default WalletPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Wallet/WalletPage.css ---
+.wallet-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+.wallet-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wallet-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* ===== Available balance card ===== */
+.wallet-balance-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-balance-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.wallet-balance-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 6px 0 4px;
+}
+
+.wallet-balance-sub {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 20px;
+}
+
+.wallet-withdraw-btn {
+  margin-top: 4px;
+}
+
+/* ===== Pending / Total earned ===== */
+.wallet-stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.wallet-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-stat-label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.wallet-stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+
+.wallet-stat-value-pending {
+  color: #d97706;
+}
+
+.wallet-stat-value-earned {
+  color: var(--color-success-green);
+}
+
+.wallet-stat-sub {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+/* ===== Bank account card ===== */
+.wallet-bank-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 16px 18px;
+}
+
+.wallet-bank-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.wallet-bank-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wallet-bank-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.wallet-bank-meta {
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wallet-bank-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.wallet-bank-verified svg {
+  font-size: 14px;
+}
+
+/* ===== Section shell (reuses dashboard earnings-list styles) ===== */
+.wallet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wallet-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallet-section-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.wallet-section-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ===== Recent transactions list ===== */
+.earnings-list {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.earnings-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.earnings-row:last-child {
+  border-bottom: none;
+}
+
+.earnings-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.earnings-icon-credit {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.earnings-icon-debit {
+  background: #fef2f2;
+  color: #ba1a1a;
+}
+
+.earnings-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.earnings-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.earnings-subtitle {
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.earnings-amount-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.earnings-amount {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.earnings-amount-credit {
+  color: var(--color-success-green);
+}
+
+.earnings-amount-debit {
+  color: #ba1a1a;
+}
+
+.earnings-when {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 768px) {
+  .wallet-main {
+    padding: 28px var(--margin-desktop) 40px;
+  }
+
+  .wallet-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 480px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Notifications/NotificationsPage.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { HiArrowLeft } from 'react-icons/hi2'
+import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import BottomNav from '../../components/BottomNav/BottomNav'
+import './NotificationsPage.css'
+
+interface NotificationItem {
+  id: string
+  title: string
+  description: string
+  when: string
+  read: boolean
+}
+
+const initialNotifications: NotificationItem[] = [
+  {
+    id: '1',
+    title: 'Task Approved!',
+    description: 'Your submission for "Follow @OfficialMTN" was approved. ₦150 has been added to your wallet.',
+    when: '2 mins ago',
+    read: false,
+  },
+  {
+    id: '2',
+    title: 'New Tasks Available',
+    description: '12 new tasks have been posted in your preferred categories.',
+    when: '1 hour ago',
+    read: false,
+  },
+  {
+    id: '3',
+    title: 'Withdrawal Processed',
+    description: 'Your withdrawal of ₦5,000 to GTBank ••••4521 was successful.',
+    when: 'Yesterday',
+    read: true,
+  },
+  {
+    id: '4',
+    title: 'Task Rejected',
+    description: 'Your submission for "Download BantuRide" was rejected. Reason: Account not verified.',
+    when: '2 days ago',
+    read: true,
+  },
+]
+
+function NotificationsPage() {
+  const navigate = useNavigate()
+  const [notifications, setNotifications] = useState(initialNotifications)
+
+  const handleMarkAllRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+  }
+
+  return (
+    <div className="notifications-page">
+      <DashboardTopbar initials="CE" hasNotifications={notifications.some((n) => !n.read)} />
+
+      <main className="notifications-main">
+        <div className="notifications-heading">
+          <button
+            type="button"
+            className="notifications-back"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+          >
+            <HiArrowLeft />
+          </button>
+          <h1>Notifications</h1>
+          <button type="button" className="notifications-mark-read" onClick={handleMarkAllRead}>
+            Mark all read
+          </button>
+        </div>
+
+        <div className="notifications-list">
+          {notifications.map((item) => (
+            <div
+              key={item.id}
+              className={`notification-card ${!item.read ? 'notification-card-unread' : ''}`}
+            >
+              {!item.read && <span className="notification-dot" />}
+              <div className="notification-body">
+                <h3 className="notification-title">{item.title}</h3>
+                <p className="notification-description">{item.description}</p>
+                <span className="notification-when">{item.when}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default NotificationsPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Notifications/NotificationsPage.css ---
+.notifications-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+.notifications-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===== Heading row: back / title / mark-all-read ===== */
+.notifications-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notifications-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  font-size: 20px;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.notifications-back:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+}
+
+.notifications-heading h1 {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.notifications-mark-read {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-label);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.notifications-mark-read:hover {
+  text-decoration: underline;
+}
+
+/* ===== Notification list ===== */
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification-card {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+}
+
+.notification-card-unread {
+  background: var(--color-brand-blue-tint);
+  border-color: rgba(0, 83, 212, 0.16);
+}
+
+.notification-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  margin-top: 7px;
+}
+
+.notification-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.notification-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.notification-description {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.notification-when {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 768px) {
+  .notifications-main {
+    padding: 24px var(--margin-desktop) 40px;
+  }
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Referral/ReferralPage.tsx ---
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { HiArrowLeft, HiOutlineGift, HiOutlineSquare2Stack, HiOutlineShare } from 'react-icons/hi2'
+import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import BottomNav from '../../components/BottomNav/BottomNav'
+import './ReferralPage.css'
+
+interface ReferralItem {
+  id: string
+  name: string
+  initial: string
+  when: string
+  status: 'earned' | 'pending'
+  amount?: number
+}
+
+const referralCode = 'CHIDI-8842'
+const referralLink = `https://taskbridge.dev/signup?ref=${referralCode}`
+
+const recentReferrals: ReferralItem[] = [
+  { id: '1', name: 'Ngozi Adeyemi', initial: 'N', when: '3 days ago', status: 'earned', amount: 200 },
+  { id: '2', name: 'Bode Ogundimu', initial: 'B', when: '5 days ago', status: 'pending' },
+  { id: '3', name: 'Amaka Eze', initial: 'A', when: '1 week ago', status: 'earned', amount: 200 },
+]
+
+function ReferralPage() {
+  const navigate = useNavigate()
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(referralCode)
+      setCopied(true)
+      toast.success('Referral code copied!')
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      toast.error('Could not copy. Please copy it manually.')
+    }
+  }
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join TaskBridge',
+          text: `Join TaskBridge with my referral code ${referralCode} and start earning!`,
+          url: referralLink,
+        })
+      } catch {
+        // user cancelled share — no-op
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(referralLink)
+        toast.success('Referral link copied!')
+      } catch {
+        toast.error('Could not copy the link.')
+      }
+    }
+  }
+
+  return (
+    <div className="referral-page">
+      <DashboardTopbar initials="CE" hasNotifications />
+
+      <main className="referral-main">
+        <div className="referral-heading">
+          <button
+            type="button"
+            className="referral-back"
+            onClick={() => navigate(-1)}
+            aria-label="Go back"
+          >
+            <HiArrowLeft />
+          </button>
+          <h1>Refer &amp; Earn</h1>
+        </div>
+
+        {/* Hero card */}
+        <div className="referral-hero-card">
+          <span className="referral-hero-icon">
+            <HiOutlineGift />
+          </span>
+          <h2>Earn ₦200 per referral</h2>
+          <p>Share your referral code with friends. You earn ₦200 when they complete their first task.</p>
+        </div>
+
+        {/* Referral code card */}
+        <div className="referral-code-card">
+          <span className="referral-code-label">Your Referral Code</span>
+
+          <div className="referral-code-box">
+            <span className="referral-code-value">{referralCode}</span>
+            <button type="button" className="referral-copy-btn" onClick={handleCopy}>
+              <HiOutlineSquare2Stack />
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+
+          <button type="button" className="referral-share-btn" onClick={handleShare}>
+            <HiOutlineShare />
+            Share Referral Link
+          </button>
+        </div>
+
+        {/* Stats row */}
+        <div className="referral-stats-row">
+          <div className="referral-stat-card">
+            <span className="referral-stat-value">12</span>
+            <span className="referral-stat-label">Total Referrals</span>
+          </div>
+          <div className="referral-stat-card">
+            <span className="referral-stat-value">8</span>
+            <span className="referral-stat-label">Completed</span>
+          </div>
+          <div className="referral-stat-card">
+            <span className="referral-stat-value referral-stat-value-earnings">₦1,600</span>
+            <span className="referral-stat-label">Earnings</span>
+          </div>
+        </div>
+
+        {/* Recent referrals */}
+        <div className="referral-section">
+          <span className="referral-section-label">Recent Referrals</span>
+
+          <div className="referral-list">
+            {recentReferrals.map((item) => (
+              <div key={item.id} className="referral-row">
+                <span className="referral-avatar">{item.initial}</span>
+
+                <div className="referral-row-info">
+                  <span className="referral-row-name">{item.name}</span>
+                  <span className="referral-row-when">{item.when}</span>
+                </div>
+
+                {item.status === 'earned' ? (
+                  <span className="referral-status referral-status-earned">
+                    <span className="referral-status-dot" /> Earned ₦{item.amount}
+                  </span>
+                ) : (
+                  <span className="referral-status referral-status-pending">
+                    <span className="referral-status-dot" /> Pending
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  )
+}
+
+export default ReferralPage
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/pages/Referral/ReferralPage.css ---
+.referral-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+.referral-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Heading row: back / title ===== */
+.referral-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.referral-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  font-size: 20px;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.referral-back:hover {
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+}
+
+.referral-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* ===== Hero card ===== */
+.referral-hero-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.referral-hero-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+  font-size: 26px;
+  margin-bottom: 16px;
+}
+
+.referral-hero-card h2 {
+  font-size: 21px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+}
+
+.referral-hero-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+  max-width: 30rem;
+}
+
+/* ===== Referral code card ===== */
+.referral-code-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.referral-code-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.referral-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-brand-blue-tint);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+
+.referral-code-value {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--color-primary);
+}
+
+.referral-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  font-family: var(--font-label);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease;
+}
+
+.referral-copy-btn:hover {
+  background: rgba(0, 83, 212, 0.1);
+}
+
+.referral-copy-btn svg {
+  font-size: 16px;
+}
+
+.referral-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.referral-share-btn:active {
+  transform: scale(0.98);
+}
+
+.referral-share-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.referral-share-btn svg {
+  font-size: 18px;
+}
+
+/* ===== Stats row ===== */
+.referral-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.referral-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.referral-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.referral-stat-value-earnings {
+  font-size: 18px;
+}
+
+.referral-stat-label {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  line-height: 1.35;
+}
+
+/* ===== Recent referrals section ===== */
+.referral-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.referral-section-label {
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.referral-list {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.referral-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.referral-row:last-child {
+  border-bottom: none;
+}
+
+.referral-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.referral-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.referral-row-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.referral-row-when {
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+}
+
+.referral-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.referral-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.referral-status-earned {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.referral-status-earned .referral-status-dot {
+  background: #16a34a;
+}
+
+.referral-status-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.referral-status-pending .referral-status-dot {
+  background: #d97706;
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 768px) {
+  .referral-main {
+    padding: 24px var(--margin-desktop) 40px;
+  }
+}
+
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/hooks/useScrollReveal.ts ---
 import { useEffect, useRef } from 'react'
 
@@ -7869,7 +10127,7 @@ interface RequestOptions extends Omit<RequestInit, 'body'> {
   body?: Record<string, unknown>
 }
 
-export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function rawRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { body, headers, ...rest } = options
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -7895,6 +10153,102 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   }
 
   return data as T
+}
+
+export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return rawRequest<T>(path, options)
+}
+
+// ---------------------------------------------------------------------------
+// Authenticated requests (user JWT) with silent refresh-on-401.
+//
+// Per the backend docs: user access tokens expire in 15 minutes. On a 401
+// from a normal app route, call /auth/refresh with the stored refreshToken,
+// store the new accessToken, and retry the original request once. This does
+// NOT apply to /admin/* or /service/*//emailverification/* routes.
+// ---------------------------------------------------------------------------
+
+let refreshInFlight: Promise<string> | null = null
+
+function getStoredTokens() {
+  return {
+    accessToken: localStorage.getItem('accessToken'),
+    refreshToken: localStorage.getItem('refreshToken'),
+  }
+}
+
+async function refreshAccessToken(): Promise<string> {
+  // Dedupe concurrent 401s into a single refresh call.
+  if (refreshInFlight) return refreshInFlight
+
+  refreshInFlight = (async () => {
+    const { refreshToken } = getStoredTokens()
+    if (!refreshToken) {
+      throw new ApiRequestError(401, 'No refresh token available')
+    }
+
+    try {
+      const { accessToken } = await rawRequest<{ accessToken: string }>('/auth/refresh', {
+        method: 'POST',
+        body: { refreshToken },
+      })
+      localStorage.setItem('accessToken', accessToken)
+      return accessToken
+    } catch (err) {
+      // Refresh token itself is invalid/expired/revoked — clear session.
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      throw err
+    } finally {
+      refreshInFlight = null
+    }
+  })()
+
+  return refreshInFlight
+}
+
+/**
+ * Like apiRequest, but attaches the stored user access token and
+ * transparently retries once after a silent refresh if the server
+ * responds 401 (expired/invalid access token).
+ *
+ * Throws ApiRequestError(401) if there's no session or the refresh
+ * itself fails — callers should treat that as "logged out".
+ */
+export async function authFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { accessToken } = getStoredTokens()
+  if (!accessToken) {
+    throw new ApiRequestError(401, 'Not authenticated')
+  }
+
+  const { headers, ...rest } = options
+
+  try {
+    return await rawRequest<T>(path, {
+      ...rest,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        ...headers,
+      },
+    })
+  } catch (err) {
+    const isExpiredToken =
+      err instanceof ApiRequestError &&
+      err.status === 401 &&
+      /invalid or expired access token/i.test(err.message)
+
+    if (!isExpiredToken) throw err
+
+    const newAccessToken = await refreshAccessToken()
+
+    return rawRequest<T>(path, {
+      ...rest,
+      headers: {
+        Authorization: `Bearer ${newAccessToken}`,
+        ...headers,
+      },
+    })
+  }
 }
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/waitlist.ts ---
@@ -7994,6 +10348,29 @@ export function login(payload: LoginPayload) {
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/authStatus.ts ---
 export function isAuthenticated(): boolean {
   return Boolean(localStorage.getItem('accessToken'))
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/me.ts ---
+import { authFetch } from './api'
+import type { MeResponse } from '../types/api'
+
+export function getMe() {
+  return authFetch<MeResponse>('/me', { method: 'GET' })
+}
+
+--- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/lib/tasks.ts ---
+import { authFetch } from './api'
+import type { RecommendedTasksResponse } from '../types/api'
+
+/**
+ * Worker-only. Returns a randomly rotated batch of eligible tasks.
+ * Callers should not invoke this for advertiser accounts (backend
+ * returns 403 — there is no advertiser-facing equivalent yet).
+ */
+export function getRecommendedTasks(limit = 10) {
+  return authFetch<RecommendedTasksResponse>(`/recommended?limit=${limit}`, {
+    method: 'GET',
+  })
 }
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/types/api.ts ---
@@ -8097,6 +10474,95 @@ export interface LoginResponse {
   accessToken: string
   refreshToken: string
   user: LoginUser
+}
+
+// ---- /me ----
+
+export interface MeWallet {
+  id: string
+  balanceKobo: string
+  currency: string
+}
+
+export interface MeWorkerStats {
+  pendingApprovals: number
+  completedTasks: number
+  completedThisWeek: number
+  earningsThisMonthKobo: number
+  earningsLastMonthKobo: number
+  earningsDeltaKobo: number
+}
+
+export interface MeAdvertiserStats {
+  pendingApprovals: number
+  completedTasks: number
+  completedThisWeek: number
+  spentThisMonthKobo: number
+  spentLastMonthKobo: number
+  spentDeltaKobo: number
+}
+
+export type MeStats = MeWorkerStats | MeAdvertiserStats
+
+export interface MeUser {
+  id: string
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  phoneNumber: string
+  role: UserRole
+  referralCode: string
+  referredBy: string | null
+  isVerified: boolean
+  emailVerifiedAt: string | null
+  isFirstAccess: boolean
+  firstAccessCode: string | null
+  firstAccessRewardGranted: boolean
+  businessName: string | null
+  businessIndustry: string | null
+  businessWebsite: string | null
+  createdAt: string
+  updatedAt: string
+  wallet: MeWallet
+  referralCount: number
+  stats: MeStats
+}
+
+export interface MeResponse {
+  user: MeUser
+}
+
+// Narrowing helpers — the /me stats shape depends on role.
+export function isWorkerStats(stats: MeStats): stats is MeWorkerStats {
+  return 'earningsThisMonthKobo' in stats
+}
+
+export function isAdvertiserStats(stats: MeStats): stats is MeAdvertiserStats {
+  return 'spentThisMonthKobo' in stats
+}
+
+// ---- /recommended (and /tasks — same row shape) ----
+
+export interface TaskListItem {
+  id: string
+  job_link: string
+  job_description: string
+  proof_required: boolean
+  proof_type: string | null
+  quantity: number
+  worker_earn_kobo: string
+  completed_count: number
+  spots_remaining: number
+  expires_at: string
+  created_at: string
+  category_name: string
+  subcategory_name: string
+  advertiser_username: string
+}
+
+export interface RecommendedTasksResponse {
+  tasks: TaskListItem[]
 }
 
 --- FILE: /data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src/context/SignupFlowContext.tsx ---
