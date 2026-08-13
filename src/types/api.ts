@@ -213,3 +213,71 @@ export interface TasksResponse {
   tasks: TaskListItem[]
 }
 
+// ---- /tasks/:id ----
+
+export type TaskStatus =
+  | 'draft'
+  | 'active'
+  | 'paused'
+  | 'completed'
+  | 'cancelled'
+  | 'expired'
+
+export interface ProofConfigItem {
+  maxCount: number
+  minCount: number
+  isAllowed: boolean
+  isRequired: boolean
+}
+
+export interface ProofConfig {
+  text: ProofConfigItem
+  screenshot: ProofConfigItem
+}
+
+export interface RatingCriterion {
+  id: string
+  type: 'RATING'
+  scale: number
+  question: string
+}
+
+export interface TextCriterion {
+  id: string
+  type: 'TEXT'
+  question: string
+}
+
+export type EvaluationCriterion = RatingCriterion | TextCriterion
+
+export interface TaskData {
+  scenario: string
+  experienceType: string
+  evaluationCriteria: EvaluationCriterion[]
+}
+
+export interface TaskDetail {
+  id: string
+  title: string
+  job_link: string
+  job_description: string
+  instructions: string[]
+  requirements: string[]
+  proof_config: ProofConfig
+  task_data: TaskData
+  quantity: number
+  worker_earn_kobo: string
+  completed_count: number
+  expires_at: string
+  created_at: string
+  spots_remaining: number
+  category_name: string
+  subcategory_name: string
+  advertiser_username: string
+  status: TaskStatus
+}
+
+export interface TaskDetailResponse {
+  task: TaskDetail
+}
+

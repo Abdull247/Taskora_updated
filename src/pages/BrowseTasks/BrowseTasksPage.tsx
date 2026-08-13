@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { HiOutlineMagnifyingGlass } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
@@ -206,7 +206,7 @@ function BrowseTasksPage() {
               const rewardKobo = Number(task.worker_earn_kobo)
               const difficulty = difficultyFromReward(rewardKobo)
               return (
-                <div key={task.id} className="task-card">
+                <Link key={task.id} to={`/dashboard/tasks/${task.id}`} className="task-card task-card-link">
                   <div className="task-card-top">
                     <div className="task-tags">
                       <span className="task-tag task-tag-category">
@@ -223,7 +223,7 @@ function BrowseTasksPage() {
                     <span>{task.spots_remaining} spot{task.spots_remaining === 1 ? '' : 's'} left</span>
                     <span>{timeLeftLabel(task.expires_at)}</span>
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>

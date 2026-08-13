@@ -2,6 +2,7 @@ import { authFetch, apiRequest } from './api'
 import type {
   RecommendedTasksResponse,
   TaskCategoriesResponse,
+  TaskDetailResponse,
   TasksResponse,
 } from '../types/api'
 
@@ -47,6 +48,16 @@ export function getTasks(params: GetTasksParams = {}) {
 
   const qs = query.toString()
   return authFetch<TasksResponse>(`/tasks${qs ? `?${qs}` : ''}`, {
+    method: 'GET',
+  })
+}
+
+/**
+ * Worker-facing task detail. Requires auth — the backend returns the full
+ * task payload (instructions, proof config, evaluation criteria, etc.).
+ */
+export function getTaskById(id: string) {
+  return authFetch<TaskDetailResponse>(`/tasks/${encodeURIComponent(id)}`, {
     method: 'GET',
   })
 }

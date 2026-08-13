@@ -327,7 +327,7 @@ function DashboardPage() {
                   const rewardKobo = Number(task.worker_earn_kobo)
                   const difficulty = difficultyFromReward(rewardKobo)
                   return (
-                    <div key={task.id} className="task-card">
+                    <Link key={task.id} to={`/dashboard/tasks/${task.id}`} className="task-card task-card-link">
                       <div className="task-card-top">
                         <div className="task-tags">
                           <span className="task-tag task-tag-category">{categoryLabel(task.category_name)}</span>
@@ -341,7 +341,7 @@ function DashboardPage() {
                         <span className={difficultyClass(difficulty)}>{difficulty}</span>
                         <span>{task.spots_remaining} slots left</span>
                       </div>
-                    </div>
+                    </Link>
                   )
                 })}
               </div>

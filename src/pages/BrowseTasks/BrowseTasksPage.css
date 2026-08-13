@@ -145,6 +145,17 @@
   padding: 18px;
 }
 
+.task-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card-link:active {
+  transform: scale(0.98);
+}
+
 .task-card-top {
   display: flex;
   align-items: flex-start;
