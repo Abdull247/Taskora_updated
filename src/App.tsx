@@ -9,6 +9,9 @@ import LoginPage from './pages/Login/LoginPage'
 import DashboardPage from './pages/Dashboard/DashboardPage'
 import BrowseTasksPage from './pages/BrowseTasks/BrowseTasksPage'
 import TaskDetailsPage from './pages/TaskDetails/TaskDetailsPage'
+import CreateTaskPage from './pages/CreateTask/CreateTaskPage'
+import TaskSubmissionsPage from './pages/TaskSubmissions/TaskSubmissionsPage'
+import MySubmissionsPage from './pages/MySubmissions/MySubmissionsPage'
 import WalletPage from './pages/Wallet/WalletPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
 import ReferralPage from './pages/Referral/ReferralPage'
@@ -74,6 +77,9 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/dashboard/tasks" element={<BrowseTasksPage />} />
           <Route path="/dashboard/tasks/:id" element={<TaskDetailsPage />} />
+          <Route path="/dashboard/tasks/create" element={<CreateTaskPage />} />
+          <Route path="/dashboard/tasks/:id/submissions" element={<TaskSubmissionsPage />} />
+          <Route path="/dashboard/submissions" element={<MySubmissionsPage />} />
           <Route path="/dashboard/wallet" element={<WalletPage />} />
           <Route path="/dashboard/notifications" element={<NotificationsPage />} />
           <Route path="/dashboard/referral" element={<ReferralPage />} />

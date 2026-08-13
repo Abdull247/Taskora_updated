@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { HiOutlineMagnifyingGlass } from 'react-icons/hi2'
+import { HiOutlineMagnifyingGlass, HiPlus } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import BrowseTasksSkeleton from '../../components/BrowseTasksSkeleton/BrowseTasksSkeleton'
-import { getTaskCategories, getTasks } from '../../lib/tasks'
+import { getTaskCategories, getTasks, getMyTasks } from '../../lib/tasks'
+import { getMe } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
-import type { TaskCategoryItem, TaskListItem } from '../../types/api'
+import type { TaskCategoryItem, TaskListItem, MeUser } from '../../types/api'
 import './BrowseTasksPage.css'
 
 const ALL_CHIP_ID = 'all'
@@ -54,6 +55,9 @@ function timeLeftLabel(expiresAt: string) {
 function BrowseTasksPage() {
   const navigate = useNavigate()
 
+  const [role, setRole] = useState<MeUser['role'] | null>(null)
+  const [roleLoading, setRoleLoading] = useState(true)
+
   const [categories, setCategories] = useState<TaskCategoryItem[]>([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [categoriesError, setCategoriesError] = useState<string | null>(null)
@@ -65,6 +69,30 @@ function BrowseTasksPage() {
   const [tasksError, setTasksError] = useState<string | null>(null)
 
   const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    getMe()
+      .then((me) => {
+        if (!cancelled) setRole(me.user.role)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        if (err instanceof ApiRequestError && err.status === 401) {
+          navigate('/login', { replace: true })
+          return
+        }
+        if (!cancelled) setRole('worker')
+      })
+      .finally(() => {
+        if (!cancelled) setRoleLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [navigate])
+
+  const isAdvertiser = role === 'advertiser'
 
   const loadCategories = useCallback(async () => {
     setCategoriesLoading(true)
@@ -80,18 +108,24 @@ function BrowseTasksPage() {
   }, [])
 
   useEffect(() => {
-    loadCategories()
-  }, [loadCategories])
+    if (!isAdvertiser) {
+      loadCategories()
+    }
+  }, [isAdvertiser, loadCategories])
 
   const loadTasks = useCallback(() => {
     let cancelled = false
     setTasksLoading(true)
     setTasksError(null)
 
-    getTasks({
-      limit: 30,
-      categoryId: activeCategoryId === ALL_CHIP_ID ? undefined : activeCategoryId,
-    })
+    const request = isAdvertiser
+      ? getMyTasks()
+      : getTasks({
+          limit: 30,
+          categoryId: activeCategoryId === ALL_CHIP_ID ? undefined : activeCategoryId,
+        })
+
+    request
       .then(({ tasks: fetched }) => {
         if (!cancelled) setTasks(fetched)
       })
@@ -101,7 +135,7 @@ function BrowseTasksPage() {
           navigate('/login', { replace: true })
           return
         }
-        setTasksError('Could not load tasks. Pull down to try again.')
+        setTasksError('Could not load tasks. Please try again.')
       })
       .finally(() => {
         if (!cancelled) setTasksLoading(false)
@@ -110,20 +144,24 @@ function BrowseTasksPage() {
     return () => {
       cancelled = true
     }
-  }, [activeCategoryId, navigate])
+  }, [activeCategoryId, isAdvertiser, navigate])
 
   useEffect(() => {
+    if (roleLoading) return
     const cancel = loadTasks()
     return cancel
-  }, [loadTasks])
+  }, [loadTasks, roleLoading])
 
   const filteredTasks = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return tasks
-    return tasks.filter((task) => task.job_description.toLowerCase().includes(q))
+    return tasks.filter((task) => {
+      const haystack = `${task.job_description ?? ''} ${task.title ?? ''} ${task.category_name ?? ''}`
+      return haystack.toLowerCase().includes(q)
+    })
   }, [tasks, query])
 
-  const showInitialSkeleton = categoriesLoading && tasksLoading
+  const showInitialSkeleton = roleLoading || (categoriesLoading && tasksLoading)
 
   return (
     <div className="browse-page">
@@ -131,57 +169,64 @@ function BrowseTasksPage() {
 
       <div className="browse-sticky-zone">
         <div className="browse-heading">
-          <h1>Browse Tasks</h1>
+          <h1>{isAdvertiser ? 'Your Tasks' : 'Browse Tasks'}</h1>
           <p>
-            {tasksLoading
+            {isAdvertiser
+              ? tasksLoading
+                ? 'Loading your tasks…'
+                : `${filteredTasks.length} task${filteredTasks.length === 1 ? '' : 's'} posted`
+              : tasksLoading
               ? 'Loading tasks…'
               : `${filteredTasks.length} task${filteredTasks.length === 1 ? '' : 's'} available`}
           </p>
         </div>
 
-        <div className="browse-search-wrap">
-          <HiOutlineMagnifyingGlass className="browse-search-icon" />
-          <input
-            type="text"
-            className="browse-search-input"
-            placeholder="Search tasks..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-
-        {categoriesLoading ? (
-          <div className="browse-chip-row browse-chip-row-skel-inline">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <div key={i} className="skel skel-chip" />
-            ))}
-          </div>
-        ) : categoriesError ? (
-          <div className="browse-chip-error">
-            <span>{categoriesError}</span>
-            <button type="button" onClick={loadCategories}>Retry</button>
-          </div>
-        ) : (
-          <div className="browse-chip-row">
-            <button
-              type="button"
-              className={`browse-chip ${activeCategoryId === ALL_CHIP_ID ? 'browse-chip-active' : ''}`}
-              onClick={() => setActiveCategoryId(ALL_CHIP_ID)}
-            >
-              All
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.categoryId}
-                type="button"
-                className={`browse-chip ${activeCategoryId === cat.categoryId ? 'browse-chip-active' : ''}`}
-                onClick={() => setActiveCategoryId(cat.categoryId)}
-              >
-                {categoryLabel(cat.category)}
-              </button>
-            ))}
+        {!isAdvertiser && (
+          <div className="browse-search-wrap">
+            <HiOutlineMagnifyingGlass className="browse-search-icon" />
+            <input
+              type="text"
+              className="browse-search-input"
+              placeholder="Search tasks..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
         )}
+
+        {!isAdvertiser &&
+          (categoriesLoading ? (
+            <div className="browse-chip-row browse-chip-row-skel-inline">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="skel skel-chip" />
+              ))}
+            </div>
+          ) : categoriesError ? (
+            <div className="browse-chip-error">
+              <span>{categoriesError}</span>
+              <button type="button" onClick={loadCategories}>Retry</button>
+            </div>
+          ) : (
+            <div className="browse-chip-row">
+              <button
+                type="button"
+                className={`browse-chip ${activeCategoryId === ALL_CHIP_ID ? 'browse-chip-active' : ''}`}
+                onClick={() => setActiveCategoryId(ALL_CHIP_ID)}
+              >
+                All
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.categoryId}
+                  type="button"
+                  className={`browse-chip ${activeCategoryId === cat.categoryId ? 'browse-chip-active' : ''}`}
+                  onClick={() => setActiveCategoryId(cat.categoryId)}
+                >
+                  {categoryLabel(cat.category)}
+                </button>
+              ))}
+            </div>
+          ))}
       </div>
 
       <main className="browse-main">
@@ -198,7 +243,16 @@ function BrowseTasksPage() {
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="browse-empty">
-            <p>No tasks match your search.</p>
+            <p>
+              {isAdvertiser
+                ? 'You have not posted any tasks yet.'
+                : 'No tasks match your search.'}
+            </p>
+            {isAdvertiser && (
+              <Link to="/dashboard/tasks/create" className="browse-retry-btn browse-create-first">
+                Create your first task
+              </Link>
+            )}
           </div>
         ) : (
           <div className="task-list">
@@ -212,11 +266,16 @@ function BrowseTasksPage() {
                       <span className="task-tag task-tag-category">
                         {categoryLabel(task.category_name)}
                       </span>
+                      {isAdvertiser && task.status && (
+                        <span className={`task-tag task-tag-status task-tag-status-${task.status}`}>
+                          {task.status}
+                        </span>
+                      )}
                     </div>
                     <span className="task-reward">{formatNaira(rewardKobo)}</span>
                   </div>
 
-                  <h3 className="task-title">{task.job_description}</h3>
+                  <h3 className="task-title">{task.title || task.job_description}</h3>
 
                   <div className="task-meta">
                     <span className={difficultyClass(difficulty)}>{difficulty}</span>
@@ -229,6 +288,12 @@ function BrowseTasksPage() {
           </div>
         )}
       </main>
+
+      {isAdvertiser && (
+        <Link to="/dashboard/tasks/create" className="browse-fab" aria-label="Create a task">
+          <HiPlus />
+        </Link>
+      )}
 
       <BottomNav />
     </div>

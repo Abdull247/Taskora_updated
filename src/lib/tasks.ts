@@ -1,11 +1,17 @@
 import { authFetch, apiRequest } from './api'
 import type {
+  ApproveSubmissionResponse,
+  CreateTaskPayload,
+  CreateTaskResponse,
+  MineTasksResponse,
   RecommendedTasksResponse,
+  RejectSubmissionResponse,
+  SubmissionProof,
+  SubmissionsResponse,
+  SubmitTaskProofResponse,
   TaskCategoriesResponse,
   TaskDetailResponse,
   TasksResponse,
-  SubmissionProof,
-  SubmitTaskProofResponse,
 } from '../types/api'
 
 /**
@@ -73,4 +79,58 @@ export function submitTaskProof(id: string, proof: SubmissionProof) {
     method: 'POST',
     body: { proof },
   })
+}
+
+/**
+ * Advertiser-only. Creates a new task and holds the budget from the wallet.
+ */
+export function createTask(payload: CreateTaskPayload) {
+  return authFetch<CreateTaskResponse>('/tasks', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+/**
+ * Advertiser-only. All tasks created by the logged-in advertiser.
+ */
+export function getMyTasks() {
+  return authFetch<MineTasksResponse>('/tasks/mine', { method: 'GET' })
+}
+
+/**
+ * Advertiser-only (must own the task). All submissions for a task.
+ */
+export function getTaskSubmissions(taskId: string) {
+  return authFetch<SubmissionsResponse>(
+    `/tasks/${encodeURIComponent(taskId)}/submissions`,
+    { method: 'GET' }
+  )
+}
+
+/**
+ * Worker-only. The worker's submission history.
+ */
+export function getMySubmissions() {
+  return authFetch<SubmissionsResponse>('/submissions/mine', { method: 'GET' })
+}
+
+/**
+ * Advertiser-only. Approves a submission and pays the worker.
+ */
+export function approveSubmission(submissionId: string) {
+  return authFetch<ApproveSubmissionResponse>(
+    `/submissions/${encodeURIComponent(submissionId)}/approve`,
+    { method: 'POST' }
+  )
+}
+
+/**
+ * Advertiser-only. Rejects a submission with a reason the worker can read.
+ */
+export function rejectSubmission(submissionId: string, reason: string) {
+  return authFetch<RejectSubmissionResponse>(
+    `/submissions/${encodeURIComponent(submissionId)}/reject`,
+    { method: 'POST', body: { reason } }
+  )
 }

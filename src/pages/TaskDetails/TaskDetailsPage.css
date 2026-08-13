@@ -238,6 +238,20 @@
   padding: 18px;
 }
 
+.td-advertiser-submissions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.td-advertiser-submissions .td-cta-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  width: auto;
+  align-self: stretch;
+}
+
 .td-body {
   font-size: 14.5px;
   line-height: 1.65;

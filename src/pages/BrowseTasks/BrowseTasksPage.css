@@ -341,6 +341,60 @@
   padding: 0;
 }
 
+/* ============ Task status tag (advertiser "your tasks") ============ */
+.task-tag-status {
+  text-transform: capitalize;
+}
+
+.task-tag-status-open {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.task-tag-status-completed {
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+}
+
+.task-tag-status-paused {
+  background: #fef9c3;
+  color: #d97706;
+}
+
+/* ============ Empty-state create CTA (advertiser) ============ */
+.browse-create-first {
+  display: inline-block;
+  margin-top: 12px;
+  text-decoration: none;
+}
+
+/* ============ FAB (advertiser, create task) ============ */
+.browse-fab {
+  position: fixed;
+  right: max(16px, calc((100vw - 640px) / 2 + 16px));
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 83, 212, 0.38);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.browse-fab svg {
+  font-size: 26px;
+}
+
+.browse-fab:active {
+  transform: scale(0.92);
+}
+
 /* ============ Task list error / retry ============ */
 .browse-retry-btn {
   margin-top: 12px;

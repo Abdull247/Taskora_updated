@@ -292,6 +292,28 @@
   color: #94a3b8;
 }
 
+/* ===== Inline status / error ===== */
+.wallet-inline-status {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.wallet-error {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.wallet-error p {
+  font-size: 14.5px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+  text-align: center;
+  padding: 24px 8px;
+}
+
 /* ===== Desktop ===== */
 @media (min-width: 768px) {
   .wallet-main {

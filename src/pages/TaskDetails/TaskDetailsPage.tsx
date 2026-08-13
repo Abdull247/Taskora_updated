@@ -19,8 +19,9 @@ import BottomNav from '../../components/BottomNav/BottomNav'
 import TaskDetailsSkeleton from '../../components/TaskDetailsSkeleton/TaskDetailsSkeleton'
 import TaskSubmission from '../../components/TaskSubmission/TaskSubmission'
 import { getTaskById } from '../../lib/tasks'
+import { getMe } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
-import type { TaskDetail, TaskStatus } from '../../types/api'
+import type { MeUser, TaskDetail, TaskStatus } from '../../types/api'
 import './TaskDetailsPage.css'
 
 function formatNaira(kobo: number) {
@@ -97,6 +98,28 @@ function TaskDetailsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [notFound, setNotFound] = useState(false)
+  const [role, setRole] = useState<MeUser['role'] | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    getMe()
+      .then((me) => {
+        if (!cancelled) setRole(me.user.role)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        if (err instanceof ApiRequestError && err.status === 401) {
+          navigate('/login', { replace: true })
+          return
+        }
+        if (!cancelled) setRole('worker')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [navigate])
+
+  const isAdvertiser = role === 'advertiser'
 
   const loadTask = useCallback(() => {
     if (!id) {
@@ -270,7 +293,14 @@ function TaskDetailsPage() {
               </div>
 
               <div className="td-hero-actions">
-                {canStart ? (
+                {isAdvertiser ? (
+                  <Link
+                    to={`/dashboard/tasks/${task.id}/submissions`}
+                    className="td-cta-primary"
+                  >
+                    View Submissions <HiArrowUpRight />
+                  </Link>
+                ) : canStart ? (
                   <a
                     href={task.job_link}
                     target="_blank"
@@ -359,11 +389,26 @@ function TaskDetailsPage() {
             </section>
 
             {/* Submission */}
-            <TaskSubmission
-              taskId={task.id}
-              proofConfig={task.proof_config}
-              disabled={!canSubmit}
-            />
+            {isAdvertiser ? (
+              <section className="td-section">
+                <span className="td-section-label">Submissions</span>
+                <div className="td-card td-advertiser-submissions">
+                  <p className="td-body td-muted">
+                    Review work submitted by taskers, approve valid proof to pay out
+                    instantly, or reject with a reason so they can resubmit.
+                  </p>
+                  <Link to={`/dashboard/tasks/${task.id}/submissions`} className="td-cta-primary">
+                    Review submissions <HiArrowUpRight />
+                  </Link>
+                </div>
+              </section>
+            ) : (
+              <TaskSubmission
+                taskId={task.id}
+                proofConfig={task.proof_config}
+                disabled={!canSubmit}
+              />
+            )}
 
             {/* Evaluation */}
             {task.task_data.scenario || task.task_data.evaluationCriteria.length > 0 ? (

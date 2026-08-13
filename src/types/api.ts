@@ -190,6 +190,7 @@ export interface TaskCategoriesResponse {
 
 export interface TaskListItem {
   id: string
+  title?: string
   job_link: string
   job_description: string
   proof_required: boolean
@@ -203,6 +204,7 @@ export interface TaskListItem {
   category_name: string
   subcategory_name: string
   advertiser_username: string
+  status?: TaskStatus
 }
 
 export interface RecommendedTasksResponse {
@@ -310,5 +312,129 @@ export interface Submission {
 
 export interface SubmitTaskProofResponse {
   submission: Submission
+}
+
+// ---- Advertiser task management / submissions ----
+
+export interface ProofConfigPayloadItem {
+  minCount: number
+  maxCount: number
+  isAllowed: boolean
+  isRequired: boolean
+}
+
+export interface CreateTaskPayload {
+  subcategoryId: string
+  title: string
+  jobLink: string
+  jobDescription: string
+  instructions: string[]
+  requirements: string[]
+  proofConfig: {
+    text: ProofConfigPayloadItem
+    screenshot: ProofConfigPayloadItem
+    link: ProofConfigPayloadItem
+    video: ProofConfigPayloadItem
+  }
+  taskData: {
+    scenario: string
+    experienceType: string
+    evaluationCriteria: Array<{
+      question: string
+      type: 'RATING' | 'TEXT'
+      scale?: number
+    }>
+  }
+  quantity: number
+  workerEarnNaira: number
+  expiresAt: string
+}
+
+export interface CreateTaskResponse {
+  task?: { id: string }
+  id?: string
+}
+
+export interface MineTasksResponse {
+  tasks: TaskListItem[]
+}
+
+export interface SubmissionWorker {
+  id: string
+  username?: string
+  first_name?: string
+  last_name?: string
+}
+
+export interface SubmissionTaskRef {
+  id: string
+  title?: string
+  job_description?: string
+  worker_earn_kobo?: string
+}
+
+export interface SubmissionListItem {
+  id: string
+  task_id: string
+  worker_id: string
+  proof: SubmissionProof
+  status: SubmissionStatus
+  rejection_reason: string | null
+  submitted_at: string
+  reviewed_at: string | null
+  worker?: SubmissionWorker
+  task?: SubmissionTaskRef
+}
+
+export interface SubmissionsResponse {
+  submissions: SubmissionListItem[]
+}
+
+export interface ApproveSubmissionResponse {
+  status: 'approved'
+  submissionId: string
+  workerPaidKobo: number
+}
+
+export interface RejectSubmissionResponse {
+  status: 'rejected'
+  submissionId: string
+  reason: string
+}
+
+// ---- /wallet ----
+
+export interface Wallet {
+  id: string
+  balance: string
+  currency: string
+  updated_at: string
+}
+
+export interface WalletResponse {
+  wallet: Wallet
+}
+
+export type WalletTransactionType =
+  | 'deposit'
+  | 'withdrawal'
+  | 'task_payment'
+  | 'task_earning'
+  | 'refund'
+  | 'fee'
+
+export interface WalletTransaction {
+  id: string
+  type: WalletTransactionType
+  amount: string
+  balance_after: string
+  reference: string
+  status: string
+  metadata: Record<string, unknown> | null
+  created_at: string
+}
+
+export interface WalletTransactionsResponse {
+  transactions: WalletTransaction[]
 }
 

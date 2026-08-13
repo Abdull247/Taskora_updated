@@ -1,0 +1,346 @@
+.my-submissions-page {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-display);
+  min-height: 100vh;
+}
+
+.my-submissions-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px var(--margin-mobile) calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.my-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.my-heading p {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* ===== Filters ===== */
+.my-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.my-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.my-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.my-filter:active {
+  transform: scale(0.96);
+}
+
+.my-filter-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.my-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.my-filter-active .my-filter-count {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ===== List ===== */
+.my-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.my-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-label);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.my-status-pending {
+  background: #fef9c3;
+  color: #d97706;
+}
+
+.my-status-approved {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.my-status-rejected {
+  background: #fee2e2;
+  color: #ba1a1a;
+}
+
+.my-when {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.my-task-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* ===== Proof summary ===== */
+.my-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.my-proof-none {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.my-proof-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-low);
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.my-proof-chip svg {
+  font-size: 14px;
+  color: var(--color-primary);
+}
+
+/* ===== Rejection ===== */
+.my-rejection {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+}
+
+.my-rejection svg {
+  flex-shrink: 0;
+  color: #ba1a1a;
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+.my-rejection p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* ===== Card footer ===== */
+.my-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 20px;
+}
+
+.my-note {
+  font-size: 12.5px;
+  color: var(--color-on-surface-variant);
+}
+
+.my-resubmit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-label);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.my-resubmit svg {
+  font-size: 14px;
+}
+
+/* ===== Empty / error ===== */
+.my-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.my-empty p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+}
+
+.my-retry {
+  padding: 10px 20px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: #ffffff;
+  color: var(--color-primary);
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.my-browse-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-label);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.my-browse-link svg {
+  font-size: 15px;
+}
+
+/* ===== Skeleton ===== */
+.my-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-skel-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.my-skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-container-low);
+  border-radius: var(--radius-lg);
+}
+
+.my-skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: my-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes my-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-skel::after {
+    animation: none;
+  }
+}
+
+.my-skel-top {
+  width: 30%;
+  height: 14px;
+}
+
+.my-skel-line {
+  width: 100%;
+  height: 12px;
+}
+
+.my-skel-short {
+  width: 60%;
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 768px) {
+  .my-submissions-main {
+    padding: 28px var(--margin-desktop) 40px;
+  }
+}
