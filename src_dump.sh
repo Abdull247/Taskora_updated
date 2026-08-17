@@ -12,4 +12,4 @@ find "/data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src" -typ
   -exec printf "\n--- FILE: %s ---\n" {} \; \
   -exec cat {} \; > "$OUTFILE"
 
-echo "Done. Output saved to $OUTFILE"
+echo "Done. Output saver to $OUTFILE"
