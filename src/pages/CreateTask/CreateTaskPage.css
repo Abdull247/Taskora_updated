@@ -345,6 +345,7 @@
 .ct-row-criterion {
   flex-wrap: wrap;
   align-items: center;
+  gap: 10px;
 }
 
 .ct-row-criterion .ct-input {
@@ -352,18 +353,17 @@
   min-width: 0;
 }
 
-.ct-row-criterion .ct-select {
+.ct-row-criterion .select {
   flex: 0 1 auto;
-  width: auto;
-  padding: 11px 12px;
 }
 
 .ct-select-type {
-  max-width: 96px;
+  min-width: 104px;
 }
 
 .ct-select-scale {
-  max-width: 72px;
+  min-width: 84px;
+  margin-left: 10px;
 }
 
 .ct-row-criterion .ct-remove {

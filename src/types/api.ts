@@ -435,3 +435,31 @@ export interface WalletTransactionsResponse {
   transactions: WalletTransaction[]
 }
 
+
+// ---- POST /payments/initialize ----
+
+export interface InitializePaymentPayload {
+  amountNaira: number
+}
+
+export interface InitializePaymentResponse {
+  authorizationUrl: string
+  reference: string
+}
+
+// ---- POST /file/upload ----
+
+export interface UploadFileItem {
+  id: string
+  userId: string
+  fileName: string
+  objectKey: string
+  url: string
+  contentType: string
+  sizeBytes: number
+  createdAt: string
+}
+
+export interface UploadFileResponse {
+  upload: UploadFileItem
+}

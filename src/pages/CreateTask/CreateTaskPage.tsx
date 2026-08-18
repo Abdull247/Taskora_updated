@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { HiArrowLeft, HiPlus, HiOutlineXMark } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
+import Select from '../../components/Select/Select'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import { getTaskCategories, createTask } from '../../lib/tasks'
 import { getMe } from '../../lib/me'
@@ -29,7 +30,7 @@ interface ProofDraft {
 }
 
 interface CriterionDraft {
-  id: number
+  id: string
   question: string
   type: 'RATING' | 'TEXT'
   scale: number
@@ -93,9 +94,9 @@ function CreateTaskPage() {
   const [scenario, setScenario] = useState('')
   const [experienceType, setExperienceType] = useState('WEBSITE')
   const [criteria, setCriteria] = useState<CriterionDraft[]>([
-    { id: 0, question: '', type: 'RATING', scale: 5 },
+    { id: 'criterion-1', question: '', type: 'RATING', scale: 5 },
   ])
-  const criteriaIdRef = useRef(1)
+  const criteriaIdRef = useRef(2)
 
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -214,6 +215,11 @@ function CreateTaskPage() {
       setFormError('Expiry must be in the future.')
       return
     }
+    const cleanCriteria = criteria.filter((c) => c.question.trim())
+    if (cleanCriteria.length === 0) {
+      setFormError('Add at least one evaluation question.')
+      return
+    }
     const allowedTypes = Object.entries(proofConfig).filter(([, cfg]) => cfg.isAllowed)
     if (allowedTypes.length === 0) {
       setFormError('Enable at least one proof type.')
@@ -257,13 +263,11 @@ function CreateTaskPage() {
       taskData: {
         scenario: scenario.trim(),
         experienceType: experienceType.trim(),
-        evaluationCriteria: criteria
-          .filter((c) => c.question.trim())
-          .map((c) =>
-            c.type === 'RATING'
-              ? { question: c.question.trim(), type: 'RATING' as const, scale: c.scale }
-              : { question: c.question.trim(), type: 'TEXT' as const }
-          ),
+        evaluationCriteria: cleanCriteria.map((c) =>
+          c.type === 'RATING'
+            ? { id: c.id, question: c.question.trim(), type: 'RATING' as const, scale: c.scale }
+            : { id: c.id, question: c.question.trim(), type: 'TEXT' as const }
+        ),
       },
       quantity,
       workerEarnKobo: Math.round(pay * 100),
@@ -579,7 +583,7 @@ function CreateTaskPage() {
                   placeholder="e.g. WEBSITE, MOBILE_APP, STORE"
                 />
 
-                <span className="ct-field-label">Evaluation questions (optional)</span>
+                <span className="ct-field-label">Evaluation questions</span>
                 <div className="ct-rows">
                   {criteria.map((criterion, i) => (
                     <div className="ct-row ct-row-criterion" key={criterion.id}>
@@ -589,28 +593,28 @@ function CreateTaskPage() {
                         onChange={(e) => updateCriterion(i, { question: e.target.value })}
                         placeholder="e.g. How easy was checkout?"
                       />
-                      <select
-                        className="ct-input ct-select ct-select-type"
+                      <Select
+                        className="ct-select ct-select-type"
                         value={criterion.type}
-                        onChange={(e) =>
-                          updateCriterion(i, {
-                            type: e.target.value as 'RATING' | 'TEXT',
-                          })
-                        }
-                      >
-                        <option value="RATING">Rating</option>
-                        <option value="TEXT">Text</option>
-                      </select>
+                        ariaLabel="Question type"
+                        onChange={(next) => updateCriterion(i, { type: next })}
+                        options={[
+                          { value: 'RATING', label: 'Rating' },
+                          { value: 'TEXT', label: 'Text' },
+                        ]}
+                      />
                       {criterion.type === 'RATING' && (
-                        <select
-                          className="ct-input ct-select ct-select-scale"
+                        <Select
+                          className="ct-select ct-select-scale"
                           value={criterion.scale}
-                          onChange={(e) => updateCriterion(i, { scale: Number(e.target.value) })}
-                        >
-                          <option value={5}>1–5</option>
-                          <option value={10}>1–10</option>
-                          <option value={3}>1–3</option>
-                        </select>
+                          ariaLabel="Rating scale"
+                          onChange={(next) => updateCriterion(i, { scale: next })}
+                          options={[
+                            { value: 5, label: '1–5' },
+                            { value: 10, label: '1–10' },
+                            { value: 3, label: '1–3' },
+                          ]}
+                        />
                       )}
                       {criteria.length > 1 && (
                         <button
@@ -633,7 +637,7 @@ function CreateTaskPage() {
                   onClick={() =>
                     setCriteria((prev) => [
                       ...prev,
-                      { id: criteriaIdRef.current++, question: '', type: 'RATING', scale: 5 },
+                      { id: `criterion-${criteriaIdRef.current++}`, question: '', type: 'RATING', scale: 5 },
                     ])
                   }
                 >

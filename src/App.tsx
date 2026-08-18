@@ -11,9 +11,11 @@ import BrowseTasksPage from './pages/BrowseTasks/BrowseTasksPage'
 import TaskDetailsPage from './pages/TaskDetails/TaskDetailsPage'
 import CreateTaskPage from './pages/CreateTask/CreateTaskPage'
 import TaskSubmissionsPage from './pages/TaskSubmissions/TaskSubmissionsPage'
+import SubmissionDetailPage from './pages/SubmissionDetail/SubmissionDetailPage'
 import MySubmissionsPage from './pages/MySubmissions/MySubmissionsPage'
 import ReviewSubmissionsPage from './pages/ReviewSubmissions/ReviewSubmissionsPage'
 import WalletPage from './pages/Wallet/WalletPage'
+import DepositPage from './pages/Deposit/DepositPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
 import ReferralPage from './pages/Referral/ReferralPage'
 import { isAuthenticated } from './lib/authStatus'
@@ -82,9 +84,11 @@ function App() {
           <Route path="/dashboard/tasks/:id" element={<TaskDetailsPage />} />
           <Route path="/dashboard/tasks/create" element={<CreateTaskPage />} />
           <Route path="/dashboard/tasks/:id/submissions" element={<TaskSubmissionsPage />} />
+          <Route path="/dashboard/tasks/:id/submissions/:submissionId" element={<SubmissionDetailPage />} />
           <Route path="/dashboard/submissions" element={<MySubmissionsPage />} />
           <Route path="/dashboard/review" element={<ReviewSubmissionsPage />} />
           <Route path="/dashboard/wallet" element={<WalletPage />} />
+          <Route path="/dashboard/wallet/deposit" element={<DepositPage />} />
           <Route path="/dashboard/notifications" element={<NotificationsPage />} />
           <Route path="/dashboard/referral" element={<ReferralPage />} />
           <Route path="/dashboard/verify" element={<ComingSoonDashboardPage title="ID Verification" description="Self-serve identity verification is on the way. In the meantime your account already benefits from our verification checks." />} />

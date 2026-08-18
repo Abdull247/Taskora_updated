@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import type { IconType } from 'react-icons'
@@ -6,14 +6,17 @@ import {
   HiCheckCircle,
   HiOutlineCamera,
   HiOutlineChatBubbleOvalLeft,
+  HiOutlineExclamationCircle,
   HiOutlineInformationCircle,
   HiOutlineLink,
   HiOutlinePaperAirplane,
+  HiOutlinePhoto,
   HiOutlineVideoCamera,
   HiOutlineXMark,
   HiPlus,
 } from 'react-icons/hi2'
 import { submitTaskProof } from '../../lib/tasks'
+import { uploadFile } from '../../lib/uploads'
 import { ApiRequestError } from '../../lib/api'
 import type { ProofConfig, ProofConfigItem, SubmissionProof } from '../../types/api'
 import './TaskSubmission.css'
@@ -25,6 +28,15 @@ const PROOF_TYPES: ProofTypeKey[] = ['text', 'screenshot', 'link', 'video']
 interface VideoRow {
   url: string
   durationSeconds: string
+}
+
+interface ScreenshotItem {
+  id: string
+  file: File
+  previewUrl: string
+  status: 'uploading' | 'done' | 'error'
+  url?: string
+  errorMessage?: string
 }
 
 interface TaskSubmissionProps {
@@ -61,6 +73,10 @@ function countHint(type: ProofTypeKey, filled: number, config: ProofConfigItem) 
   return `${req} · ${filled} of ${config.maxCount} added`
 }
 
+function makeId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+}
+
 function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) {
   const navigate = useNavigate()
 
@@ -69,15 +85,22 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
   const [error, setError] = useState<string | null>(null)
 
   const [textRows, setTextRows] = useState<string[]>([''])
-  const [screenshotRows, setScreenshotRows] = useState<string[]>([''])
+  const [screenshotItems, setScreenshotItems] = useState<ScreenshotItem[]>([])
   const [linkRows, setLinkRows] = useState<string[]>([''])
   const [videoRows, setVideoRows] = useState<VideoRow[]>([{ url: '', durationSeconds: '' }])
 
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const screenshotItemsRef = useRef<ScreenshotItem[]>([])
+  screenshotItemsRef.current = screenshotItems
+
+  useEffect(() => {
+    return () => {
+      screenshotItemsRef.current.forEach((item) => URL.revokeObjectURL(item.previewUrl))
+    }
+  }, [])
+
   const updateTextRow = (i: number, value: string) =>
     setTextRows((prev) => prev.map((row, idx) => (idx === i ? value : row)))
-
-  const updateScreenshotRow = (i: number, value: string) =>
-    setScreenshotRows((prev) => prev.map((row, idx) => (idx === i ? value : row)))
 
   const updateLinkRow = (i: number, value: string) =>
     setLinkRows((prev) => prev.map((row, idx) => (idx === i ? value : row)))
@@ -87,23 +110,72 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
 
   const addRow = (type: ProofTypeKey) => {
     if (type === 'text') setTextRows((prev) => [...prev, ''])
-    else if (type === 'screenshot') setScreenshotRows((prev) => [...prev, ''])
     else if (type === 'link') setLinkRows((prev) => [...prev, ''])
-    else setVideoRows((prev) => [...prev, { url: '', durationSeconds: '' }])
+    else if (type === 'video') setVideoRows((prev) => [...prev, { url: '', durationSeconds: '' }])
   }
 
   const removeRow = (type: ProofTypeKey, i: number) => {
     if (type === 'text') setTextRows((prev) => prev.filter((_, idx) => idx !== i))
-    else if (type === 'screenshot') setScreenshotRows((prev) => prev.filter((_, idx) => idx !== i))
     else if (type === 'link') setLinkRows((prev) => prev.filter((_, idx) => idx !== i))
-    else setVideoRows((prev) => prev.filter((_, idx) => idx !== i))
+    else if (type === 'video') setVideoRows((prev) => prev.filter((_, idx) => idx !== i))
   }
 
   const filledCount = (type: ProofTypeKey) => {
     if (type === 'text') return textRows.map((t) => t.trim()).filter(Boolean).length
-    if (type === 'screenshot') return screenshotRows.map((u) => u.trim()).filter(Boolean).length
+    if (type === 'screenshot') return screenshotItems.filter((s) => s.status === 'done').length
     if (type === 'link') return linkRows.map((u) => u.trim()).filter(Boolean).length
     return videoRows.filter((v) => v.url.trim() && v.durationSeconds.trim()).length
+  }
+
+  const runUpload = async (item: ScreenshotItem) => {
+    try {
+      const { upload } = await uploadFile(item.file)
+      setScreenshotItems((prev) =>
+        prev.map((s) => (s.id === item.id ? { ...s, status: 'done', url: upload.url } : s))
+      )
+    } catch (err) {
+      const message =
+        err instanceof ApiRequestError && err.message ? err.message : 'Upload failed.'
+      setScreenshotItems((prev) =>
+        prev.map((s) => (s.id === item.id ? { ...s, status: 'error', errorMessage: message } : s))
+      )
+    }
+  }
+
+  const handleFilesSelected = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return
+    const config = proofConfig.screenshot
+    const remainingSlots = config ? config.maxCount - screenshotItems.length : fileList.length
+    const files = Array.from(fileList).slice(0, Math.max(0, remainingSlots))
+
+    const newItems: ScreenshotItem[] = files.map((file) => ({
+      id: makeId(),
+      file,
+      previewUrl: URL.createObjectURL(file),
+      status: 'uploading',
+    }))
+
+    setScreenshotItems((prev) => [...prev, ...newItems])
+    newItems.forEach((item) => runUpload(item))
+
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const retryUpload = (id: string) => {
+    const item = screenshotItems.find((s) => s.id === id)
+    if (!item) return
+    setScreenshotItems((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, status: 'uploading', errorMessage: undefined } : s))
+    )
+    runUpload({ ...item, status: 'uploading' })
+  }
+
+  const removeScreenshot = (id: string) => {
+    setScreenshotItems((prev) => {
+      const item = prev.find((s) => s.id === id)
+      if (item) URL.revokeObjectURL(item.previewUrl)
+      return prev.filter((s) => s.id !== id)
+    })
   }
 
   const buildProof = (): { proof: SubmissionProof; error?: string } => {
@@ -114,9 +186,29 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
       const config = proofConfig[type]
       if (!config || !config.isAllowed) continue
 
+      if (type === 'screenshot') {
+        const uploading = screenshotItems.some((s) => s.status === 'uploading')
+        const failed = screenshotItems.some((s) => s.status === 'error')
+        const done = screenshotItems.filter((s) => s.status === 'done')
+
+        if (uploading) {
+          errors.push('Please wait for your screenshots to finish uploading.')
+        } else if (failed) {
+          errors.push('Remove or retry the screenshot(s) that failed to upload.')
+        } else if (config.isRequired && done.length < config.minCount) {
+          errors.push(
+            `Please add at least ${config.minCount} ${labelFor('screenshot', config.minCount > 1)}.`
+          )
+        } else if (done.length > config.maxCount) {
+          errors.push(`At most ${config.maxCount} ${labelFor('screenshot', config.maxCount > 1)} allowed.`)
+        }
+
+        if (done.length > 0) proof.screenshot = done.map((s) => s.url!)
+        continue
+      }
+
       let items: string[] = []
       if (type === 'text') items = textRows.map((t) => t.trim()).filter(Boolean)
-      else if (type === 'screenshot') items = screenshotRows.map((u) => u.trim()).filter(Boolean)
       else if (type === 'link') items = linkRows.map((u) => u.trim()).filter(Boolean)
 
       if (type === 'video') {
@@ -154,7 +246,6 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
 
       if (items.length > 0) {
         if (type === 'text') proof.text = items
-        else if (type === 'screenshot') proof.screenshot = items
         else if (type === 'link') proof.link = items
       }
     }
@@ -270,9 +361,9 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
 
           const rows =
             isText ? textRows.length
-            : isScreenshot ? screenshotRows.length
             : isLink ? linkRows.length
-            : videoRows.length
+            : isVideo ? videoRows.length
+            : 0
 
           return (
             <div className="td-submit-group" key={type}>
@@ -290,82 +381,140 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
                 </span>
               </div>
 
-              <div className="td-submit-fields">
-                {Array.from({ length: rows }, (_, i) => (
-                  <div className="td-submit-row" key={i}>
-                    {isText && (
-                      <textarea
-                        className="td-input td-textarea"
-                        value={textRows[i]}
-                        disabled={disabled || state === 'submitting'}
-                        onChange={(e) => updateTextRow(i, e.target.value)}
-                        placeholder={`Response ${i + 1}`}
-                      />
-                    )}
-
-                    {(isScreenshot || isLink) && (
-                      <div className="td-input-wrap">
-                        <HiOutlineLink className="td-input-icon" />
-                        <input
-                          type="url"
-                          className="td-input td-input-with-icon"
-                          value={isScreenshot ? screenshotRows[i] : linkRows[i]}
-                          disabled={disabled || state === 'submitting'}
-                          onChange={(e) =>
-                            isScreenshot
-                              ? updateScreenshotRow(i, e.target.value)
-                              : updateLinkRow(i, e.target.value)
-                          }
-                          placeholder={
-                            isScreenshot ? `Screenshot URL ${i + 1}` : `Link URL ${i + 1}`
-                          }
-                        />
+              {isScreenshot && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    hidden
+                    disabled={disabled || state === 'submitting'}
+                    onChange={(e) => handleFilesSelected(e.target.files)}
+                  />
+                  <div className="td-shot-strip">
+                    {screenshotItems.map((item) => (
+                      <div className="td-shot-thumb" key={item.id}>
+                        <img src={item.previewUrl} alt="Screenshot preview" />
+                        {item.status === 'uploading' && (
+                          <div className="td-shot-overlay">
+                            <span className="td-shot-spinner" />
+                          </div>
+                        )}
+                        {item.status === 'done' && (
+                          <div className="td-shot-overlay td-shot-overlay-done">
+                            <HiCheckCircle className="td-shot-check" />
+                          </div>
+                        )}
+                        {item.status === 'error' && (
+                          <button
+                            type="button"
+                            className="td-shot-overlay td-shot-overlay-error"
+                            onClick={() => retryUpload(item.id)}
+                            title={item.errorMessage || 'Upload failed — tap to retry'}
+                          >
+                            <HiOutlineExclamationCircle />
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="td-shot-remove"
+                          onClick={() => removeScreenshot(item.id)}
+                          disabled={state === 'submitting'}
+                          aria-label="Remove screenshot"
+                        >
+                          <HiOutlineXMark />
+                        </button>
                       </div>
-                    )}
+                    ))}
 
-                    {isVideo && (
-                      <>
-                        <div className="td-input-wrap td-input-wrap-video">
+                    {screenshotItems.length < config.maxCount && (
+                      <button
+                        type="button"
+                        className="td-shot-add"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={disabled || state === 'submitting'}
+                      >
+                        <HiOutlinePhoto />
+                        <span>Add</span>
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {!isScreenshot && (
+                <div className="td-submit-fields">
+                  {Array.from({ length: rows }, (_, i) => (
+                    <div className="td-submit-row" key={i}>
+                      {isText && (
+                        <textarea
+                          className="td-input td-textarea"
+                          value={textRows[i]}
+                          disabled={disabled || state === 'submitting'}
+                          onChange={(e) => updateTextRow(i, e.target.value)}
+                          placeholder={`Response ${i + 1}`}
+                        />
+                      )}
+
+                      {isLink && (
+                        <div className="td-input-wrap">
                           <HiOutlineLink className="td-input-icon" />
                           <input
                             type="url"
                             className="td-input td-input-with-icon"
-                            value={videoRows[i].url}
+                            value={linkRows[i]}
                             disabled={disabled || state === 'submitting'}
-                            onChange={(e) => updateVideoRow(i, { url: e.target.value })}
-                            placeholder={`Video URL ${i + 1}`}
+                            onChange={(e) => updateLinkRow(i, e.target.value)}
+                            placeholder={`Link URL ${i + 1}`}
                           />
                         </div>
-                        <input
-                          type="number"
-                          min={1}
-                          className="td-input td-input-duration"
-                          value={videoRows[i].durationSeconds}
+                      )}
+
+                      {isVideo && (
+                        <>
+                          <div className="td-input-wrap td-input-wrap-video">
+                            <HiOutlineLink className="td-input-icon" />
+                            <input
+                              type="url"
+                              className="td-input td-input-with-icon"
+                              value={videoRows[i].url}
+                              disabled={disabled || state === 'submitting'}
+                              onChange={(e) => updateVideoRow(i, { url: e.target.value })}
+                              placeholder={`Video URL ${i + 1}`}
+                            />
+                          </div>
+                          <input
+                            type="number"
+                            min={1}
+                            className="td-input td-input-duration"
+                            value={videoRows[i].durationSeconds}
+                            disabled={disabled || state === 'submitting'}
+                            onChange={(e) =>
+                              updateVideoRow(i, { durationSeconds: e.target.value })
+                            }
+                            placeholder="Seconds"
+                          />
+                        </>
+                      )}
+
+                      {rows > 1 && (
+                        <button
+                          type="button"
+                          className="td-submit-remove"
+                          onClick={() => removeRow(type, i)}
                           disabled={disabled || state === 'submitting'}
-                          onChange={(e) =>
-                            updateVideoRow(i, { durationSeconds: e.target.value })
-                          }
-                          placeholder="Seconds"
-                        />
-                      </>
-                    )}
+                          aria-label={`Remove ${labelFor(type, false)}`}
+                        >
+                          <HiOutlineXMark />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
-                    {rows > 1 && (
-                      <button
-                        type="button"
-                        className="td-submit-remove"
-                        onClick={() => removeRow(type, i)}
-                        disabled={disabled || state === 'submitting'}
-                        aria-label={`Remove ${labelFor(type, false)}`}
-                      >
-                        <HiOutlineXMark />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {rows < config.maxCount && (
+              {!isScreenshot && rows < config.maxCount && (
                 <button
                   type="button"
                   className="td-submit-add"
@@ -386,7 +535,11 @@ function TaskSubmission({ taskId, proofConfig, disabled }: TaskSubmissionProps) 
           type="button"
           className="td-submit-btn"
           onClick={handleSubmit}
-          disabled={disabled || state === 'submitting'}
+          disabled={
+            disabled ||
+            state === 'submitting' ||
+            screenshotItems.some((s) => s.status === 'uploading')
+          }
         >
           {state === 'submitting' ? (
             <>

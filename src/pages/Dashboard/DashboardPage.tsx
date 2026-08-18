@@ -225,7 +225,10 @@ function DashboardPage() {
             <Link to="/dashboard/wallet" className="btn-balance btn-balance-tint">
               View Wallet
             </Link>
-            <Link to="/dashboard/wallet" className="btn-balance btn-balance-primary">
+            <Link
+              to={isAdvertiser ? '/dashboard/wallet/deposit' : '/dashboard/wallet'}
+              className="btn-balance btn-balance-primary"
+            >
               {balanceCardActionLabel}
             </Link>
           </div>

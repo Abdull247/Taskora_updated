@@ -491,3 +491,67 @@
     padding: 20px var(--margin-desktop) 40px;
   }
 }
+
+/* ===== Card as a link (post-refactor: cards drill into detail page) ===== */
+.sub-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sub-card-link:active {
+  transform: scale(0.98);
+}
+
+.sub-card-foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.sub-view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.sub-view-link svg {
+  font-size: 13px;
+}
+
+/* ===== Card as a link (post-refactor: cards drill into detail page) ===== */
+.sub-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sub-card-link:active {
+  transform: scale(0.98);
+}
+
+.sub-card-foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.sub-view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.sub-view-link svg {
+  font-size: 13px;
+}

@@ -360,3 +360,124 @@
   background: #fef9c3;
   color: #d97706;
 }
+
+/* ===== Screenshot upload strip ===== */
+.td-shot-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.td-shot-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-container-low);
+}
+
+.td-shot-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.td-shot-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  padding: 0;
+  cursor: default;
+}
+
+.td-shot-overlay-done {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.td-shot-overlay-error {
+  background: rgba(186, 26, 26, 0.55);
+  cursor: pointer;
+  color: #fff;
+  font-size: 22px;
+}
+
+.td-shot-check {
+  color: #34d399;
+  font-size: 26px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.td-shot-spinner {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  animation: td-shot-spin 0.7s linear infinite;
+}
+
+@keyframes td-shot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.td-shot-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.td-shot-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.td-shot-add {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: var(--radius-lg);
+  border: 1.5px dashed var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.td-shot-add svg {
+  font-size: 20px;
+}
+
+.td-shot-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -19,19 +19,22 @@ export class ApiRequestError extends Error {
 }
 
 interface RequestOptions extends Omit<RequestInit, 'body'> {
-  body?: Record<string, unknown>
+  body?: Record<string, unknown> | FormData
 }
 
 async function rawRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { body, headers, ...rest } = options
 
+  const isFormData = body instanceof FormData
+  const hasJsonBody = body !== undefined && !isFormData
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...rest,
     headers: {
-      'Content-Type': 'application/json',
+      ...(hasJsonBody ? { 'Content-Type': 'application/json' } : {}),
       ...headers,
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
   })
 
   let data: Record<string, unknown> = {}
@@ -54,15 +57,6 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   return rawRequest<T>(path, options)
 }
 
-// ---------------------------------------------------------------------------
-// Authenticated requests (user JWT) with silent refresh-on-401.
-//
-// Per the backend docs: user access tokens expire in 15 minutes. On a 401
-// from a normal app route, call /auth/refresh with the stored refreshToken,
-// store the new accessToken, and retry the original request once. This does
-// NOT apply to /admin/* or /service/*//emailverification/* routes.
-// ---------------------------------------------------------------------------
-
 let refreshInFlight: Promise<string> | null = null
 
 function getStoredTokens() {
@@ -73,7 +67,6 @@ function getStoredTokens() {
 }
 
 async function refreshAccessToken(): Promise<string> {
-  // Dedupe concurrent 401s into a single refresh call.
   if (refreshInFlight) return refreshInFlight
 
   refreshInFlight = (async () => {
@@ -90,7 +83,6 @@ async function refreshAccessToken(): Promise<string> {
       localStorage.setItem('accessToken', accessToken)
       return accessToken
     } catch (err) {
-      // Refresh token itself is invalid/expired/revoked — clear session.
       localStorage.removeItem('accessToken')
       localStorage.removeItem('refreshToken')
       throw err
@@ -102,14 +94,6 @@ async function refreshAccessToken(): Promise<string> {
   return refreshInFlight
 }
 
-/**
- * Like apiRequest, but attaches the stored user access token and
- * transparently retries once after a silent refresh if the server
- * responds 401 (expired/invalid access token).
- *
- * Throws ApiRequestError(401) if there's no session or the refresh
- * itself fails — callers should treat that as "logged out".
- */
 export async function authFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { accessToken } = getStoredTokens()
   if (!accessToken) {

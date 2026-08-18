@@ -19,6 +19,7 @@ function WalletPage() {
   const navigate = useNavigate()
 
   const [balanceKobo, setBalanceKobo] = useState<string | null>(null)
+  const [role, setRole] = useState<'worker' | 'advertiser' | null>(null)
   const [pendingCount, setPendingCount] = useState<number>(0)
   const [totalEarnedKobo, setTotalEarnedKobo] = useState<number | null>(null)
   const [transactions, setTransactions] = useState<WalletTransaction[]>([])
@@ -36,6 +37,7 @@ function WalletPage() {
         setBalanceKobo(walletRes.wallet.balance)
         setTransactions(txRes.transactions)
         setPendingCount(meRes.user.stats.pendingApprovals)
+        setRole(meRes.user.role)
         if (isWorkerStats(meRes.user.stats)) {
           setTotalEarnedKobo(meRes.user.stats.earningsThisMonthKobo)
         } else {
@@ -90,9 +92,20 @@ function WalletPage() {
               </div>
               <span className="wallet-balance-sub">Ready to withdraw</span>
 
-              <button type="button" className="btn btn-primary btn-block wallet-withdraw-btn" disabled={loading}>
-                Withdraw Funds
-              </button>
+              {role === 'advertiser' ? (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block wallet-withdraw-btn"
+                  disabled={loading}
+                  onClick={() => navigate('/dashboard/wallet/deposit')}
+                >
+                  Deposit Funds
+                </button>
+              ) : (
+                <button type="button" className="btn btn-primary btn-block wallet-withdraw-btn" disabled={loading}>
+                  Withdraw Funds
+                </button>
+              )}
             </div>
 
             {/* Pending / Total earned */}

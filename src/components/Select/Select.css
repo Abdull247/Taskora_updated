@@ -1,0 +1,120 @@
+.select {
+  position: relative;
+}
+
+.select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 12px;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface-container-low);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-on-surface);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.select-trigger:hover {
+  border-color: #cbd5e1;
+}
+
+.select-trigger-open {
+  background: #ffffff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 83, 212, 0.12);
+}
+
+.select-trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.select-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.select-chevron {
+  font-size: 16px;
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.select-trigger-open .select-chevron {
+  transform: rotate(180deg);
+}
+
+.select-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  background: #ffffff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  padding: 6px;
+  z-index: 20;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top left;
+}
+
+.select-panel-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.select-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius);
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.select-option:hover {
+  background: var(--color-surface-container-low);
+}
+
+.select-option-active {
+  background: var(--color-brand-blue-tint);
+  color: var(--color-primary);
+}
+
+.select-option-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-check {
+  font-size: 15px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}

@@ -1,29 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import {
   HiArrowLeft,
-  HiCheckCircle,
+  HiArrowUpRight,
   HiOutlineCamera,
   HiOutlineChatBubbleOvalLeft,
   HiOutlineLink,
   HiOutlineVideoCamera,
-  HiOutlineXCircle,
-  HiOutlineXMark,
 } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
-import { getTaskById, getTaskSubmissions, approveSubmission, rejectSubmission } from '../../lib/tasks'
+import { getTaskById, getTaskSubmissions } from '../../lib/tasks'
 import { ApiRequestError } from '../../lib/api'
 import type { SubmissionListItem, SubmissionProof } from '../../types/api'
 import './TaskSubmissionsPage.css'
 
 type StatusFilter = 'all' | 'pending' | 'approved' | 'rejected'
-
-interface RejectingState {
-  id: string
-  reason: string
-}
 
 function formatWhen(iso: string) {
   const date = new Date(iso)
@@ -94,8 +86,6 @@ function TaskSubmissionsPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [filter, setFilter] = useState<StatusFilter>('all')
-  const [rejecting, setRejecting] = useState<RejectingState | null>(null)
-  const [busyId, setBusyId] = useState<string | null>(null)
 
   const load = useCallback(() => {
     if (!taskId) return
@@ -149,55 +139,6 @@ function TaskSubmissionsPage() {
     }),
     [submissions]
   )
-
-  const handleApprove = async (id: string) => {
-    setBusyId(id)
-    try {
-      const res = await approveSubmission(id)
-      setSubmissions((prev) =>
-        prev.map((s) =>
-          s.id === id ? { ...s, status: 'approved', reviewed_at: new Date().toISOString() } : s
-        )
-      )
-      toast.success(`Approved — worker paid ${formatNairaKobo(res.workerPaidKobo)}.`)
-    } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 401) {
-        navigate('/login', { replace: true })
-        return
-      }
-      const message =
-        err instanceof ApiRequestError && err.message ? err.message : 'Could not approve this submission.'
-      toast.error(message)
-    } finally {
-      setBusyId(null)
-    }
-  }
-
-  const handleReject = async (id: string, reason: string) => {
-    setBusyId(id)
-    try {
-      await rejectSubmission(id, reason.trim())
-      setSubmissions((prev) =>
-        prev.map((s) =>
-          s.id === id
-            ? { ...s, status: 'rejected', rejection_reason: reason.trim(), reviewed_at: new Date().toISOString() }
-            : s
-        )
-      )
-      setRejecting(null)
-      toast.success('Submission rejected.')
-    } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 401) {
-        navigate('/login', { replace: true })
-        return
-      }
-      const message =
-        err instanceof ApiRequestError && err.message ? err.message : 'Could not reject this submission.'
-      toast.error(message)
-    } finally {
-      setBusyId(null)
-    }
-  }
 
   const pendingCount = counts.pending
 
@@ -265,7 +206,11 @@ function TaskSubmissionsPage() {
             ) : (
               <div className="sub-list">
                 {filtered.map((sub) => (
-                  <div className="sub-card" key={sub.id}>
+                  <Link
+                    key={sub.id}
+                    to={`/dashboard/tasks/${taskId}/submissions/${sub.id}`}
+                    className="sub-card sub-card-link"
+                  >
                     <div className="sub-card-head">
                       <div className="sub-worker">
                         <span className="sub-worker-avatar">
@@ -287,71 +232,12 @@ function TaskSubmissionsPage() {
 
                     <ProofSummary proof={sub.proof} />
 
-                    {sub.status === 'rejected' && sub.rejection_reason && (
-                      <div className="sub-rejection">
-                        <HiOutlineXCircle />
-                        <div>
-                          <span className="sub-rejection-label">Rejection reason</span>
-                          <p>{sub.rejection_reason}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {sub.status === 'pending' && (
-                      <div className="sub-actions">
-                        {rejecting && rejecting.id === sub.id ? (
-                          <div className="sub-reject-form">
-                            <textarea
-                              className="sub-reject-input"
-                              placeholder="Tell the worker why this was rejected (shown to them)"
-                              value={rejecting.reason}
-                              onChange={(e) =>
-                                setRejecting({ id: sub.id, reason: e.target.value })
-                              }
-                            />
-                            <div className="sub-reject-form-actions">
-                              <button
-                                type="button"
-                                className="sub-btn sub-btn-ghost"
-                                onClick={() => setRejecting(null)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                type="button"
-                                className="sub-btn sub-btn-reject"
-                                disabled={busyId === sub.id || !rejecting.reason.trim()}
-                                onClick={() => handleReject(sub.id, rejecting.reason)}
-                              >
-                                {busyId === sub.id ? 'Rejecting…' : 'Confirm rejection'}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <button
-                              type="button"
-                              className="sub-btn sub-btn-approve"
-                              disabled={busyId !== null}
-                              onClick={() => handleApprove(sub.id)}
-                            >
-                              <HiCheckCircle />
-                              {busyId === sub.id ? 'Processing…' : 'Approve & pay'}
-                            </button>
-                            <button
-                              type="button"
-                              className="sub-btn sub-btn-ghost sub-btn-outline"
-                              disabled={busyId !== null}
-                              onClick={() => setRejecting({ id: sub.id, reason: '' })}
-                            >
-                              <HiOutlineXMark />
-                              Reject
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                    <div className="sub-card-foot">
+                      <span className="sub-view-link">
+                        View details <HiArrowUpRight />
+                      </span>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -362,14 +248,6 @@ function TaskSubmissionsPage() {
       <BottomNav />
     </div>
   )
-}
-
-function formatNairaKobo(kobo: number) {
-  const naira = kobo / 100
-  return `₦${naira.toLocaleString('en-NG', {
-    minimumFractionDigits: naira % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
-  })}`
 }
 
 export default TaskSubmissionsPage
