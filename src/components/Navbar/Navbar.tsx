@@ -37,10 +37,10 @@ function Navbar() {
           </Link>
 
           <div className="nav-menu-desktop">
-            <a href="/waitlist#how-it-works">How It Works</a>
-            <Link to="/waitlist/for-taskers">For Taskers</Link>
-            <Link to="/waitlist/for-advertisers">For Advertisers</Link>
-            <a href="/waitlist#faq">FAQ</a>
+            <a href="/landing#how-it-works">How It Works</a>
+            <Link to="/landing/for-taskers">For Taskers</Link>
+            <Link to="/landing/for-advertisers">For Advertisers</Link>
+            <a href="/landing#faq">FAQ</a>
           </div>
 
           <button
