@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import {
@@ -14,7 +14,7 @@ import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import { getWallet, formatNairaFromKobo } from '../../lib/wallet'
 import { getMe } from '../../lib/me'
-import { initializeDeposit, verifyDeposit } from '../../lib/payments'
+import { initializeDeposit } from '../../lib/payments'
 import { ApiRequestError } from '../../lib/api'
 import './DepositPage.css'
 
@@ -41,8 +41,6 @@ function DepositPage() {
 
   const [result, setResult] = useState<{ authorizationUrl: string; reference: string } | null>(null)
   const [copied, setCopied] = useState(false)
-  const [verifying, setVerifying] = useState(false)
-  const pendingReferenceRef = useRef<string | null>(null)
 
   const load = useCallback(() => {
     let cancelled = false
@@ -78,46 +76,6 @@ function DepositPage() {
     return cancel
   }, [load])
 
-  // Paystack opens in a new tab; the user comes back to this tab once
-  // they've paid (or given up). Check the reference against the backend
-  // as soon as this tab regains focus, instead of only relying on the
-  // webhook — that way a pending deposit gets resolved even if the
-  // webhook is delayed or never reaches the server (common in local/dev
-  // setups where the backend isn't publicly reachable).
-  useEffect(() => {
-    const checkPending = () => {
-      const reference = pendingReferenceRef.current
-      if (!reference || document.hidden) return
-
-      setVerifying(true)
-      verifyDeposit(reference)
-        .then((res) => {
-          if (res.status === 'success' || res.status === 'already_resolved') {
-            pendingReferenceRef.current = null
-            toast.success('Deposit confirmed! Your balance has been updated.')
-            load()
-          } else if (res.status === 'failed') {
-            pendingReferenceRef.current = null
-            toast.error('That payment did not go through. You can try again.')
-          }
-          // still pending on Paystack's side — leave the ref in place and
-          // check again next time the tab regains focus
-        })
-        .catch(() => {
-          // Silent — the webhook may still resolve this, and we'll retry
-          // on the next focus event anyway.
-        })
-        .finally(() => setVerifying(false))
-    }
-
-    window.addEventListener('focus', checkPending)
-    document.addEventListener('visibilitychange', checkPending)
-    return () => {
-      window.removeEventListener('focus', checkPending)
-      document.removeEventListener('visibilitychange', checkPending)
-    }
-  }, [load])
-
   const handleQuickAmount = (value: number) => {
     setAmount(String(value))
     setAmountError(null)
@@ -146,7 +104,6 @@ function DepositPage() {
     try {
       const res = await initializeDeposit({ amountNaira })
       setResult(res)
-      pendingReferenceRef.current = res.reference
       const opened = window.open(res.authorizationUrl, '_blank', 'noopener,noreferrer')
       if (!opened) {
         toast.error('Popup blocked — use the button below to open the payment page.')

@@ -19,7 +19,7 @@ import DashboardSkeleton from '../../components/DashboardSkeleton/DashboardSkele
 import { SEO } from '../../components/SEO/SEO'
 import { getMe } from '../../lib/me'
 import { getRecommendedTasks } from '../../lib/tasks'
-import { getWalletTransactions, transactionDirection, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
+import { getWalletTransactions, transactionDisplayState, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
 import { ApiRequestError } from '../../lib/api'
 import {
   isWorkerStats,
@@ -395,12 +395,12 @@ function DashboardPage() {
           {!transactionsLoading && !transactionsError && transactions.length > 0 && (
             <div className="earnings-list">
               {transactions.map((item) => {
-                const direction = transactionDirection(item.type)
+                const state = transactionDisplayState(item)
                 const amountKobo = Number(item.amount)
                 return (
                   <div key={item.id} className="earnings-row">
-                    <span className={`earnings-icon ${direction === 'credit' ? 'earnings-icon-credit' : 'earnings-icon-debit'}`}>
-                      {direction === 'credit' ? <HiArrowUpRight /> : <HiArrowDownRight />}
+                    <span className={`earnings-icon earnings-icon-${state}`}>
+                      {state === 'debit' ? <HiArrowDownRight /> : <HiArrowUpRight />}
                     </span>
 
                     <div className="earnings-info">
@@ -409,8 +409,8 @@ function DashboardPage() {
                     </div>
 
                     <div className="earnings-amount-wrap">
-                      <span className={`earnings-amount ${direction === 'credit' ? 'earnings-amount-credit' : 'earnings-amount-debit'}`}>
-                        {direction === 'credit' ? '+' : '-'}
+                      <span className={`earnings-amount earnings-amount-${state}`}>
+                        {state === 'credit' ? '+' : state === 'debit' ? '-' : ''}
                         {formatNairaFromKobo(amountKobo)}
                       </span>
                       <span className="earnings-when">{transactionWhen(item.created_at)}</span>

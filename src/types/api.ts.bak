@@ -484,12 +484,6 @@ export interface InitializePaymentResponse {
   reference: string
 }
 
-// ---- GET /payments/verify/:reference ----
-
-export interface VerifyPaymentResponse {
-  status: 'success' | 'failed' | 'already_resolved' | string
-}
-
 // ---- POST /file/upload ----
 
 export interface UploadFileItem {

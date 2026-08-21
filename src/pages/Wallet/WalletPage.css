@@ -244,6 +244,16 @@
   color: #ba1a1a;
 }
 
+.earnings-icon-pending {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.earnings-icon-failed {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
 .earnings-info {
   flex: 1;
   min-width: 0;
@@ -285,6 +295,15 @@
 
 .earnings-amount-debit {
   color: #ba1a1a;
+}
+
+.earnings-amount-pending {
+  color: #a16207;
+}
+
+.earnings-amount-failed {
+  color: #94a3b8;
+  text-decoration: line-through;
 }
 
 .earnings-when {

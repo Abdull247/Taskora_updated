@@ -17,9 +17,6 @@ export function getWalletTransactions(limit = 20, offset = 0) {
 
 export type TransactionDirection = 'credit' | 'debit'
 
-// Purely a function of type — direction the money would move if this
-// transaction is completed. Does NOT tell you whether it has settled yet;
-// use transactionDisplayState for that.
 export function transactionDirection(type: WalletTransaction['type']): TransactionDirection {
   switch (type) {
     case 'deposit':
@@ -33,20 +30,6 @@ export function transactionDirection(type: WalletTransaction['type']): Transacti
     default:
       return 'credit'
   }
-}
-
-export type TransactionDisplayState = 'credit' | 'debit' | 'pending' | 'failed'
-
-// This is the one that should drive rendering. A deposit that's still
-// 'pending' (e.g. the user hasn't finished paying on Paystack yet, or the
-// webhook hasn't confirmed it) must NOT show as a green completed credit —
-// that's what caused the wallet history to display unpaid deposits as if
-// the money had already landed. 'failed' transactions get their own state
-// too so they don't render as either a credit or a debit.
-export function transactionDisplayState(tx: WalletTransaction): TransactionDisplayState {
-  if (tx.status === 'pending') return 'pending'
-  if (tx.status === 'failed' || tx.status === 'reversed') return 'failed'
-  return transactionDirection(tx.type)
 }
 
 export function transactionLabel(type: WalletTransaction['type']): string {
@@ -69,13 +52,10 @@ export function transactionLabel(type: WalletTransaction['type']): string {
 }
 
 export function transactionSubtitle(tx: WalletTransaction): string {
-  if (tx.status === 'pending') return 'Pending confirmation'
-  if (tx.status === 'failed') return 'Failed'
-  if (tx.status === 'reversed') return 'Reversed'
   const source = tx.metadata?.source
   if (typeof source === 'string' && source) return source
   if (tx.reference) return tx.reference
-  return 'Completed'
+  return tx.status === 'pending' ? 'Pending' : 'Completed'
 }
 
 export function transactionWhen(iso: string): string {

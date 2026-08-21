@@ -10,7 +10,7 @@ import { PiBankBold } from 'react-icons/pi'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import { SEO } from '../../components/SEO/SEO'
-import { getWallet, getWalletTransactions, transactionDirection, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
+import { getWallet, getWalletTransactions, transactionDisplayState, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
 import { getMe } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
 import { isWorkerStats, type WalletTransaction } from '../../types/api'
@@ -161,17 +161,19 @@ function WalletPage() {
               ) : (
                 <div className="earnings-list">
                   {transactions.map((item) => {
-                    const direction = transactionDirection(item.type)
+                    const state = transactionDisplayState(item)
                     const amountKobo = Number(item.amount)
-                    const sign = direction === 'credit' ? '+' : '-'
+                    const sign = state === 'credit' ? '+' : state === 'debit' ? '-' : ''
                     return (
                       <div key={item.id} className="earnings-row">
-                        <span
-                          className={`earnings-icon ${
-                            direction === 'credit' ? 'earnings-icon-credit' : 'earnings-icon-debit'
-                          }`}
-                        >
-                          {direction === 'credit' ? <HiArrowUpRight /> : <HiArrowDownRight />}
+                        <span className={`earnings-icon earnings-icon-${state}`}>
+                          {state === 'credit' ? (
+                            <HiArrowUpRight />
+                          ) : state === 'debit' ? (
+                            <HiArrowDownRight />
+                          ) : (
+                            <HiArrowUpRight />
+                          )}
                         </span>
 
                         <div className="earnings-info">
@@ -180,11 +182,7 @@ function WalletPage() {
                         </div>
 
                         <div className="earnings-amount-wrap">
-                          <span
-                            className={`earnings-amount ${
-                              direction === 'credit' ? 'earnings-amount-credit' : 'earnings-amount-debit'
-                            }`}
-                          >
+                          <span className={`earnings-amount earnings-amount-${state}`}>
                             {sign}
                             {formatNairaFromKobo(amountKobo)}
                           </span>
