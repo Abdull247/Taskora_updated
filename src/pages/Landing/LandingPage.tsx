@@ -4,6 +4,7 @@ import Footer from '../../components/Footer/Footer'
 import FaqAccordion from '../../components/FaqAccordion/FaqAccordion'
 import AnimatedCounter from '../../components/AnimatedCounter/AnimatedCounter'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SEO } from '../../components/SEO/SEO'
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineCheckCircle,
@@ -167,6 +168,10 @@ function LandingPage() {
 
   return (
     <div className="waitlist-page landing-page">
+      <SEO
+        title="TaskBridge: Get things done. Get rewarded."
+        description="TaskBridge connects Taskers with Advertisers. Join the waitlist for early access to a simpler way to earn and get things done."
+      />
       <Navbar />
 
       <main>

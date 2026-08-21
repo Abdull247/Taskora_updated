@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { HiArrowLeft } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import { SEO } from '../../components/SEO/SEO'
 import './NotificationsPage.css'
 
 interface NotificationItem {
@@ -54,6 +55,7 @@ function NotificationsPage() {
 
   return (
     <div className="notifications-page">
+      <SEO title="Notifications | TaskBridge" description="Manage your tasks and earnings." noindex />
       <DashboardTopbar initials="CE" hasNotifications={notifications.some((n) => !n.read)} />
 
       <main className="notifications-main">

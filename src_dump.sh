@@ -9,6 +9,7 @@ find "/data/data/org.smartide.code/files/home/projects/TaskoraFrontend/src" -typ
   ! -path "*/.idea/*" \
   ! -path "*/dist/*" \
   ! -path "*/public/*" \
+  ! -path "*/dist/*" \
   -exec printf "\n--- FILE: %s ---\n" {} \; \
   -exec cat {} \; > "$OUTFILE"
 

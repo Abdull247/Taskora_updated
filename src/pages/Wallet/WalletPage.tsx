@@ -9,6 +9,7 @@ import {
 import { PiBankBold } from 'react-icons/pi'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import { SEO } from '../../components/SEO/SEO'
 import { getWallet, getWalletTransactions, transactionDirection, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
 import { getMe } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
@@ -68,6 +69,7 @@ function WalletPage() {
 
   return (
     <div className="wallet-page">
+      <SEO title="Wallet | TaskBridge" description="Manage your tasks and earnings." noindex />
       <DashboardTopbar initials="··" hasNotifications />
 
       <main className="wallet-main">

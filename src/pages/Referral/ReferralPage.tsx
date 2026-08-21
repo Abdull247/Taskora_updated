@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { HiArrowLeft, HiOutlineGift, HiOutlineSquare2Stack, HiOutlineShare } from 'react-icons/hi2'
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import { SEO } from '../../components/SEO/SEO'
 import './ReferralPage.css'
 
 interface ReferralItem {
@@ -62,6 +63,7 @@ function ReferralPage() {
 
   return (
     <div className="referral-page">
+      <SEO title="Referrals | TaskBridge" description="Manage your tasks and earnings." noindex />
       <DashboardTopbar initials="CE" hasNotifications />
 
       <main className="referral-main">

@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import FaqAccordion from '../../components/FaqAccordion/FaqAccordion'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SEO } from '../../components/SEO/SEO'
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineCheckCircle,
@@ -159,6 +160,10 @@ function WaitlistPage() {
 
   return (
     <div className="waitlist-page">
+      <SEO
+        title="TaskBridge Waitlist: Early Access to Earning and Delegating Tasks"
+        description="Join the TaskBridge waitlist today. Be among the first to experience a simpler, rewarded way to complete tasks or delegate work."
+      />
       <Navbar />
 
       <main>

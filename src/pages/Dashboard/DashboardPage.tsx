@@ -16,6 +16,7 @@ import {
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import DashboardSkeleton from '../../components/DashboardSkeleton/DashboardSkeleton'
+import { SEO } from '../../components/SEO/SEO'
 import { getMe } from '../../lib/me'
 import { getRecommendedTasks } from '../../lib/tasks'
 import { getWalletTransactions, transactionDirection, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
@@ -176,6 +177,7 @@ function DashboardPage() {
 
   return (
     <div className="dashboard-page">
+      <SEO title="Dashboard | TaskBridge" description="Manage your tasks and earnings." noindex />
       <DashboardTopbar initials={user ? initialsFor(user.firstName, user.lastName) : '··'} hasNotifications />
 
       <main className="dashboard-main">

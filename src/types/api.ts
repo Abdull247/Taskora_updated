@@ -100,6 +100,43 @@ export interface LoginResponse {
   user: LoginUser
 }
 
+// ---- Password reset ----
+
+export interface RequestPasswordResetPayload {
+  email: string
+}
+
+export interface RequestPasswordResetResponse {
+  status: 'sent'
+  email: string
+  expiresInMinutes: number
+}
+
+export interface VerifyResetTokenPayload {
+  token: string
+}
+
+export interface VerifyResetTokenResponse {
+  email: string
+  valid: boolean
+  used: boolean
+  usedAt: string | null
+  expired: boolean
+  expiresAt: string
+  requestedAt: string
+}
+
+export interface ConfirmPasswordResetPayload {
+  email: string
+  token: string
+  newPassword: string
+}
+
+export interface ConfirmPasswordResetResponse {
+  status: 'reset'
+  email: string
+}
+
 // ---- /me ----
 
 export interface MeWallet {

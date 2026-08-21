@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SEO } from '../../components/SEO/SEO'
 import {
   HiOutlineClipboardDocumentList,
   HiOutlineCurrencyDollar,
@@ -21,6 +22,10 @@ function ForAdvertisersPage() {
 
   return (
     <div className="waitlist-page">
+      <SEO
+        title="Get Tasks Done Efficiently with TaskBridge: For Advertisers"
+        description="Need help with local or digital tasks? TaskBridge connects you with qualified Taskers ready to get your work done. Join now to start creating tasks."
+      />
       <Navbar />
 
       <main>

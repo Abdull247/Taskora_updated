@@ -8,6 +8,7 @@ import { getTaskCategories, getTasks, getMyTasks } from '../../lib/tasks'
 import { getMe, getStoredRole } from '../../lib/me'
 import { ApiRequestError } from '../../lib/api'
 import type { TaskCategoryItem, TaskListItem, MeUser } from '../../types/api'
+import { SEO } from '../../components/SEO/SEO'
 import './BrowseTasksPage.css'
 
 const ALL_CHIP_ID = 'all'
@@ -165,6 +166,7 @@ function BrowseTasksPage() {
 
   return (
     <div className="browse-page">
+      <SEO title="Browse Tasks | TaskBridge" description="View available tasks and manage your work." noindex />
       <DashboardTopbar initials="··" hasNotifications />
 
       <div className="browse-sticky-zone">

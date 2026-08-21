@@ -5,6 +5,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import RoleSelect from '../../components/RoleSelect/RoleSelect'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SEO } from '../../components/SEO/SEO'
 import { joinWaitlist } from '../../lib/waitlist'
 import { ApiRequestError } from '../../lib/api'
 import type { UserRole } from '../../types/api'
@@ -168,6 +169,10 @@ function SignupPage() {
 
   return (
     <div className="signup-page">
+      <SEO
+        title="Join the TaskBridge Waitlist: Get Early Access"
+        description="Create your account to get early access to TaskBridge and start earning or delegating tasks."
+      />
       <Navbar />
 
       <main className="signup-main">

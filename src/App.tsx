@@ -27,6 +27,7 @@ import RoleStep from './pages/SignupFlow/RoleStep'
 import BusinessInfoStep from './pages/SignupFlow/BusinessInfoStep'
 import SignupDoneStep from './pages/SignupFlow/SignupDoneStep'
 import WaitlistSuccessPage from './pages/WaitlistSuccess/WaitlistSuccessPage'
+import ResetPasswordVerifyPage from './pages/ResetPassword/ResetPasswordVerifyPage'
 import NotFoundPage from './pages/NotFound/NotFoundPage'
 import ComingSoonDashboardPage from './pages/ComingSoonDashboard/ComingSoonDashboardPage'
 import AppNav from './components/AppNav/AppNav'
@@ -79,6 +80,7 @@ function App() {
           <Route path="/waitlist/success" element={<WaitlistSuccessPage />} />
 
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/reset-password" element={<ResetPasswordVerifyPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/dashboard/tasks" element={<BrowseTasksPage />} />
           <Route path="/dashboard/tasks/:id" element={<TaskDetailsPage />} />

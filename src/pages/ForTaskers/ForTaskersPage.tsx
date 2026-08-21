@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { SEO } from '../../components/SEO/SEO'
 import {
   HiOutlineMagnifyingGlass,
   HiOutlineCheckCircle,
@@ -19,6 +20,10 @@ function ForTaskersPage() {
 
   return (
     <div className="waitlist-page">
+      <SEO
+        title="Earn Rewards with TaskBridge: Find and Complete Tasks Near You"
+        description="Looking for flexible ways to earn? TaskBridge connects you with local and digital tasks. Join as a Tasker to start getting rewarded for your work."
+      />
       <Navbar />
 
       <main>
