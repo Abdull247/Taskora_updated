@@ -94,6 +94,9 @@ function App() {
           <Route path="/dashboard/notifications" element={<NotificationsPage />} />
           <Route path="/dashboard/referral" element={<ReferralPage />} />
           <Route path="/dashboard/verify" element={<ComingSoonDashboardPage title="ID Verification" description="Self-serve identity verification is on the way. In the meantime your account already benefits from our verification checks." />} />
+          <Route path="/dashboard/profile" element={<ComingSoonDashboardPage title="My Profile" description="Editing your personal details from the app is on the way." />} />
+          <Route path="/dashboard/settings" element={<ComingSoonDashboardPage title="Settings" description="Account preferences and security settings are coming soon." />} />
+          <Route path="/dashboard/support" element={<ComingSoonDashboardPage title="Help & Support" description="Our support centre is being built right now. For now, reach us via the referral page or your account email." />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -20,16 +20,9 @@ import './DepositPage.css'
 
 const QUICK_AMOUNTS = [1000, 5000, 10000, 25000]
 
-function initialsFor(firstName: string, lastName: string) {
-  const a = firstName.trim().charAt(0)
-  const b = lastName.trim().charAt(0)
-  return `${a}${b}`.toUpperCase() || '?'
-}
-
 function DepositPage() {
   const navigate = useNavigate()
 
-  const [initials, setInitials] = useState('··')
   const [email, setEmail] = useState<string | null>(null)
   const [balanceKobo, setBalanceKobo] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,7 +47,6 @@ function DepositPage() {
         if (cancelled) return
         setBalanceKobo(walletRes.wallet.balance)
         setEmail(meRes.user.email)
-        setInitials(initialsFor(meRes.user.firstName, meRes.user.lastName))
       })
       .catch((err) => {
         if (cancelled) return
@@ -189,7 +181,7 @@ function DepositPage() {
 
   return (
     <div className="deposit-page">
-      <DashboardTopbar initials={initials} hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="deposit-main">
         <div className="deposit-heading">

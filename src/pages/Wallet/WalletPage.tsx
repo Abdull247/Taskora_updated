@@ -70,7 +70,7 @@ function WalletPage() {
   return (
     <div className="wallet-page">
       <SEO title="Wallet | TaskBridge" description="Manage your tasks and earnings." noindex />
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="wallet-main">
         <div className="wallet-heading">
@@ -129,21 +129,23 @@ function WalletPage() {
               </div>
             </div>
 
-            {/* Bank account card */}
-            <div className="wallet-bank-card">
-              <span className="wallet-bank-icon">
-                <PiBankBold />
-              </span>
+            {/* Bank account card — workers only, advertisers don't withdraw */}
+            {role === 'worker' && (
+              <div className="wallet-bank-card">
+                <span className="wallet-bank-icon">
+                  <PiBankBold />
+                </span>
 
-              <div className="wallet-bank-info">
-                <span className="wallet-bank-name">No bank account linked</span>
-                <span className="wallet-bank-meta">Withdrawals need a saved account</span>
+                <div className="wallet-bank-info">
+                  <span className="wallet-bank-name">No bank account linked</span>
+                  <span className="wallet-bank-meta">Withdrawals need a saved account</span>
+                </div>
+
+                <span className="wallet-bank-verified">
+                  <HiCheckCircle /> Verified
+                </span>
               </div>
-
-              <span className="wallet-bank-verified">
-                <HiCheckCircle /> Verified
-              </span>
-            </div>
+            )}
 
             {/* Recent transactions */}
             <div className="wallet-section">

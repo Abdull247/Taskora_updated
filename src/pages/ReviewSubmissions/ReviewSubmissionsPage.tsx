@@ -94,7 +94,7 @@ function ReviewSubmissionsPage() {
 
   return (
     <div className="review-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="review-main">
         <Link to="/dashboard/tasks" className="rv-back">

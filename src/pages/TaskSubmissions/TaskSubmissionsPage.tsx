@@ -144,7 +144,7 @@ function TaskSubmissionsPage() {
 
   return (
     <div className="submissions-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="submissions-main">
         <Link to={`/dashboard/tasks/${taskId}`} className="sub-back">

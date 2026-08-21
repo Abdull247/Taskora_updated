@@ -171,7 +171,7 @@ function SubmissionDetailPage() {
 
   return (
     <div className="subdetail-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="subdetail-main">
         <Link to={`/dashboard/tasks/${taskId}/submissions`} className="subdetail-back">

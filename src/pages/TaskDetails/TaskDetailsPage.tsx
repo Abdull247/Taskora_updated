@@ -231,7 +231,7 @@ function TaskDetailsPage() {
 
   return (
     <div className="task-detail-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="task-detail-main">
         <Link to="/dashboard/tasks" className="td-back-link">

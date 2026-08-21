@@ -14,7 +14,7 @@ function ComingSoonDashboardPage({
 }: ComingSoonDashboardPageProps) {
   return (
     <div className="soon-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="soon-main">
         <div className="soon-card">

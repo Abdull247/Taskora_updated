@@ -116,7 +116,7 @@ function MySubmissionsPage() {
 
   return (
     <div className="my-submissions-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="my-submissions-main">
         <div className="my-heading">

@@ -302,7 +302,7 @@ function CreateTaskPage() {
 
   return (
     <div className="create-task-page">
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="create-task-main">
         <Link to="/dashboard/tasks" className="ct-back">

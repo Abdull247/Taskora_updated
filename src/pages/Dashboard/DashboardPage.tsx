@@ -40,12 +40,6 @@ function formatNairaSigned(kobo: number) {
   return `${sign}${formatNaira(Math.abs(kobo))}`
 }
 
-function initialsFor(firstName: string, lastName: string) {
-  const a = firstName.trim().charAt(0)
-  const b = lastName.trim().charAt(0)
-  return `${a}${b}`.toUpperCase() || '?'
-}
-
 function difficultyFromReward(rewardKobo: number): 'Easy' | 'Medium' | 'Hard' {
   const naira = rewardKobo / 100
   if (naira < 100) return 'Easy'
@@ -168,7 +162,7 @@ function DashboardPage() {
   if (meLoading) {
     return (
       <div className="dashboard-page">
-        <DashboardTopbar initials="··" hasNotifications={false} />
+        <DashboardTopbar hasNotifications={false} />
         <DashboardSkeleton />
         <BottomNav />
       </div>
@@ -178,7 +172,7 @@ function DashboardPage() {
   return (
     <div className="dashboard-page">
       <SEO title="Dashboard | TaskBridge" description="Manage your tasks and earnings." noindex />
-      <DashboardTopbar initials={user ? initialsFor(user.firstName, user.lastName) : '··'} hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="dashboard-main">
         {/* Greeting */}

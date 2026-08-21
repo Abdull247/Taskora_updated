@@ -64,7 +64,7 @@ function ReferralPage() {
   return (
     <div className="referral-page">
       <SEO title="Referrals | TaskBridge" description="Manage your tasks and earnings." noindex />
-      <DashboardTopbar initials="CE" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <main className="referral-main">
         <div className="referral-heading">

@@ -167,7 +167,7 @@ function BrowseTasksPage() {
   return (
     <div className="browse-page">
       <SEO title="Browse Tasks | TaskBridge" description="View available tasks and manage your work." noindex />
-      <DashboardTopbar initials="··" hasNotifications />
+      <DashboardTopbar hasNotifications />
 
       <div className="browse-sticky-zone">
         <div className="browse-heading">
