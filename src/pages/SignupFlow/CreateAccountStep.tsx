@@ -7,6 +7,7 @@ import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
+import checkEmailAvailability from '../../lib/emailAvailability'
 
 interface FormErrors {
   [key: string]: string
@@ -58,6 +59,18 @@ function CreateAccountStep() {
     return next
   }
 
+  const checkEmail = async (email) => {
+    console.log(email)
+    const emailAvailable = (await checkEmailAvailability(email)).availability
+    if (!emailAvailable) {
+      setErrors((prev) => ({
+        ...prev, email: "An account with this email already exists"
+      }))
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const validationErrors = validate()
@@ -65,6 +78,9 @@ function CreateAccountStep() {
     if (Object.keys(validationErrors).length > 0) return
 
     setSubmitting(true)
+    const emailAvailable = await checkEmail(data.email)
+    setSubmitting(emailAvailable)
+    if (!emailAvailable) return
     await withMinDelay(async () => {})
     updateData({ email: data.email.trim() })
     setSubmitting(false)

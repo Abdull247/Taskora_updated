@@ -45,6 +45,11 @@ export interface ApiError {
 
 // ---- Email verification (service-to-service, separate from user auth) ----
 
+export interface AvailabilityResponse {
+  availability: Boolean,
+  error: string | Boolean
+}
+
 export interface SendVerificationPayload {
   email: string
 }
