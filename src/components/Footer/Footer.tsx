@@ -26,15 +26,15 @@ function Footer() {
               <span className="footer-links-heading">Company</span>
               <a href="/terms">Terms of Service</a>
               <a href="/privacy">Privacy Policy</a>
-              <a href="mailto:hello@taskbridge.dev">Contact Us</a>
+              <a href="mailto:taskbridge84@gmail.com">Contact Us</a>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
           <p className="footer-copy">© 2026 TaskBridge Inc. All rights reserved.</p>
-          <a href="mailto:hello@taskbridge.dev" className="footer-email">
-            <HiOutlineEnvelope /> hello@taskbridge.dev
+          <a href="mailto:taskbridge84@gmail.com" className="footer-email">
+            <HiOutlineEnvelope /> taskbridge84@gmail.com
           </a>
         </div>
       </div>
