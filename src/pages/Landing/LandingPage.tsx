@@ -339,39 +339,51 @@ function LandingPage() {
 
             <div className="two-sided-grid">
               <div ref={taskerCardRef} className="side-card reveal reveal-left">
-                <span className="side-label">For Taskers</span>
-                <div className="side-icon">
-                  <HiOutlineMagnifyingGlass />
+                <div className='side-card-header side-card-child'>
+                  <span className="side-label">For Taskers</span>
+                  <div className="side-icon">
+                    <HiOutlineMagnifyingGlass />
+                  </div>
                 </div>
-                <h3>Find tasks. Do the work. Get rewarded.</h3>
-                <p>Discover tasks that match your skills, interests and location. Complete them, submit your work and earn rewards when your work is approved.</p>
-                <ul className="side-benefits">
-                  <li>Discover relevant tasks</li>
-                  <li>Choose opportunities that fit you</li>
-                  <li>Complete tasks on your terms</li>
-                  <li>Earn rewards for approved work</li>
-                </ul>
-                <Link to="/signup?role=worker" className="btn btn-primary btn-block">
-                  Get Started as a Tasker
-                </Link>
+                <div className='side-card-body side-card-child'>
+                  <h3>Find tasks. Do the work. Get rewarded.</h3>
+                  <p>Discover tasks that match your skills, interests and location. Complete them, submit your work and earn rewards when your work is approved.</p>
+                  <ul className="side-benefits">
+                    <li>Discover relevant tasks</li>
+                    <li>Choose opportunities that fit you</li>
+                    <li>Complete tasks on your terms</li>
+                    <li>Earn rewards for approved work</li>
+                  </ul>
+                </div>
+                <div className='side-card-footer side-card-child'>
+                  <Link to="/signup?role=worker" className="btn btn-primary btn-block">
+                    Get Started as a Tasker
+                  </Link>
+                </div>
               </div>
 
               <div id="for-advertisers" ref={advertiserCardRef} className="side-card reveal reveal-right">
-                <span className="side-label">For Advertisers</span>
-                <div className="side-icon">
-                  <HiOutlineMegaphone />
+                <div className='side-card-header side-card-child'>
+                  <span className="side-label">For Advertisers</span>
+                  <div className="side-icon">
+                    <HiOutlineMegaphone />
+                  </div>
                 </div>
-                <h3>Need something done? Put it in front of the right people.</h3>
-                <p>Create a task, define what you need, set your reward and let TaskBridge connect you with people ready to get it done.</p>
-                <ul className="side-benefits">
-                  <li>Create and publish tasks</li>
-                  <li>Set your requirements and reward</li>
-                  <li>Reach relevant Taskers</li>
-                  <li>Review submissions and approve completed work</li>
-                </ul>
-                <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
-                  Get Started as an Advertiser
-                </Link>
+                <div className='side-card-body side-card-child'>
+                  <h3>Need something done? Put it in front of the right people.</h3>
+                  <p>Create a task, define what you need, set your reward and let TaskBridge connect you with people ready to get it done.</p>
+                  <ul className="side-benefits">
+                    <li>Create and publish tasks</li>
+                    <li>Set your requirements and reward</li>
+                    <li>Reach relevant Taskers</li>
+                    <li>Review submissions and approve completed work</li>
+                  </ul>
+                </div>
+                <div className='side-card-footer side-card-child'>
+                  <Link to="/signup?role=advertiser" className="btn btn-primary btn-block">
+                    Get Started as an Advertiser
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
