@@ -45,9 +45,18 @@ export interface ApiError {
 
 // ---- Email verification (service-to-service, separate from user auth) ----
 
+export interface AvailabilityPayload {
+  email?: string
+  phone?: string
+}
+
 export interface AvailabilityResponse {
-  availability: Boolean,
-  error: string | Boolean
+  /** Each requested field gets its own flag — true means free to use. */
+  availability: {
+    email?: boolean
+    phone?: boolean
+  },
+  error: string | boolean
 }
 
 export interface SendVerificationPayload {

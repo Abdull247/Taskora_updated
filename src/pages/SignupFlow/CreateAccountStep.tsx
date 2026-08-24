@@ -7,7 +7,7 @@ import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
-import checkEmailAvailability from '../../lib/emailAvailability'
+import { checkAvailability as checkAvailabilityApi } from '../../lib/emailAvailability'
 
 interface FormErrors {
   [key: string]: string
@@ -59,16 +59,31 @@ function CreateAccountStep() {
     return next
   }
 
-  const checkEmail = async (email) => {
-    console.log(email)
-    const emailAvailable = (await checkEmailAvailability(email)).availability
-    if (!emailAvailable) {
-      setErrors((prev) => ({
-        ...prev, email: "An account with this email already exists"
-      }))
-      return false
+  const checkAvailability = async (email: string, phone: string): Promise<boolean> => {
+    let available = true
+    try {
+      const res = await checkAvailabilityApi({ email, phone })
+
+      if (res.availability.email === false) {
+        setErrors((prev) => ({
+          ...prev,
+          email: 'An account with this email already exists',
+        }))
+        available = false
+      }
+
+      if (res.availability.phone === false) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: 'An account with this phone number already exists',
+        }))
+        available = false
+      }
+    } catch {
+      // Availability service unreachable — don't block signup; /waitlist
+      // still rejects duplicates with a 409 at account creation.
     }
-    return true
+    return available
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -78,9 +93,11 @@ function CreateAccountStep() {
     if (Object.keys(validationErrors).length > 0) return
 
     setSubmitting(true)
-    const emailAvailable = await checkEmail(data.email)
-    setSubmitting(emailAvailable)
-    if (!emailAvailable) return
+    const available = await checkAvailability(data.email, data.phoneNumber)
+    if (!available) {
+      setSubmitting(false)
+      return
+    }
     await withMinDelay(async () => {})
     updateData({ email: data.email.trim() })
     setSubmitting(false)

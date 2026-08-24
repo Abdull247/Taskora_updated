@@ -1,17 +1,26 @@
-import { apiRequest, ApiRequestError } from './api'
-import { AvailabilityResponse } from '../types/api'
+import { apiRequest } from './api'
+import type { AvailabilityPayload, AvailabilityResponse } from '../types/api'
 
-export default async function checkEmailAvailability(value: string): Promise<AvailabilityResponse> {
-  const trimmed = value.trim()
+/**
+ * POST /auth/checkAvailability — no auth required. Inline "is this taken?"
+ * validation for the signup form; rate-limited to 5 req/min.
+ *
+ * Email is matched case-insensitively (trimmed server-side), but phone is
+ * compared verbatim — send it exactly as it will be registered at /waitlist.
+ */
+export async function checkAvailability(payload: AvailabilityPayload): Promise<AvailabilityResponse> {
+  const { email, phone } = payload
 
-  if (!trimmed) {
-    throw new Error(`No email provided`)
+  if (!email?.trim() && !phone?.trim()) {
+    throw new Error('No email or phone number provided')
   }
 
-  const params = new URLSearchParams({ email: trimmed })
+  const body: AvailabilityPayload = {}
+  if (email?.trim()) body.email = email.trim()
+  if (phone?.trim()) body.phone = phone
 
-  const result = await apiRequest<AvailabilityResponse>(`/checkEmail?${params.toString()}`, {
-    method: 'GET',
+  return apiRequest<AvailabilityResponse>('/auth/checkAvailability', {
+    method: 'POST',
+    body,
   })
-  return result
 }
