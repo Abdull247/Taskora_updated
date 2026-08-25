@@ -8,6 +8,8 @@ import { withMinDelay } from '../../lib/useMinDelay'
 import type { UserRole } from '../../types/api'
 import './SignupFlow.css'
 import { checkAvailability as checkAvailabilityApi } from '../../lib/emailAvailability'
+import { ApiRequestError } from '../../lib/api'
+import toast from 'react-hot-toast'
 
 interface FormErrors {
   [key: string]: string
@@ -79,9 +81,15 @@ function CreateAccountStep() {
         }))
         available = false
       }
-    } catch {
+    } catch (err) {
       // Availability service unreachable — don't block signup; /waitlist
       // still rejects duplicates with a 409 at account creation.
+      if (err instanceof ApiRequestError) {
+        if (err.status === 429) {
+          toast.error('Too many requests. Please try again later.')
+        }
+        available = false
+      }
     }
     return available
   }
@@ -90,7 +98,10 @@ function CreateAccountStep() {
     e.preventDefault()
     const validationErrors = validate()
     setErrors(validationErrors)
-    if (Object.keys(validationErrors).length > 0) return
+    if (Object.keys(validationErrors).length > 0) {
+      setSubmitting(false)
+      return
+    }
 
     setSubmitting(true)
     const available = await checkAvailability(data.email, data.phoneNumber)
