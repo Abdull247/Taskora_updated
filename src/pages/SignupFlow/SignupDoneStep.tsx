@@ -3,8 +3,11 @@ import { HiCheck, HiOutlineBell, HiOutlineEnvelope, HiOutlineRocketLaunch, HiOut
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
+import { login } from '../../lib/auth'
 import { useSignupFlow } from '../../context/SignupFlowContext'
 import '../WaitlistSuccess/WaitlistSuccessPage.css'
+import { toast } from 'react-hot-toast'
+import { setStoredRole } from '../../lib/me'
 
 const TELEGRAM_URL = 'https://t.me/+Oyl3Hlt2wXdkOTFk'
 const WHATSAPP_URL = 'https://chat.whatsapp.com/CZMTBeQmnG51DHuNTsLzTV'
@@ -30,9 +33,24 @@ const steps = [
 function SignupDoneStep() {
   const { data } = useSignupFlow()
 
+  const logNewUser = async () => {
+    const { accessToken, refreshToken, user } = await login({ email: data.email.trim(), password: data.password })
+
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
+      setStoredRole(user.role)
+  }
+
   // Guard against direct/refresh navigation without having actually completed signup.
   if (!data.emailVerified) {
     return <Navigate to="/signup" replace />
+  } else {
+    try {
+      logNewUser()
+      console.log('User logged in after signup.')
+    } catch (err) {
+      toast.error('Login failed after signup. Please log in manually.')
+    }
   }
 
   return (

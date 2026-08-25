@@ -184,7 +184,7 @@
   width: 20px;
   height: 20px;
   border-radius: 6px;
-  border: 1.5px solid var(--color-border-subtle);
+  border: 1.5px solid #aaaaaa;
   background: #ffffff;
   display: flex;
   align-items: center;
