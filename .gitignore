@@ -25,4 +25,5 @@ dist-ssr
 .env.production
 .env.development
 .env
+safenotes.txt
 .vercel
