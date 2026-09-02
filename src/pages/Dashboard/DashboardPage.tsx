@@ -16,8 +16,9 @@ import {
 import DashboardTopbar from '../../components/DashboardTopbar/DashboardTopbar'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import DashboardSkeleton from '../../components/DashboardSkeleton/DashboardSkeleton'
+import AccessCodeRedeemDialog from '../../components/AccessCodeRedeemDialog/AccessCodeRedeemDialog'
 import { SEO } from '../../components/SEO/SEO'
-import { getMe } from '../../lib/me'
+import { getMe, refreshMe } from '../../lib/me'
 import { getRecommendedTasks } from '../../lib/tasks'
 import { getWalletTransactions, transactionDisplayState, transactionLabel, transactionSubtitle, transactionWhen, formatNairaFromKobo } from '../../lib/wallet'
 import { ApiRequestError } from '../../lib/api'
@@ -83,12 +84,20 @@ function DashboardPage() {
   const [transactionsLoading, setTransactionsLoading] = useState(false)
   const [transactionsError, setTransactionsError] = useState<string | null>(null)
 
+  const [showAccessCodeDialog, setShowAccessCodeDialog] = useState(false)
+
   const loadMe = useCallback(async () => {
     setMeLoading(true)
     setMeError(null)
     try {
       const { user: me } = await getMe()
       setUser(me)
+      if (
+        me.isFirstAccess === true &&
+        me.firstAccessRewardGranted === false
+      ) {
+        setShowAccessCodeDialog(true)
+      }
     } catch (err) {
       if (err instanceof ApiRequestError && err.status === 401) {
         navigate('/login', { replace: true })
@@ -99,6 +108,20 @@ function DashboardPage() {
       setMeLoading(false)
     }
   }, [navigate])
+
+  const handleAccessCodeSuccess = useCallback(async () => {
+    setShowAccessCodeDialog(false)
+    try {
+      const { user: refreshed } = await refreshMe()
+      setUser(refreshed)
+    } catch {
+      /* /me refetch failed — dialog already closed, user can pull to retry */
+    }
+  }, [])
+
+  const handleAccessCodeDismiss = useCallback(() => {
+    setShowAccessCodeDialog(false)
+  }, [])
 
   useEffect(() => {
     loadMe()
@@ -418,6 +441,14 @@ function DashboardPage() {
       </main>
 
       <BottomNav />
+
+      {showAccessCodeDialog && user && (
+        <AccessCodeRedeemDialog
+          user={user}
+          onSuccess={handleAccessCodeSuccess}
+          onDismiss={handleAccessCodeDismiss}
+        />
+      )}
     </div>
   )
 }

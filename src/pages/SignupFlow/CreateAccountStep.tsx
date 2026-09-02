@@ -33,6 +33,12 @@ function CreateAccountStep() {
     if (isValidRole(roleParam)) {
       updateData({ role: roleParam })
     }
+
+    // Seed referredByCode from ?ref= if present.
+    const refParam = searchParams.get('ref') ?? ''
+    if (refParam) {
+      updateData({ referredByCode: refParam.trim() })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
@@ -61,10 +67,18 @@ function CreateAccountStep() {
     return next
   }
 
-  const checkAvailability = async (email: string, phone: string): Promise<boolean> => {
+  const checkAvailability = async (
+    email: string,
+    phone: string,
+    referralCode: string
+  ): Promise<boolean> => {
     let available = true
     try {
-      const res = await checkAvailabilityApi({ email, phone })
+      const res = await checkAvailabilityApi({
+        email,
+        phone,
+        ...(referralCode ? { referralCode } : {}),
+      })
 
       if (res.availability.email === false) {
         setErrors((prev) => ({
@@ -78,6 +92,14 @@ function CreateAccountStep() {
         setErrors((prev) => ({
           ...prev,
           phoneNumber: 'An account with this phone number already exists',
+        }))
+        available = false
+      }
+
+      if (referralCode && res.availability.referralCode === false) {
+        setErrors((prev) => ({
+          ...prev,
+          referredByCode: 'This referral code does not exist',
         }))
         available = false
       }
@@ -104,7 +126,11 @@ function CreateAccountStep() {
     }
 
     setSubmitting(true)
-    const available = await checkAvailability(data.email, data.phoneNumber)
+    const available = await checkAvailability(
+      data.email,
+      data.phoneNumber,
+      data.referredByCode.trim()
+    )
     if (!available) {
       setSubmitting(false)
       return
@@ -132,6 +158,34 @@ function CreateAccountStep() {
             onSubmit={handleSubmit}
             noValidate
           >
+            {data.referredByCode && (
+              <div className="form-field signup-referral-field">
+                <label htmlFor="referredByCode">
+                  Referral code
+                </label>
+                <input
+                  id="referredByCode"
+                  type="text"
+                  value={data.referredByCode}
+                  readOnly
+                  aria-readonly="true"
+                  className={
+                    errors.referredByCode
+                      ? 'input-error signup-referral-input signup-referral-input-focus'
+                      : 'signup-referral-input signup-referral-input-focus'
+                  }
+                  disabled={submitting}
+                  tabIndex={-1}
+                />
+                <span className="signup-referral-hint">
+                  You were invited with this code — your friend gets ₦50 when you join.
+                </span>
+                {errors.referredByCode && (
+                  <span className="field-error">{errors.referredByCode}</span>
+                )}
+              </div>
+            )}
+
             <div className="form-row">
               <div className="form-field">
                 <label htmlFor="firstName">First name</label>

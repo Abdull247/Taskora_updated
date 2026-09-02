@@ -69,6 +69,7 @@ function OtpStep() {
           password: data.password,
           role,
           businessDetails,
+          referredByCode: data.referredByCode.trim() || undefined,
         })
       )
 

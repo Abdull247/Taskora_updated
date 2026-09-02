@@ -13,6 +13,12 @@ export interface SignupFlowData {
   businessName: string
   industry: string
   website: string
+  /**
+   * Code from ?referral= / ?ref= query param on /signup. Carried through the
+   * flow so the eventual /waitlist submission can credit the referrer.
+   * Empty string when the user landed on /signup without a code.
+   */
+  referredByCode: string
   /** Session id returned by /emailverification/send, used by /verify and /resend */
   verificationTaskId: string
   /** Set once /emailverification/verify succeeds; not sent to the backend directly */
@@ -37,6 +43,7 @@ const initialData: SignupFlowData = {
   businessName: '',
   industry: '',
   website: '',
+  referredByCode: '',
   verificationTaskId: '',
   emailVerified: false,
 }

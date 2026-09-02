@@ -25,6 +25,7 @@ export function transactionDirection(type: WalletTransaction['type']): Transacti
     case 'deposit':
     case 'task_earning':
     case 'refund':
+    case 'referral_bonus':
       return 'credit'
     case 'withdrawal':
     case 'task_payment':
@@ -63,6 +64,8 @@ export function transactionLabel(type: WalletTransaction['type']): string {
       return 'Refund'
     case 'fee':
       return 'Platform Fee'
+    case 'referral_bonus':
+      return 'Referral Bonus'
     default:
       return 'Transaction'
   }

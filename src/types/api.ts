@@ -48,13 +48,19 @@ export interface ApiError {
 export interface AvailabilityPayload {
   email?: string
   phone?: string
+  referralCode?: string
 }
 
 export interface AvailabilityResponse {
-  /** Each requested field gets its own flag — true means free to use. */
+  /**
+   * Each requested field gets its own flag:
+   * - email / phone: true = free, false = already taken
+   * - referralCode: true = valid code exists, false = code does not exist
+   */
   availability: {
     email?: boolean
     phone?: boolean
+    referralCode?: boolean
   },
   error: string | boolean
 }
@@ -470,6 +476,7 @@ export type WalletTransactionType =
   | 'task_earning'
   | 'refund'
   | 'fee'
+  | 'referral_bonus'
 
 export interface WalletTransaction {
   id: string
@@ -485,6 +492,42 @@ export interface WalletTransaction {
 export interface WalletTransactionsResponse {
   transactions: WalletTransaction[]
 }
+
+// ---- /referrals ----
+
+export interface ReferralStats {
+  totalReferrals: number
+  completedReferrals: number
+  pendingReferrals: number
+  totalEarningsKobo: number
+  totalEarningsNaira: number
+}
+
+export interface ReferralReferredUser {
+  id: string
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  role: UserRole
+}
+
+export interface Referral {
+  id: string
+  user: ReferralReferredUser
+  referralCodeUsed: string
+  bonusAmountKobo: number
+  bonusCredited: boolean
+  bonusCreditedAt: string | null
+  createdAt: string
+}
+
+export interface ReferralsResponse {
+  stats: ReferralStats
+  recentReferrals: Referral[]
+}
+
+export type ReferralSummary = ReferralStats
 
 
 // ---- POST /payments/initialize ----
@@ -502,6 +545,22 @@ export interface InitializePaymentResponse {
 
 export interface VerifyPaymentResponse {
   status: 'success' | 'failed' | 'already_resolved' | string
+}
+
+// ---- POST /waitlist/reward ----
+
+export interface WaitlistRewardPayload {
+  accessCode: string
+  email?: string
+  phoneNumber?: string
+}
+
+export interface WaitlistRewardResponse {
+  status: 'success'
+  message: string
+  amount: number
+  source: 'users_table' | 'waitlist_table'
+  waitlistId?: string
 }
 
 // ---- POST /file/upload ----
